@@ -22,9 +22,6 @@ namespace BAL.Common
             swLog.Close();
             swLog.Dispose();
             return "";
-
-
-
         }
         public static object Write_Log(string mappath, dynamic strMsg)
         {
