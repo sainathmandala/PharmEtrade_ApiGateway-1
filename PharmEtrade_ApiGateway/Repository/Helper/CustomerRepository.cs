@@ -1,43 +1,65 @@
-﻿using BAL.BusinessLogic.Interface;
+﻿using BAL.BusinessLogic.Helper;
+using BAL.BusinessLogic.Interface;
+using BAL.Common;
+using BAL.ViewModels;
 using PharmEtrade_ApiGateway.Repository.Interface;
 using System.Data;
+using PharmEtrade_ApiGateway.Extensions;
 
 namespace PharmEtrade_ApiGateway.Repository.Helper
 {
     public class CustomerRepository:IcustomerRepo
     {
         private readonly IcustomerHelper _icustomerHelper;
-        public CustomerRepository(IcustomerHelper icustomerHelper)
+        private readonly JwtAuthenticationExtensions _jwtTokenService;
+        public CustomerRepository(IcustomerHelper icustomerHelper, JwtAuthenticationExtensions jwtTokenService)
         {
             _icustomerHelper = icustomerHelper;
+            _jwtTokenService = jwtTokenService;
         }
 
 
         // Author: [Shiva]
         // Created Date: [29/06/2024]
         // Description: Method for customer login 
-        public async Task<string> CustomerLogin(string username, string password)
+        public async Task<loginViewModel> CustomerLogin(string username, string password)
         {
-            //AdminDetailsResponse response = new AdminDetailsResponse();
-            //try
-            //{
-            //    DataTable dtresult = await _iAdminHelper.LoginAdmin(username, password);
-            //    if (dtresult != null && dtresult.Rows.Count > 0)
-            //    {
-            //        response.statusCode = 100;
-            //        response.message = Constant.adminloginSucessMsg;
-            //        response.adminlist = ConvertDataTabletoList(dtresult);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    response.statusCode = 102;
-            //    response.message = ex.Message;
-            //    response.adminlist = new List<Admin>();
+            loginViewModel response = new loginViewModel();
 
-            //}
-            //return response;
-            return null;
+            try
+            {
+                var dtResult = await _icustomerHelper.CustomerLogin(username, password);
+
+                if (dtResult != null && dtResult.Rows.Count > 0)
+                {
+                    DataRow row = dtResult.Rows[0];
+                    response.LoginStatus = row["LoginStatus"].ToString();
+                    response.UserId = Convert.ToInt32(row["UserId"]);
+                    response.Username = row["Username"].ToString();
+                    response.UserEmail = row["UserEmail"].ToString();
+                    response.Role = row["Role"].ToString();
+
+                    if (response.LoginStatus == "Success")
+                    {
+                        response.token = _jwtTokenService.GenerateToken(response.Username, response.Role);
+                        response.statusCode = 200;
+                        //response.message = LoginSuccessMsg;
+                    }
+                    else
+                    {
+                        response.statusCode = 400;
+                        response.message = "Invalid credentials or user role not found";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                response.statusCode = 500;
+                response.message = $"An error occurred: {ex.Message}";
+            }
+
+            return response;
+
         }
     }
 }
