@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BAL.Common
+namespace BAL.ViewModels
 {
-    public static class Constant
+    public class Response
     {
-        public const string LoginSuccessMsg = "Login Successfully";
+        public int status { get; set; }
+        public string message { get; set; }
     }
 }
