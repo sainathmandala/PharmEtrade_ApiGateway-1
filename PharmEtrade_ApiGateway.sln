@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PharmEtrade_ApiGateway", "PharmEtrade_ApiGateway\PharmEtrade_ApiGateway.csproj", "{8D17A63A-4942-4E79-AF92-E979F5653E33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{B32B1E44-3994-4F1A-834C-02291099C3CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BAL", "BAL\BAL.csproj", "{4F66E629-5776-4247-9137-68F15FB22A53}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8D17A63A-4942-4E79-AF92-E979F5653E33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D17A63A-4942-4E79-AF92-E979F5653E33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D17A63A-4942-4E79-AF92-E979F5653E33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D17A63A-4942-4E79-AF92-E979F5653E33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B32B1E44-3994-4F1A-834C-02291099C3CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B32B1E44-3994-4F1A-834C-02291099C3CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B32B1E44-3994-4F1A-834C-02291099C3CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B32B1E44-3994-4F1A-834C-02291099C3CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F66E629-5776-4247-9137-68F15FB22A53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F66E629-5776-4247-9137-68F15FB22A53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F66E629-5776-4247-9137-68F15FB22A53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F66E629-5776-4247-9137-68F15FB22A53}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5DB69BBA-A655-4AA5-BB74-4B8FD9ABF874}
+	EndGlobalSection
+EndGlobal
