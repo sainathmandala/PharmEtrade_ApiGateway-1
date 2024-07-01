@@ -10,5 +10,6 @@ namespace BAL.BusinessLogic.Interface
     public interface IcustomerHelper
     {
         Task<DataTable> CustomerLogin(string username, string password);
+        Task<int> AddToCart(int userId, int imageId, int productId);
     }
 }

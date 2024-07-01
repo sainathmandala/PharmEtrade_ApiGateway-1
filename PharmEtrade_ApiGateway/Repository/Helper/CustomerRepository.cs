@@ -1,4 +1,5 @@
-﻿using BAL.BusinessLogic.Interface;
+﻿using BAL.BusinessLogic.Helper;
+using BAL.BusinessLogic.Interface;
 using PharmEtrade_ApiGateway.Repository.Interface;
 using System.Data;
 
@@ -38,6 +39,11 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             //}
             //return response;
             return null;
+        }
+
+        public async Task<int> AddToCart(int userId, int imageId, int productId)
+        {
+            return await _icustomerHelper.AddToCart(userId, imageId, productId);
         }
     }
 }

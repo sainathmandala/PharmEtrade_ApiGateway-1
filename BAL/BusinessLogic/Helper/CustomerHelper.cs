@@ -50,5 +50,25 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
+        public async Task<int> AddToCart(int userId, int imageId, int productId)
+        {
+            SqlConnection sqlcon = new SqlConnection(_connectionString);
+            SqlCommand cmd = new SqlCommand();
+            try
+            {
+                cmd = new SqlCommand("InsertAddtoCartProduct", sqlcon);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Userid", userId);
+                cmd.Parameters.AddWithValue("@Imageid", imageId);
+                cmd.Parameters.AddWithValue("@ProductId", productId);
+                return await Task.Run(() => _isqlDataHelper.ExcuteNonQueryasync(cmd));
+            }
+            catch (Exception ex)
+            {
+                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "AddToCart_SP :  errormessage:" + ex.Message.ToString()));
+                throw ex;
+            }
+        }
+
     }
 }
