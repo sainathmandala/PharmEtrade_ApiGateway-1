@@ -1,5 +1,6 @@
 ﻿using BAL.BusinessLogic.Interface;
 using BAL.Common;
+using BAL.ViewModels;
 using DAL;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -74,5 +75,63 @@ namespace BAL.BusinessLogic.Helper
         {
             throw new NotImplementedException();
         }
+
+        // Author: [Shiva]
+        // Created Date: [02/07/2024]
+        // Description: Method for registration of User 
+        public async Task<string> SaveCustomerData(UserViewModel userViewModel)
+        {
+            SqlConnection sqlcon = new SqlConnection(_connectionString);
+            SqlCommand cmd = new SqlCommand();
+            try
+            {
+                cmd = new SqlCommand("SP_InsertUser", sqlcon);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Username", userViewModel.Username);
+                cmd.Parameters.AddWithValue("@Email", userViewModel.Email);
+                cmd.Parameters.AddWithValue("@Password", userViewModel.Password);
+                cmd.Parameters.AddWithValue("@PhoneNumber", userViewModel.PhoneNumber);
+                cmd.Parameters.AddWithValue("@RoleId", userViewModel.RoleId);
+
+                await sqlcon.OpenAsync();
+                await _isqlDataHelper.ExcuteNonQueryasync(cmd);
+                return "Success";
+            }
+            catch (Exception ex)
+            {
+                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "SaveUser :  errormessage:" + ex.Message.ToString()));
+
+                throw ex;
+            }
+        }
+
+
+        // Author: [Shiva]
+        // Created Date: [02/07/2024]
+        // Description: Method for Get the data of  User based on UserId
+        public async Task<DataTable> GetUserDetailsById(int userId)
+        {
+
+            SqlConnection sqlcon = new SqlConnection(_connectionString);
+            SqlCommand cmd = new SqlCommand();
+            try
+            {
+                cmd = new SqlCommand("Sp_GetUserById", sqlcon);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@user_id", userId);
+
+
+                return await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
+            }
+            catch (Exception ex)
+            {
+                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "GetusersdataById_sp :  errormessage:" + ex.Message.ToString()));
+
+                throw ex;
+            }
+        }
+
+
+
     }
 }

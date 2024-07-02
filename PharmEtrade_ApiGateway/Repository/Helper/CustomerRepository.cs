@@ -5,6 +5,7 @@ using BAL.ViewModels;
 using PharmEtrade_ApiGateway.Repository.Interface;
 using System.Data;
 using PharmEtrade_ApiGateway.Extensions;
+using DAL.Models;
 
 namespace PharmEtrade_ApiGateway.Repository.Helper
 {
@@ -66,7 +67,79 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return response;
 
         }
+        // Author: [shiva]
+        // Created Date: [02/07/2024]
+        // Description: Method for registration of User
+        public async Task<Response> UserRegistration(UserViewModel userViewModel)
+        {
+            Response response = new Response();
+            try
+            {
+                string status = await _icustomerHelper.SaveCustomerData(userViewModel);
+                if (status.Equals("Success"))
+                {
+                    response.status = 200;
+                    response.message = Constant.UserCreationSuccessMsg;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.message = ex.Message;
 
-       
+            }
+            return response;
+        }
+
+
+        // Author: [Shiva]
+        // Created Date: [02/07/2024]
+        // Description: Method for Get the data of User Based On UserId
+        public async Task<UserDetailsResponse> GetUserDetailsByUserId(int userId)
+        {
+            UserDetailsResponse response = new UserDetailsResponse();
+            try
+            {
+                DataTable dtresult = await _icustomerHelper.GetUserDetailsById(userId);
+                if (dtresult != null && dtresult.Rows.Count > 0)
+                {
+                    response.statusCode = 200;
+                    response.message = Constant.GetUserBYUserIdSuccessMsg;
+                    response.userlist = ConvertDataTabletoStudentList(dtresult);
+                }
+            }
+            catch (Exception ex)
+            {
+                response.statusCode = 500;
+                response.message = ex.Message;
+                response.userlist = new List<UserViewModel>();
+
+            }
+            return response;
+        }
+
+        private List<UserViewModel> ConvertDataTabletoStudentList(DataTable dt)
+        {
+            List<UserViewModel> userlst = new List<UserViewModel>();
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                foreach (DataRow row in dt.Rows)
+                {
+                    UserViewModel user = new UserViewModel();
+                    user.UserId = Convert.ToInt32(row["user_id"]);
+                    user.Username = row["username"].ToString();
+                    user.Email = row["email"].ToString();
+                    user.Password = row["password"].ToString();
+                    user.PhoneNumber =row["phone_number"].ToString();
+                  
+
+                    userlst.Add(user);
+
+                }
+                return userlst;
+            }
+            else
+                return userlst;
+        }
     }
 }
