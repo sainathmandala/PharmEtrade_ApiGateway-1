@@ -9,5 +9,7 @@ namespace BAL.Common
     public static class Constant
     {
         public const string LoginSuccessMsg = "Login Successfully";
+        public const string UserCreationSuccessMsg = "User Created Successfully";
+        public const string GetUserBYUserIdSuccessMsg = "User Info Successfully Fetched";
     }
 }
