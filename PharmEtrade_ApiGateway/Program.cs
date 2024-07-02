@@ -7,8 +7,8 @@ using PharmEtrade_ApiGateway.Repository.Interface;
 using PharmEtrade_ApiGateway.Repository.Helper;
 using BAL.BusinessLogic.Interface;
 using BAL.BusinessLogic.Helper;
-using Microsoft.Extensions.Configuration;
 using DAL;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,6 +85,10 @@ builder.Services.AddSingleton<IsqlDataHelper, SqlDataHelper>();
 builder.Services.AddSingleton<IProductsRepo, ProductRepository>();
 builder.Services.AddTransient<IProductHelper, ProductHelper>();
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+builder.Services.AddSingleton<IProductFilter, ProductFilterHelper>();
+builder.Services.AddSingleton<IProductFilterRepo, ProductFilterRepository>();
+
+
 
 var app = builder.Build();
 
