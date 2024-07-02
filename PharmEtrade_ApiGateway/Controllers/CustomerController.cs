@@ -26,7 +26,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         public async Task<IActionResult> CustomerLogin(string UserName, string Password)
         {
             var response = await _icustomerRepo.CustomerLogin(UserName,Password);
-            if (response != null && response.LoginStatus== "Success")
+            if (response != null && response.LoginStatus == "Success")
             {
                 return Ok(new
                 {

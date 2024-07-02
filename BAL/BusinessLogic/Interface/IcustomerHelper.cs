@@ -11,5 +11,6 @@ namespace BAL.BusinessLogic.Interface
     {
         Task<DataTable> CustomerLogin(string username, string password);
         Task<int> AddToCart(int userId, int imageId, int productId);
+        Task<int> dummy(int userId, int imageId, int productId);
     }
 }

@@ -15,7 +15,7 @@ namespace BAL.BusinessLogic.Interface
         {
 
             Task<Productviewmodel> InsertAddProduct(Productviewmodel productviewmodel);
-                    
+            Task<Productviewmodel> DummyInterface(Productviewmodel pvm);     
                 
         }
     }
