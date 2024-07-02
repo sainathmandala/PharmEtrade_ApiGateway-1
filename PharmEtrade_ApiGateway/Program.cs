@@ -3,10 +3,16 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using PharmEtrade_ApiGateway.Extensions;
+using PharmEtrade_ApiGateway.Repository.Interface;
+using PharmEtrade_ApiGateway.Repository.Helper;
+using DAL;
+using BAL.BusinessLogic.Interface;
+using BAL.BusinessLogic.Helper;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the container juuv.
+///
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -72,6 +78,9 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("CustomerPolicy", policy => policy.RequireRole("Customer"));
 });
 builder.Services.AddSingleton<JwtAuthenticationExtensions>();
+builder.Services.AddSingleton<IcustomerRepo, CustomerRepository>();
+builder.Services.AddTransient<IcustomerHelper, CustomerHelper>();
+builder.Services.AddSingleton<IsqlDataHelper, SqlDataHelper>();
 
 
 var app = builder.Build();

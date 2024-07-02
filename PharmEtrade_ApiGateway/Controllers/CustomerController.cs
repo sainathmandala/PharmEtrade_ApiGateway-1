@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BAL.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PharmEtrade_ApiGateway.Extensions;
 using PharmEtrade_ApiGateway.Repository.Interface;
 
 namespace PharmEtrade_ApiGateway.Controllers
@@ -9,9 +11,11 @@ namespace PharmEtrade_ApiGateway.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly IcustomerRepo _icustomerRepo;
-        public CustomerController(IcustomerRepo icustomerRepo)
+        private readonly JwtAuthenticationExtensions _jwtTokenService;
+        public CustomerController(IcustomerRepo icustomerRepo, JwtAuthenticationExtensions jwtTokenService)
         {
             _icustomerRepo = icustomerRepo;
+            _jwtTokenService = jwtTokenService;
         }
 
         // Author: [Shiva]
@@ -21,8 +25,18 @@ namespace PharmEtrade_ApiGateway.Controllers
         [Route("AdminLogin")]
         public async Task<IActionResult> CustomerLogin(string UserName, string Password)
         {
-            //return Ok(await _icustomerRepo.(UserName, Password));
-            return null;
+            var response = await _icustomerRepo.CustomerLogin(UserName,Password);
+            if (response != null && response.LoginStatus== "Success")
+            {
+                return Ok(new
+                {
+                    Token = response.token,
+                    //Username = response.Username,
+                    //Role = response.Role
+                });
+            }
+
+            return Unauthorized();
         }
 
         // Author: [Swathi]

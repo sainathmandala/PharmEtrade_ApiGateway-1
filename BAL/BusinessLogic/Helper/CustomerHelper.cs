@@ -36,7 +36,7 @@ namespace BAL.BusinessLogic.Helper
             SqlCommand cmd = new SqlCommand();
             try
             {
-                cmd = new SqlCommand("sp", sqlcon);
+                cmd = new SqlCommand("SP_CustomerLogin", sqlcon);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Email", username);
                 cmd.Parameters.AddWithValue("@Password", password);
