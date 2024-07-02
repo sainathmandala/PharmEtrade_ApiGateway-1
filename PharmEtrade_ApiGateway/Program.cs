@@ -3,6 +3,11 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using PharmEtrade_ApiGateway.Extensions;
+using PharmEtrade_ApiGateway.Repository.Interface;
+using PharmEtrade_ApiGateway.Repository.Helper;
+using BAL.BusinessLogic.Interface;
+using BAL.BusinessLogic.Helper;
+using DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,6 +78,9 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("CustomerPolicy", policy => policy.RequireRole("Customer"));
 });
 builder.Services.AddSingleton<JwtAuthenticationExtensions>();
+builder.Services.AddSingleton<IProductFilterRepo, ProductFilterRepository>();
+builder.Services.AddSingleton<IsqlDataHelper, SqlDataHelper>();
+builder.Services.AddSingleton<IProductFilter, ProductFilterHelper>();
 
 
 var app = builder.Build();

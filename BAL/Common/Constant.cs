@@ -8,5 +8,7 @@ namespace BAL.Common
 {
     public static class Constant
     {
+        public const string GetProductSuccessMsg = "Product Info Successfully Fetched";
+
     }
 }

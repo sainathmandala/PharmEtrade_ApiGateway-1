@@ -24,5 +24,6 @@ namespace PharmEtrade_ApiGateway.Controllers
             //return Ok(await _icustomerRepo.(UserName, Password));
             return null;
         }
+
     }
 }

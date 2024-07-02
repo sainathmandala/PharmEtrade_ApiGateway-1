@@ -31,7 +31,6 @@ namespace BAL.BusinessLogic.Helper
         // Description: Method for Customer login
         public async Task<DataTable> CustomerLogin(string username, string password)
         {
-
             SqlConnection sqlcon = new SqlConnection(_connectionString);
             SqlCommand cmd = new SqlCommand();
             try

@@ -9,7 +9,7 @@ using System.Data;
 
 namespace DAL
 {
-    internal class SqlDataHelper: IsqlDataHelper
+    public class SqlDataHelper: IsqlDataHelper
     {
         private readonly string _connectionString;
         private string exFolder = Path.Combine("ExceptionLogs");
