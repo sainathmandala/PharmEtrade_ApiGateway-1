@@ -25,6 +25,8 @@ namespace BAL.ViewModels
         public string Role { get; set; }
         
         public string token { get; set; }
-    
+
+       
+      
     }
 }

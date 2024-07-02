@@ -1,0 +1,176 @@
+﻿using BAL.ViewModel;
+using DAL.Models;
+using BAL.BusinessLogic.Interface;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Data;
+using System.Data.SqlClient;
+using System.IO;
+using System.Threading.Tasks;
+using DAL;
+using BAL.Common;
+
+namespace BAL.BusinessLogic.Helper
+{
+    public class ProductHelper : IProductHelper
+    {
+        private readonly IsqlDataHelper _isqlDataHelper;
+        private readonly string _connectionString;
+        private readonly string _exPathToSave;
+
+        public ProductHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper)
+        {
+            _isqlDataHelper = isqlDataHelper;
+            _connectionString = configuration.GetConnectionString("OnlineexamDB");
+            _exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), "ProductExceptionLogs");
+        }
+
+        public async Task<int> InsertAddProduct(Productviewmodel productviewmodel)
+        {
+            using (SqlConnection sqlcon = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("InsertAddProduct", sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@Productcategory_id", productviewmodel.ProductcategoryId);
+                    cmd.Parameters.AddWithValue("@ImageID", productviewmodel.ImageId);
+                    cmd.Parameters.AddWithValue("@Sizeid", productviewmodel.Sizeid);
+                    cmd.Parameters.AddWithValue("@ProductName", productviewmodel.ProductName);
+                    cmd.Parameters.AddWithValue("@NDCorUPC", productviewmodel.NdcorUpc);
+                    cmd.Parameters.AddWithValue("@BrandName", productviewmodel.BrandName);
+                    cmd.Parameters.AddWithValue("@PriceName", productviewmodel.PriceName);
+                    cmd.Parameters.AddWithValue("@UPNmemberPrice", productviewmodel.UpnmemberPrice);
+                    cmd.Parameters.AddWithValue("@AmountInStock", productviewmodel.AmountInStock);
+                    cmd.Parameters.AddWithValue("@Taxable", productviewmodel.Taxable);
+                    cmd.Parameters.AddWithValue("@SalePrice", productviewmodel.SalePrice);
+                    cmd.Parameters.AddWithValue("@SalePriceFrom", productviewmodel.SalePriceFrom);
+                    cmd.Parameters.AddWithValue("@SalePriceTo", productviewmodel.SalePriceTo);
+                    cmd.Parameters.AddWithValue("@Manufacturer", productviewmodel.Manufacturer);
+                    cmd.Parameters.AddWithValue("@Strength", productviewmodel.Strength);
+                    cmd.Parameters.AddWithValue("@Fromdate", productviewmodel.Fromdate);
+                    cmd.Parameters.AddWithValue("@LotNumber", productviewmodel.LotNumber);
+                    cmd.Parameters.AddWithValue("@ExpirationDate", productviewmodel.ExpirationDate);
+                    cmd.Parameters.AddWithValue("@PackQuantity", productviewmodel.PackQuantity);
+                    cmd.Parameters.AddWithValue("@PackType", productviewmodel.PackType);
+                    cmd.Parameters.AddWithValue("@PackCondition", productviewmodel.PackCondition);
+                    cmd.Parameters.AddWithValue("@ProductDescription", productviewmodel.ProductDescription);
+
+                    try
+                    {
+                        await sqlcon.OpenAsync();
+                        var result = await cmd.ExecuteNonQueryAsync();
+                        return result; // Return the number of affected rows
+                    }
+                    catch (Exception ex)
+                    {
+                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message.ToString()));
+                        // Handle the exception as needed
+                        throw;
+                    }
+                }
+            }
+        }
+        //public async Task<int> InsertAddToCartProduct(AddToCartViewModel addToCartModel)
+        //{
+        //    using (SqlConnection sqlcon = new SqlConnection(_connectionString))
+        //    {
+        //        using (SqlCommand cmd = new SqlCommand("InsertAddtoCartProduct", sqlcon))
+        //        {
+        //            cmd.CommandType = CommandType.StoredProcedure;
+
+        //            cmd.Parameters.AddWithValue("@Userid", addToCartModel.Userid);
+        //            cmd.Parameters.AddWithValue("@Imageid", addToCartModel.Imageid);
+        //            cmd.Parameters.AddWithValue("@ProductId", addToCartModel.ProductId);
+
+        //            try
+        //            {
+        //                await sqlcon.OpenAsync();
+        //                var result = await cmd.ExecuteScalarAsync();
+
+        //                // Check if the product was successfully added
+        //                if (result != null && int.TryParse(result.ToString(), out int newAddtoCartId))
+        //                {
+        //                    return newAddtoCartId; // Return the new AddtoCartId
+        //                }
+        //                else
+        //                {
+        //                    // Handle error or duplicate insert scenario
+        //                    throw new Exception("Failed to add product to cart.");
+        //                }
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertAddToCartProduct : errormessage:" + ex.Message.ToString()));
+        //                throw;
+        //            }
+        //        }
+        //    }
+        //}
+
+        public async Task<int> InsertAddToCartProduct(AddToCartViewModel addToCartModel)
+        {
+            using (SqlConnection sqlcon = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("InsertAddtoCartProduct", sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@Userid", addToCartModel.Userid);
+                    cmd.Parameters.AddWithValue("@Imageid", addToCartModel.Imageid);
+                    cmd.Parameters.AddWithValue("@ProductId", addToCartModel.ProductId);
+
+                    try
+                    {
+                        await sqlcon.OpenAsync();
+
+                        // Check if the product already exists for the user
+                        bool isProductAlreadyAdded = await IsProductAlreadyAdded(sqlcon, addToCartModel.Userid, addToCartModel.Imageid, addToCartModel.ProductId);
+
+                        if (isProductAlreadyAdded)
+                        {
+                            throw new Exception("Product is already added to the cart.");
+                        }
+
+                        var result = await cmd.ExecuteScalarAsync();
+
+                        // Check if the product was successfully added
+                        if (result != null && int.TryParse(result.ToString(), out int newAddtoCartId))
+                        {
+                            return newAddtoCartId; // Return the new AddtoCartId
+                        }
+                        else
+                        {
+                            // Handle error or duplicate insert scenario
+                            throw new Exception("Failed to add product to cart.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertAddToCartProduct : errormessage:" + ex.Message.ToString()));
+                        throw;
+                    }
+                }
+            }
+        }
+
+        private async Task<bool> IsProductAlreadyAdded(SqlConnection sqlcon, int userId, int imageId, int productId)
+        {
+            using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM [PharmEtradeDB].[dbo].[AddtoCartproduct] WHERE Userid = @Userid AND Imageid = @Imageid AND ProductId = @ProductId", sqlcon))
+            {
+                cmd.Parameters.AddWithValue("@Userid", userId);
+                cmd.Parameters.AddWithValue("@Imageid", imageId);
+                cmd.Parameters.AddWithValue("@ProductId", productId);
+
+                var count = await cmd.ExecuteScalarAsync();
+                return (int)count > 0;
+            }
+        }
+
+        public Task<Productviewmodel> DummyInterface(Productviewmodel pvm)
+        {
+            // Dummy implementation
+            return Task.FromResult(pvm);
+        }
+    }
+}

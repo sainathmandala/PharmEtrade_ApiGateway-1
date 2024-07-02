@@ -1,5 +1,6 @@
 ﻿using BAL.BusinessLogic.Interface;
 using BAL.Common;
+using BAL.ViewModels;
 using DAL;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -35,7 +36,7 @@ namespace BAL.BusinessLogic.Helper
             SqlCommand cmd = new SqlCommand();
             try
             {
-                cmd = new SqlCommand("sp", sqlcon);
+                cmd = new SqlCommand("SP_CustomerLogin", sqlcon);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Email", username);
                 cmd.Parameters.AddWithValue("@Password", password);
@@ -48,6 +49,88 @@ namespace BAL.BusinessLogic.Helper
                 throw ex;
             }
         }
+
+        public async Task<int> AddToCart(int userId, int imageId, int productId)
+        {
+            SqlConnection sqlcon = new SqlConnection(_connectionString);
+            SqlCommand cmd = new SqlCommand();
+            try
+            {
+                cmd = new SqlCommand("InsertAddtoCartProduct", sqlcon);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Userid", userId);
+                cmd.Parameters.AddWithValue("@Imageid", imageId);
+                cmd.Parameters.AddWithValue("@ProductId", productId);
+                return await Task.Run(() => _isqlDataHelper.ExcuteNonQueryasync(cmd));
+            }
+            catch (Exception ex)
+            {
+                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "AddToCart_SP :  errormessage:" + ex.Message.ToString()));
+                throw ex;
+            }
+        }
+
+        public Task<int> dummy(int userId, int imageId, int productId)
+        {
+            throw new NotImplementedException();
+        }
+
+        // Author: [Shiva]
+        // Created Date: [02/07/2024]
+        // Description: Method for registration of User 
+        public async Task<string> SaveCustomerData(UserViewModel userViewModel)
+        {
+            SqlConnection sqlcon = new SqlConnection(_connectionString);
+            SqlCommand cmd = new SqlCommand();
+            try
+            {
+                cmd = new SqlCommand("SP_InsertUser", sqlcon);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Username", userViewModel.Username);
+                cmd.Parameters.AddWithValue("@Email", userViewModel.Email);
+                cmd.Parameters.AddWithValue("@Password", userViewModel.Password);
+                cmd.Parameters.AddWithValue("@PhoneNumber", userViewModel.PhoneNumber);
+                cmd.Parameters.AddWithValue("@RoleId", userViewModel.RoleId);
+
+                await sqlcon.OpenAsync();
+                await _isqlDataHelper.ExcuteNonQueryasync(cmd);
+                return "Success";
+            }
+            catch (Exception ex)
+            {
+                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "SaveUser :  errormessage:" + ex.Message.ToString()));
+
+                throw ex;
+            }
+        }
+
+
+        // Author: [Shiva]
+        // Created Date: [02/07/2024]
+        // Description: Method for Get the data of  User based on UserId
+        public async Task<DataTable> GetUserDetailsById(int userId)
+        {
+
+            SqlConnection sqlcon = new SqlConnection(_connectionString);
+            SqlCommand cmd = new SqlCommand();
+            try
+            {
+                cmd = new SqlCommand("Sp_GetUserById", sqlcon);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@user_id", userId);
+
+
+                return await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
+            }
+            catch (Exception ex)
+            {
+                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "GetusersdataById_sp :  errormessage:" + ex.Message.ToString()));
+
+                throw ex;
+            }
+        }
+
+
 
     }
 }
