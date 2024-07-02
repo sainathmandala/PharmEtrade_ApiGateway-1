@@ -1,4 +1,5 @@
 ﻿using BAL.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PharmEtrade_ApiGateway.Extensions;
@@ -66,6 +67,25 @@ namespace PharmEtrade_ApiGateway.Controllers
             }
         }
 
+        // Author: [shiva]
+        // Created Date: [02/07/2024]
+        // Description: Method for registration of User
+        [HttpPost]
+        [Route("UserRegistration")]
+        public async Task<IActionResult> UserRegistration(UserViewModel userViewModel)
+        {
+            return Ok(await _icustomerRepo.UserRegistration(userViewModel));
+        }
+        // Author: [shiva]
+        // Created Date: [02/07/2024]
+        // Description: Method for Get the data Of Students From User Table 
+        [Authorize(Policy = "CustomerPolicy")]
+        [HttpGet]
+        [Route("GetStudentDetailsByUserId")]
+        public async Task<IActionResult> GetUserDetailsByUserId(int userId)
+        {
+            return Ok(await _icustomerRepo.GetUserDetailsByUserId(userId));
+        }
 
     }
 
