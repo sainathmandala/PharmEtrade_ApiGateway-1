@@ -67,9 +67,6 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
 
         }
 
-        Task<string> IcustomerRepo.CustomerLogin(string username, string password)
-        {
-            throw new NotImplementedException();
-        }
+      
     }
 }
