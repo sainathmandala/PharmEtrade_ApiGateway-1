@@ -70,5 +70,9 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
+        public Task<int> dummy(int userId, int imageId, int productId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
