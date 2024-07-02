@@ -5,19 +5,16 @@ using Microsoft.IdentityModel.Tokens;
 using PharmEtrade_ApiGateway.Extensions;
 using PharmEtrade_ApiGateway.Repository.Interface;
 using PharmEtrade_ApiGateway.Repository.Helper;
-using DAL;
 using BAL.BusinessLogic.Interface;
 using BAL.BusinessLogic.Helper;
+using Microsoft.Extensions.Configuration;
+using DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container juuv.
-///
+// Add services to the container
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
-//Shiva_ below code for jwt authentication
 builder.Services.AddSwaggerGen(c =>
 {
     // Configure JWT authentication
@@ -51,8 +48,10 @@ builder.Services.AddSwaggerGen(c =>
     };
     c.AddSecurityRequirement(securityRequirement);
 });
+
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+
 // Configure JWT authentication
 builder.Services.AddAuthentication(options =>
 {
@@ -70,6 +69,7 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false
     };
 });
+
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminPolicy", policy => policy.RequireRole("Admin"));
@@ -77,11 +77,14 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("PharmacyPolicy", policy => policy.RequireRole("Pharmacy"));
     options.AddPolicy("CustomerPolicy", policy => policy.RequireRole("Customer"));
 });
+
 builder.Services.AddSingleton<JwtAuthenticationExtensions>();
 builder.Services.AddSingleton<IcustomerRepo, CustomerRepository>();
 builder.Services.AddTransient<IcustomerHelper, CustomerHelper>();
 builder.Services.AddSingleton<IsqlDataHelper, SqlDataHelper>();
-
+builder.Services.AddSingleton<IProductsRepo, ProductRepository>();
+builder.Services.AddTransient<IProductHelper, ProductHelper>();
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
 var app = builder.Build();
 
@@ -93,8 +96,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

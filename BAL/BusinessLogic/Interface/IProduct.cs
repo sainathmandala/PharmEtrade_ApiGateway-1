@@ -1,22 +1,15 @@
 ﻿using BAL.ViewModel;
-using DAL.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BAL.BusinessLogic.Interface
 {
-    public interface IProduct
+    public interface IProductHelper
     {
+        Task<int> InsertAddProduct(Productviewmodel productviewmodel);
+        Task<Productviewmodel> DummyInterface(Productviewmodel pvm);
+        Task<int> InsertAddToCartProduct(AddToCartViewModel addToCartModel);
 
-        public interface IProductHelper
-        {
 
-            Task<Productviewmodel> InsertAddProduct(Productviewmodel productviewmodel);
-            Task<Productviewmodel> DummyInterface(Productviewmodel pvm);     
-                
-        }
+
     }
 }
