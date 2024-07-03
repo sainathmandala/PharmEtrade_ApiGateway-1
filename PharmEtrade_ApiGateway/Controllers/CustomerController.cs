@@ -23,7 +23,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         // Created Date: [29/06/2024]
         // Description: Method for Customer login
         [HttpPost]
-        [Route("AdminLogin")]
+        [Route("Login")]
         public async Task<IActionResult> CustomerLogin(string UserName, string Password)
         {
             var response = await _icustomerRepo.CustomerLogin(UserName,Password);
@@ -78,13 +78,23 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
         // Author: [shiva]
         // Created Date: [02/07/2024]
-        // Description: Method for Get the data Of Students From User Table 
+        // Description: Method for Get the data Of Users From User Table 
         [Authorize(Policy = "CustomerPolicy")]
         [HttpGet]
-        [Route("GetStudentDetailsByUserId")]
+        [Route("GetUserDetailsByUserId")]
         public async Task<IActionResult> GetUserDetailsByUserId(int userId)
         {
             return Ok(await _icustomerRepo.GetUserDetailsByUserId(userId));
+        }
+
+        // Author: [shiva]
+        // Created Date: [03/07/2024]
+        // Description: Method for Update Password
+        [HttpPost]
+        [Route("UpdatePassword")]
+        public async Task<IActionResult> UpdatePassword(int id,string password)
+        {
+            return Ok(await _icustomerRepo.UpdatePassword(id,password));
         }
 
     }

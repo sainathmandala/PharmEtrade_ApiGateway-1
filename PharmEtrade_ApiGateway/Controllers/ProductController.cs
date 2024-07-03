@@ -1,4 +1,5 @@
 ﻿using BAL.ViewModel;
+using BAL.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PharmEtrade_ApiGateway.Repository.Interface;
@@ -17,7 +18,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpPost("InsertProduct")]
-        public async Task<IActionResult> InsertProduct([FromBody] Productviewmodel productviewmodel)
+        public async Task<IActionResult> InsertProduct([FromBody] ProductFilter productviewmodel)
         {
             try
             {
@@ -47,7 +48,12 @@ namespace PharmEtrade_ApiGateway.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
+        [HttpGet("GetByUserId/{userId}")]
+        public async Task<ActionResult<IEnumerable<UserProductViewModel>>> GetByUserId(int userId)
+        {
+            var products = await _productRepo.GetByUserId(userId);
+            return Ok(products);
+        }
         // Implement other API endpoints as needed
     }
 

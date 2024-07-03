@@ -9,6 +9,7 @@ using System.IO;
 using System.Threading.Tasks;
 using DAL;
 using BAL.Common;
+using BAL.ViewModels;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -25,7 +26,7 @@ namespace BAL.BusinessLogic.Helper
             _exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), "ProductExceptionLogs");
         }
 
-        public async Task<int> InsertAddProduct(Productviewmodel productviewmodel)
+        public async Task<string> InsertAddProduct(ProductFilter productviewmodel)
         {
             using (SqlConnection sqlcon = new SqlConnection(_connectionString))
             {
@@ -33,14 +34,14 @@ namespace BAL.BusinessLogic.Helper
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@Productcategory_id", productviewmodel.ProductcategoryId);
-                    cmd.Parameters.AddWithValue("@ImageID", productviewmodel.ImageId);
+                    cmd.Parameters.AddWithValue("@Productcategory_id", productviewmodel.Productcategory_id);
+                    cmd.Parameters.AddWithValue("@ImageID", productviewmodel.ImageID);
                     cmd.Parameters.AddWithValue("@Sizeid", productviewmodel.Sizeid);
                     cmd.Parameters.AddWithValue("@ProductName", productviewmodel.ProductName);
-                    cmd.Parameters.AddWithValue("@NDCorUPC", productviewmodel.NdcorUpc);
+                    cmd.Parameters.AddWithValue("@NDCorUPC", productviewmodel.NDCorUPC);
                     cmd.Parameters.AddWithValue("@BrandName", productviewmodel.BrandName);
                     cmd.Parameters.AddWithValue("@PriceName", productviewmodel.PriceName);
-                    cmd.Parameters.AddWithValue("@UPNmemberPrice", productviewmodel.UpnmemberPrice);
+                    cmd.Parameters.AddWithValue("@UPNmemberPrice", productviewmodel.UPNmemberPrice);
                     cmd.Parameters.AddWithValue("@AmountInStock", productviewmodel.AmountInStock);
                     cmd.Parameters.AddWithValue("@Taxable", productviewmodel.Taxable);
                     cmd.Parameters.AddWithValue("@SalePrice", productviewmodel.SalePrice);
@@ -60,7 +61,7 @@ namespace BAL.BusinessLogic.Helper
                     {
                         await sqlcon.OpenAsync();
                         var result = await cmd.ExecuteNonQueryAsync();
-                        return result; // Return the number of affected rows
+                        return "Success"; // Return the number of affected rows
                     }
                     catch (Exception ex)
                     {
@@ -109,7 +110,7 @@ namespace BAL.BusinessLogic.Helper
         //    }
         //}
 
-        public async Task<int> InsertAddToCartProduct(AddToCartViewModel addToCartModel)
+        public async Task<string> InsertAddToCartProduct(AddToCartViewModel addToCartModel)
         {
             using (SqlConnection sqlcon = new SqlConnection(_connectionString))
             {
@@ -138,7 +139,7 @@ namespace BAL.BusinessLogic.Helper
                         // Check if the product was successfully added
                         if (result != null && int.TryParse(result.ToString(), out int newAddtoCartId))
                         {
-                            return newAddtoCartId; // Return the new AddtoCartId
+                            return "Success"; // Return the new AddtoCartId
                         }
                         else
                         {
@@ -172,6 +173,46 @@ namespace BAL.BusinessLogic.Helper
         {
             // Dummy implementation
             return Task.FromResult(pvm);
+        }
+
+        public async Task<IEnumerable<UserProductViewModel>> GetByUserId(int userId)
+        {
+            var products = new List<UserProductViewModel>();
+
+            using (SqlConnection sqlcon = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("GetByUserId", sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+
+                    try
+                    {
+                        await sqlcon.OpenAsync();
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                products.Add(new UserProductViewModel
+                                {
+                                    ProductName = reader["ProductName"].ToString(),
+                                    ImageUrl = reader["image_url"].ToString(),
+                                    BrandName = reader["BrandName"].ToString(),
+                                    PriceName = reader["PriceName"].ToString(),
+                                    PackQuantity = Convert.ToInt32(reader["PackQuantity"])
+                                });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "GetByUserId : errormessage:" + ex.Message.ToString()));
+                        throw;
+                    }
+                }
+            }
+
+            return products;
         }
     }
 }
