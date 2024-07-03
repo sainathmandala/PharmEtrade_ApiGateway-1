@@ -12,5 +12,7 @@ namespace BAL.BusinessLogic.Interface
         Task<DataTable> GetFilteredProducts(int? productCategoryId, string productName);
         Task<DataTable> GetProducts();
 
+        Task<DataTable> GetProductsById(int AddproductID);
+
     }
 }

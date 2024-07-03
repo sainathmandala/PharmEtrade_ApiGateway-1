@@ -9,7 +9,5 @@ namespace BAL.BusinessLogic.Interface
         Task<Productviewmodel> DummyInterface(Productviewmodel pvm);
         Task<int> InsertAddToCartProduct(AddToCartViewModel addToCartModel);
 
-
-
     }
 }

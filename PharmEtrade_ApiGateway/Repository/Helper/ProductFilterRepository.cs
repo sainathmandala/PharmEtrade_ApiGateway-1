@@ -39,7 +39,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                             ProductName = row["ProductName"].ToString(),
                             NDCorUPC = row["NDCorUPC"].ToString(),
                             BrandName = row["BrandName"].ToString(),
-                            PriceName = row["PriceName"].ToString(),
+                            PriceName = Convert.ToDecimal(row["PriceName"]),
                             UPNmemberPrice = Convert.ToDecimal(row["UPNmemberPrice"]),
                             AmountInStock = Convert.ToInt32(row["AmountInStock"]),
                             Taxable = Convert.ToBoolean(row["Taxable"]),
@@ -94,6 +94,31 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             }
             return response;
         }
+        public async Task<ProductViewModel> GetProductsById(int AddproductID)
+        {
+            ProductViewModel response = new ProductViewModel();
+            try
+            {
+                DataTable dt = await _IProductFilter.GetProductsById(AddproductID);
+                if(dt!=null && dt.Rows.Count > 0)
+                {
+                    response.statusCode = 200;
+                    response.message = Constant.GetProductsByIdSuccessMsg;
+                    response.Productfilter = ConvertDataTabletoProductList(dt);
+
+
+                }
+            }
+            catch(Exception ex)
+            {
+                response.statusCode = 500;
+                response.message = ex.Message;
+                response.Productfilter = new List<ProductFilter>();
+            }
+            return response;
+        }
+
+
         private List<ProductFilter> ConvertDataTabletoProductList(DataTable dt)
         {
             List<ProductFilter> productfilter = new List<ProductFilter>();
@@ -110,7 +135,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                     user.ProductName = row["ProductName"].ToString();
                     user.NDCorUPC = row["NDCorUPC"].ToString();
                     user.BrandName = row["BrandName"].ToString();
-                    user.PriceName = row["PriceName"].ToString();
+                    user.PriceName = Convert.ToDecimal(row["PriceName"]);
                     user.UPNmemberPrice = Convert.ToDecimal(row["UPNmemberPrice"]);
                     user.AmountInStock = Convert.ToInt32(row["AmountInStock"]);
                     user.Taxable = Convert.ToBoolean(row["Taxable"]);

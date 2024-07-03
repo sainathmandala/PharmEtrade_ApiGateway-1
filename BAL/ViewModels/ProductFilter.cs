@@ -9,7 +9,7 @@
         public string ProductName { get; set; }
         public string NDCorUPC { get; set; }
         public string BrandName { get; set; }
-        public string PriceName { get; set; }
+        public decimal PriceName { get; set; }
         public decimal UPNmemberPrice { get; set; }
         public int AmountInStock { get; set; }
         public bool Taxable { get; set; }

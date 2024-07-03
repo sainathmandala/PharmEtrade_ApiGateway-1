@@ -6,6 +6,7 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
     {
         Task<List<ProductFilter>> GetFilteredProducts(int? productCategoryId, string productName);
         Task<ProductViewModel> GetProducts();
+        Task<ProductViewModel> GetProductsById(int AddproductID);
 
     }
 }
