@@ -94,6 +94,31 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             }
             return response;
         }
+        public async Task<ProductViewModel> GetProductsById(int AddproductID)
+        {
+            ProductViewModel response = new ProductViewModel();
+            try
+            {
+                DataTable dt = await _IProductFilter.GetProductsById(AddproductID);
+                if(dt!=null && dt.Rows.Count > 0)
+                {
+                    response.statusCode = 200;
+                    response.message = Constant.GetProductsByIdSuccessMsg;
+                    response.Productfilter = ConvertDataTabletoProductList(dt);
+
+
+                }
+            }
+            catch(Exception ex)
+            {
+                response.statusCode = 500;
+                response.message = ex.Message;
+                response.Productfilter = new List<ProductFilter>();
+            }
+            return response;
+        }
+
+
         private List<ProductFilter> ConvertDataTabletoProductList(DataTable dt)
         {
             List<ProductFilter> productfilter = new List<ProductFilter>();

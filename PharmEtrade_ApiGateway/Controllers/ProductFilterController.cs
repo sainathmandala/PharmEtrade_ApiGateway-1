@@ -39,7 +39,15 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             return Ok(await _iproductFilterRepo.GetProducts());
         }
-
+        //Author:[Mamatha]
+        //Create Date:[03/07/2024]
+        //Description:Method for GetProductsById
+        [HttpGet]
+        [Route("GetProductsById")]
+        public async Task<IActionResult> GetProductsById(int AddproductID)
+        {
+            return Ok(await _iproductFilterRepo.GetProductsById(AddproductID));
+        }
 
     }
 }

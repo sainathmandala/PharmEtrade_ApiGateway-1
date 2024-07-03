@@ -12,6 +12,7 @@ using System.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static System.Net.Mime.MediaTypeNames;
 using System.Security.AccessControl;
+using DAL.Models;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -77,8 +78,29 @@ namespace BAL.BusinessLogic.Helper
 
             }
         }
+        public async Task<DataTable> GetProductsById(int AddproductID)
+        {
+            SqlConnection sqlcon = new SqlConnection(_connectionString);
+            SqlCommand cmd = new SqlCommand();
+            try
+            {
+                cmd = new SqlCommand("SP_GetProductById", sqlcon);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@AddproductID", AddproductID);
+
+                return await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
+            }
+            catch(Exception ex)
+            {
+                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "GetProductsById_sp:errormessage:" + ex.Message.ToString()));
+                throw ex;
+            }
+        }
 
 
-       
+
+
+
+
     }  
 }

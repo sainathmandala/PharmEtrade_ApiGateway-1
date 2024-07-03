@@ -72,6 +72,7 @@ namespace BAL.BusinessLogic.Helper
                 }
             }
         }
+       
         //public async Task<int> InsertAddToCartProduct(AddToCartViewModel addToCartModel)
         //{
         //    using (SqlConnection sqlcon = new SqlConnection(_connectionString))

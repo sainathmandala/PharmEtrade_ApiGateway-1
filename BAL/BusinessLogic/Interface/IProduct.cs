@@ -11,7 +11,5 @@ namespace BAL.BusinessLogic.Interface
         Task<string> InsertAddToCartProduct(AddToCartViewModel addToCartModel);
        Task<IEnumerable<UserProductViewModel>> GetByUserId(int userId);
 
-
-
     }
 }
