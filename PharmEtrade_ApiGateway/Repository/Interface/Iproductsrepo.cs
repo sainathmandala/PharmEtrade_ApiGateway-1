@@ -1,12 +1,14 @@
 ﻿using BAL.ViewModel;
+using BAL.ViewModels;
 using System.Threading.Tasks;
 
 namespace PharmEtrade_ApiGateway.Repository.Interface
 {
     public interface IProductsRepo
     {
-        Task<int> InsertAddProduct(Productviewmodel productviewmodel);
-        Task<int> InsertAddToCartProduct(AddToCartViewModel addToCartModel);
+        Task<Response> InsertAddProduct(ProductFilter productviewmodel);
+        Task<Response> InsertAddToCartProduct(AddToCartViewModel addToCartModel);
+        Task<IEnumerable<UserProductViewModel>> GetByUserId(int userId);
 
 
     }

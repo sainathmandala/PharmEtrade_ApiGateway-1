@@ -1,13 +1,15 @@
 ﻿using BAL.ViewModel;
 using System.Threading.Tasks;
+using BAL.ViewModels;
 
 namespace BAL.BusinessLogic.Interface
 {
     public interface IProductHelper
     {
-        Task<int> InsertAddProduct(Productviewmodel productviewmodel);
+        Task<string> InsertAddProduct(ProductFilter productviewmodel);
         Task<Productviewmodel> DummyInterface(Productviewmodel pvm);
-        Task<int> InsertAddToCartProduct(AddToCartViewModel addToCartModel);
+        Task<string> InsertAddToCartProduct(AddToCartViewModel addToCartModel);
+       Task<IEnumerable<UserProductViewModel>> GetByUserId(int userId);
 
 
 

@@ -1,0 +1,2 @@
+030724175929PM:InsertProduct :  errormessage:The INSERT statement conflicted with the FOREIGN KEY constraint "FK__AddProduc__Image__787EE5A0". The conflict occurred in database "PharmEtradeDB", table "dbo.ProductGallery", column 'gallery_id'.
+The statement has been terminated.
