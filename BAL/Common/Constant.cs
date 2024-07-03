@@ -13,6 +13,8 @@ namespace BAL.Common
         public const string GetUserBYUserIdSuccessMsg = "User Info Successfully Fetched";
         public const string GetProductSuccessMsg = "Product Info Successfully Fetched";
         public const string UpdatePasswordSuccessMsg = "Password  Successfully Updated";
+        public const string InsertAddProductSuccessMsg = "Product Added Successfully";
+        public const string InsertAddToCartProductSuccessMsg = "Product Added to Cart Successfully";
 
     }
 }
