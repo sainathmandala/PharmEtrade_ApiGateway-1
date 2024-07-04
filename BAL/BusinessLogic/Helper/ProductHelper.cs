@@ -72,7 +72,7 @@ namespace BAL.BusinessLogic.Helper
                 }
             }
         }
-       
+
         //public async Task<int> InsertAddToCartProduct(AddToCartViewModel addToCartModel)
         //{
         //    using (SqlConnection sqlcon = new SqlConnection(_connectionString))
@@ -213,6 +213,41 @@ namespace BAL.BusinessLogic.Helper
             }
 
             return products;
+        }
+        public async Task<string> SoftDeleteAddtoCartProduct(int addToCartId)
+        {
+            using (SqlConnection sqlcon = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SoftDeleteAddtoCartproduct", sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@AddtoCartId", addToCartId);
+
+                    try
+                    {
+                        await sqlcon.OpenAsync();
+                        var result = await cmd.ExecuteScalarAsync();
+
+                        if (result != null && result.ToString() == "AlreadyDeleted")
+                        {
+                            return "Failed"; 
+                        }
+                        else if (result != null && result.ToString() == "Success")
+                        {
+                            return "Success"; 
+                        }
+                        else
+                        {
+                            return "Failed"; 
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "SoftDeleteAddtoCartProduct : errormessage:" + ex.Message.ToString()));
+                        throw;
+                    }
+                }
+            }
         }
     }
 }

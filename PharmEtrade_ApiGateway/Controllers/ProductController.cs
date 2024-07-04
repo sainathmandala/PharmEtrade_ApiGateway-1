@@ -27,7 +27,7 @@ namespace PharmEtrade_ApiGateway.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}"); // Handle exceptions
+                return StatusCode(500, $"Internal server error: {ex.Message}"); 
             }
         }
         [HttpPost("AddToCart")]
@@ -35,7 +35,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             try
             {
-                var userId = addToCartModel.Userid; // Get from your authentication
+                var userId = addToCartModel.Userid; 
                 var imageId = addToCartModel.Imageid;
                 var productId = addToCartModel.ProductId;
 
@@ -54,7 +54,30 @@ namespace PharmEtrade_ApiGateway.Controllers
             var products = await _productRepo.GetByUserId(userId);
             return Ok(products);
         }
-        // Implement other API endpoints as needed
+
+        [HttpPost("SoftDeleteAddtoCartProduct")]
+        public async Task<IActionResult> SoftDeleteAddtoCartProduct([FromBody] int addToCartId)
+        {
+            try
+            {
+                var result = await _productRepo.SoftDeleteAddtoCartProduct(addToCartId);
+                if (result.status == 200)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return StatusCode(500, result.message);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
     }
 
 }
