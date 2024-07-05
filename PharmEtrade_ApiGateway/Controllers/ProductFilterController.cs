@@ -30,7 +30,7 @@ namespace PharmEtrade_ApiGateway.Controllers
 
             return Ok(products);
         }
-        // Author: [mamatha]
+        // Author: [Mamatha]
         // Created Date: [02/07/2024]
         // Description: Method for GetAllProducts
         [HttpGet]
@@ -48,6 +48,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             return Ok(await _iproductFilterRepo.GetProductsById(AddproductID));
         }
+
 
     }
 }

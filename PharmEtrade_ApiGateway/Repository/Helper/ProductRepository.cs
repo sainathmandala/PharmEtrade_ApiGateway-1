@@ -42,6 +42,30 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return response;
 
         }
+        //Author:[Mamatha]
+        //Created Date:[04/07/2024]
+        //Description:Method for EditProductDetails
+        public async Task<ProductViewModel> EditProductDetails(int AddproductID, ProductFilter productfilter)
+        {
+            ProductViewModel response = new ProductViewModel();
+            try
+            {
+                string status = await _productHelper.EditProductDetails(AddproductID, productfilter);
+                if (status.Equals("Success"))
+                {
+                    response.statusCode = 200;
+                    response.message = Constant.EditProductDetailsMsg;
+
+                }
+
+            }
+            catch(Exception ex)
+            {
+                response.statusCode = 500;
+                response.message = ex.Message;
+            }
+            return response;
+        }
 
         // Author: [swathi]
         // Created Date: [02/07/2024]

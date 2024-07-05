@@ -10,6 +10,8 @@ namespace BAL.BusinessLogic.Interface
         Task<Productviewmodel> DummyInterface(Productviewmodel pvm);
         Task<string> InsertAddToCartProduct(AddToCartViewModel addToCartModel);
        Task<IEnumerable<UserProductViewModel>> GetByUserId(int userId);
+        Task<string> EditProductDetails(int AddproductID,ProductFilter productfilter);
+
         Task<string> SoftDeleteAddtoCartProduct(int addToCartId);
 
         Task<string> InsertWishlistproduct(Wishlistviewmodel wishlistviewmodel);
