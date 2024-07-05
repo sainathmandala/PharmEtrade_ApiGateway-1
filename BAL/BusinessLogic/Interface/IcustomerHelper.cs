@@ -16,5 +16,6 @@ namespace BAL.BusinessLogic.Interface
         Task<string> SaveCustomerData(UserViewModel userView);
         Task<DataTable> GetUserDetailsById(int userId);
         Task<string> UpdatePassword(int userId,string password);
+        Task<DataTable> GetUserDetailsByEmail(string email);
     }
 }
