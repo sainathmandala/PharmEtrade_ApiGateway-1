@@ -18,5 +18,8 @@ namespace BAL.Common
         public const string InsertAddToCartProductSuccessMsg = "Product Added to Cart Successfully";
         public const string EditProductDetailsMsg = "ProductDetails Edited Successfully";
 
+        public const string SoftDeleteAddtoCartProductSuccessMsg = "Product successfully soft deleted from cart.";
+        public const string InsertWishlistproductSuccessMsg = "Product Added to wishlist successfully";
+        public const string DeleteWishlistproductSuccessMsg = "Product deleted from wishlist successfully";
     }
 }

@@ -11,6 +11,10 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<IEnumerable<UserProductViewModel>> GetByUserId(int userId);
         Task<ProductViewModel> EditProductDetails(int AddproductID, ProductFilter productfilter);
 
+        Task<Response> SoftDeleteAddtoCartProduct(int addToCartId);
+        Task<Response> InsertWishlistproduct(Wishlistviewmodel wishlistviewmodel);
+        Task<IEnumerable<UserProductViewModel>> GetwhislistByUserId(int userId);
+        Task<Response> DeleteWishlistproduct(int wishlistid);
 
     }
 }

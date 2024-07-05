@@ -12,6 +12,11 @@ namespace BAL.BusinessLogic.Interface
        Task<IEnumerable<UserProductViewModel>> GetByUserId(int userId);
         Task<string> EditProductDetails(int AddproductID,ProductFilter productfilter);
 
+        Task<string> SoftDeleteAddtoCartProduct(int addToCartId);
+
+        Task<string> InsertWishlistproduct(Wishlistviewmodel wishlistviewmodel);
+        Task<IEnumerable<UserProductViewModel>> GetwhislistByUserId(int userid);
+        Task<string> DeleteWishlistproduct(int wishlistid);
 
     }
 }

@@ -27,7 +27,7 @@ namespace PharmEtrade_ApiGateway.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}"); // Handle exceptions
+                return StatusCode(500, $"Internal server error: {ex.Message}"); 
             }
         }
         // Author: [Mamatha]
@@ -47,7 +47,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             try
             {
-                var userId = addToCartModel.Userid; // Get from your authentication
+                var userId = addToCartModel.Userid; 
                 var imageId = addToCartModel.Imageid;
                 var productId = addToCartModel.ProductId;
 
@@ -66,7 +66,76 @@ namespace PharmEtrade_ApiGateway.Controllers
             var products = await _productRepo.GetByUserId(userId);
             return Ok(products);
         }
-        // Implement other API endpoints as needed
+
+        [HttpPost("SoftDeleteAddtoCartProduct")]
+        public async Task<IActionResult> SoftDeleteAddtoCartProduct([FromBody] int addToCartId)
+        {
+            try
+            {
+                var result = await _productRepo.SoftDeleteAddtoCartProduct(addToCartId);
+                if (result.status == 200)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return StatusCode(500, result.message);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("AddWishlist")]
+        public async Task<IActionResult> AddWishlist([FromBody] Wishlistviewmodel wishlistviewmodel)
+        {
+            try
+            {
+                var userId = wishlistviewmodel.Userid;
+                var imageId = wishlistviewmodel.Imageid;
+                var productId = wishlistviewmodel.ProductId;
+
+                var result = await _productRepo.InsertWishlistproduct(wishlistviewmodel);
+
+                return Ok(new { Wishlistid = result });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpGet("GetwishlistByUserId/{userId}")]
+        public async Task<ActionResult<IEnumerable<UserProductViewModel>>> GetwishlistByUserId(int userId)
+        {
+            var products = await _productRepo.GetwhislistByUserId(userId);
+            return Ok(products);
+        }
+
+
+        [HttpPost("DeleteWishlistProduct")]
+        public async Task<IActionResult> DeleteWishlistProduct([FromBody] int wishlistid)
+        {
+            try
+            {
+                var result = await _productRepo.DeleteWishlistproduct(wishlistid);
+                if (result.status == 200)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return StatusCode(500, result.message);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
     }
 
 }

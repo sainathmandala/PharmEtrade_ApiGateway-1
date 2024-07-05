@@ -157,5 +157,31 @@ namespace BAL.BusinessLogic.Helper
         }
 
 
+        // Author: [Shiva]
+        // Created Date: [04/07/2024]
+        // Description: Method for Get the data of  User based on Email
+        public async Task<DataTable> GetUserDetailsByEmail(string email)
+        {
+
+            SqlConnection sqlcon = new SqlConnection(_connectionString);
+            SqlCommand cmd = new SqlCommand();
+            try
+            {
+                cmd = new SqlCommand("Sp_GetUserByEmail", sqlcon);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Email", email);
+
+
+                return await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
+            }
+            catch (Exception ex)
+            {
+                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "GetusersdataByEmail_sp :  errormessage:" + ex.Message.ToString()));
+
+                throw ex;
+            }
+        }
+
+
     }
 }
