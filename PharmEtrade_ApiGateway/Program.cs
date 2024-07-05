@@ -8,7 +8,11 @@ using PharmEtrade_ApiGateway.Repository.Helper;
 using BAL.BusinessLogic.Interface;
 using BAL.BusinessLogic.Helper;
 using DAL;
-
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using BAL.ViewModels;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,7 +81,8 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("PharmacyPolicy", policy => policy.RequireRole("Pharmacy"));
     options.AddPolicy("CustomerPolicy", policy => policy.RequireRole("Customer"));
 });
-
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<SmtpSettings>>().Value);
 builder.Services.AddSingleton<JwtAuthenticationExtensions>();
 builder.Services.AddSingleton<IcustomerRepo, CustomerRepository>();
 builder.Services.AddTransient<IcustomerHelper, CustomerHelper>();
