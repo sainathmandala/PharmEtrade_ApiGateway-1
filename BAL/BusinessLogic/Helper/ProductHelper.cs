@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using DAL;
 using BAL.Common;
 using BAL.ViewModels;
+using System.Net.Http.Headers;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -72,7 +73,51 @@ namespace BAL.BusinessLogic.Helper
                 }
             }
         }
-       
+        // Author: [Mamatha]
+        // Created Date: [04/07/2024]
+        // Description: Method for EditProductDetails
+        public async Task<string> EditProductDetails(int AddproductID,ProductFilter productfilter)
+        {
+            SqlConnection sqlcon = new SqlConnection(_connectionString);
+            SqlCommand cmd = new SqlCommand();
+            try
+            {
+                cmd = new SqlCommand("SP_EditProduct", sqlcon);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@AddproductID", productfilter.AddproductID);
+                cmd.Parameters.AddWithValue("@Productcategory_id", productfilter.Productcategory_id);
+                cmd.Parameters.AddWithValue("@ImageID", productfilter.ImageID);
+                cmd.Parameters.AddWithValue("@Sizeid", productfilter.Sizeid);
+                cmd.Parameters.AddWithValue("@ProductName", productfilter.ProductName);
+                cmd.Parameters.AddWithValue("@NDCorUPC", productfilter.NDCorUPC);
+                cmd.Parameters.AddWithValue("@BrandName", productfilter.BrandName);
+                cmd.Parameters.AddWithValue("@PriceName", productfilter.PriceName);
+                cmd.Parameters.AddWithValue("@UPNmemberPrice", productfilter.UPNmemberPrice);
+                cmd.Parameters.AddWithValue("@AmountInStock", productfilter.AmountInStock);
+                cmd.Parameters.AddWithValue("@Taxable", productfilter.Taxable);
+                cmd.Parameters.AddWithValue("@SalePrice", productfilter.SalePrice);
+                cmd.Parameters.AddWithValue("@SalePriceFrom", productfilter.SalePriceFrom);
+                cmd.Parameters.AddWithValue("@SalePriceTo", productfilter.SalePriceTo);
+                cmd.Parameters.AddWithValue("@Manufacturer", productfilter.Manufacturer);
+                cmd.Parameters.AddWithValue("@Strength", productfilter.Strength);
+                cmd.Parameters.AddWithValue("@Fromdate", productfilter.Fromdate);
+                cmd.Parameters.AddWithValue("@LotNumber", productfilter.LotNumber);
+                cmd.Parameters.AddWithValue("@ExpirationDate", productfilter.ExpirationDate);
+                cmd.Parameters.AddWithValue("@PackQuantity", productfilter.PackQuantity);
+                cmd.Parameters.AddWithValue("@PackType", productfilter.PackType);
+                cmd.Parameters.AddWithValue("@PackCondition", productfilter.PackCondition);
+                cmd.Parameters.AddWithValue("@ProductDescription", productfilter.ProductDescription);
+
+                await sqlcon.OpenAsync();
+                string result = await cmd.ExecuteScalarAsync() as string;
+                return "Success";
+            }
+            catch(Exception ex)
+            {
+                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "EditProductDetails:ErrorMessage-" + ex.Message.ToString()));
+                throw ex;
+            }
+        }
         //public async Task<int> InsertAddToCartProduct(AddToCartViewModel addToCartModel)
         //{
         //    using (SqlConnection sqlcon = new SqlConnection(_connectionString))

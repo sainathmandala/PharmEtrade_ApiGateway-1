@@ -30,6 +30,18 @@ namespace PharmEtrade_ApiGateway.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}"); // Handle exceptions
             }
         }
+        // Author: [Mamatha]
+        // Created Date: [04/07/2024]
+        // Description: Method for EditProductDetails
+        [HttpPost]
+        [Route("EditProductDetails")]
+        public async Task<IActionResult> EditProductDetails(int AddproductID, ProductFilter productfilter)
+        {
+
+            return Ok(await _productRepo.EditProductDetails(AddproductID, productfilter));
+        }
+
+
         [HttpPost("AddToCart")]
         public async Task<IActionResult> AddToCart([FromBody] AddToCartViewModel addToCartModel)
         {
