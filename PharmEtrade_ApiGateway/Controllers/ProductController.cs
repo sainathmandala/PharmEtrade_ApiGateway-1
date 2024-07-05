@@ -76,6 +76,52 @@ namespace PharmEtrade_ApiGateway.Controllers
             }
         }
 
+        [HttpPost("AddWishlist")]
+        public async Task<IActionResult> AddWishlist([FromBody] Wishlistviewmodel wishlistviewmodel)
+        {
+            try
+            {
+                var userId = wishlistviewmodel.Userid;
+                var imageId = wishlistviewmodel.Imageid;
+                var productId = wishlistviewmodel.ProductId;
+
+                var result = await _productRepo.InsertWishlistproduct(wishlistviewmodel);
+
+                return Ok(new { Wishlistid = result });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpGet("GetwishlistByUserId/{userId}")]
+        public async Task<ActionResult<IEnumerable<UserProductViewModel>>> GetwishlistByUserId(int userId)
+        {
+            var products = await _productRepo.GetwhislistByUserId(userId);
+            return Ok(products);
+        }
+
+
+        [HttpPost("DeleteWishlistProduct")]
+        public async Task<IActionResult> DeleteWishlistProduct([FromBody] int wishlistid)
+        {
+            try
+            {
+                var result = await _productRepo.DeleteWishlistproduct(wishlistid);
+                if (result.status == 200)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return StatusCode(500, result.message);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
 
     }

@@ -126,7 +126,7 @@ namespace BAL.BusinessLogic.Helper
                     {
                         await sqlcon.OpenAsync();
 
-                        // Check if the product already exists for the user
+                       
                         bool isProductAlreadyAdded = await IsProductAlreadyAdded(sqlcon, addToCartModel.Userid, addToCartModel.Imageid, addToCartModel.ProductId);
 
                         if (isProductAlreadyAdded)
@@ -136,14 +136,14 @@ namespace BAL.BusinessLogic.Helper
 
                         var result = await cmd.ExecuteScalarAsync();
 
-                        // Check if the product was successfully added
+                      
                         if (result != null && int.TryParse(result.ToString(), out int newAddtoCartId))
                         {
-                            return "Success"; // Return the new AddtoCartId
+                            return "Success"; 
                         }
                         else
                         {
-                            // Handle error or duplicate insert scenario
+                           
                             throw new Exception("Failed to add product to cart.");
                         }
                     }
@@ -249,5 +249,144 @@ namespace BAL.BusinessLogic.Helper
                 }
             }
         }
+
+        public async Task<string> InsertWishlistproduct(Wishlistviewmodel wishlistviewmodel)
+        {
+            using (SqlConnection sqlcon = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("InsertWishlistItem", sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@Userid", wishlistviewmodel.Userid);
+                    cmd.Parameters.AddWithValue("@Imageid", wishlistviewmodel.Imageid);
+                    cmd.Parameters.AddWithValue("@ProductId", wishlistviewmodel.ProductId);
+
+                    try
+                    {
+                        await sqlcon.OpenAsync();
+
+                        // Check if the product already exists for the user
+                        bool isProductAlreadyAdded = await WishlistIsProductAlreadyAdded(sqlcon, wishlistviewmodel.Userid, wishlistviewmodel.Imageid, wishlistviewmodel.ProductId);
+
+                        if (isProductAlreadyAdded)
+                        {
+                            throw new Exception("Product is already added to the wishlist.");
+                        }
+
+                        var result = await cmd.ExecuteScalarAsync();
+
+                        // Check if the product was successfully added
+                        if (result != null && int.TryParse(result.ToString(), out int newWishlistid))
+                        {
+                            return "Success"; 
+                        }
+                        else
+                        {
+                           
+                            throw new Exception("Failed to add product to wishlist.");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertWishlistproduct : errormessage:" + ex.Message.ToString()));
+                        throw;
+                    }
+                }
+
+
+            }
+
+        }
+        private async Task<bool> WishlistIsProductAlreadyAdded(SqlConnection sqlcon, int userId, int imageId, int productId)
+        {
+            using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM [PharmEtradeDB].[dbo].[Wishlist] WHERE Userid = @Userid AND Imageid = @Imageid AND ProductId = @ProductId", sqlcon))
+            {
+                cmd.Parameters.AddWithValue("@Userid", userId);
+                cmd.Parameters.AddWithValue("@Imageid", imageId);
+                cmd.Parameters.AddWithValue("@ProductId", productId);
+
+                var count = await cmd.ExecuteScalarAsync();
+                return (int)count > 0;
+            }
+        }
+        public async Task<IEnumerable<UserProductViewModel>> GetwhislistByUserId(int userId)
+        {
+            var products = new List<UserProductViewModel>();
+
+            using (SqlConnection sqlcon = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("GetWishlistByUserId", sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+
+                    try
+                    {
+                        await sqlcon.OpenAsync();
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                products.Add(new UserProductViewModel
+                                {
+                                    ProductName = reader["ProductName"].ToString(),
+                                    ImageUrl = reader["image_url"].ToString(),
+                                    BrandName = reader["BrandName"].ToString(),
+                                    PriceName = reader["PriceName"].ToString(),
+                                    PackQuantity = Convert.ToInt32(reader["PackQuantity"])
+                                });
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "GetwhislistByUserId : errormessage:" + ex.Message.ToString()));
+                        throw;
+                    }
+                }
+            }
+
+            return products;
+        }
+        public async Task<string> DeleteWishlistproduct(int wishlistid)
+        {
+            using (SqlConnection sqlcon = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SoftDeleteWishlistItem", sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@WishlistId", wishlistid);
+
+                    try
+                    {
+                        await sqlcon.OpenAsync();
+                        var result = await cmd.ExecuteScalarAsync();
+
+                        if (result != null && result.ToString() == "AlreadyDeleted")
+                        {
+                            return "Failed";
+                        }
+                        else if (result != null && result.ToString() == "Success")
+                        {
+                            return "Success";
+                        }
+                        else
+                        {
+                            return "Failed";
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "DeleteWishlistproduct : errormessage:" + ex.Message.ToString()));
+                        throw;
+                    }
+                }
+            }
+
+        }
+
+
+
     }
 }
