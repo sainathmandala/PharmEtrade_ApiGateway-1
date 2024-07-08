@@ -21,4 +21,8 @@
     <ProjectReference Include="..\BAL\BAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Assets\Images\" />
+  </ItemGroup>
+
 </Project>

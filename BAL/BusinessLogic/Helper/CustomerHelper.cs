@@ -182,6 +182,30 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
+        // Author: [Shiva]
+        // Created Date: [08/07/2024]
+        // Description: Method for update password by email(reset Password)
+        public async Task<string> UpdatePasswordByEmail(string email, string newPassword)
+        {
+            SqlConnection sqlcon = new SqlConnection(_connectionString);
+            SqlCommand cmd = new SqlCommand();
+            try
+            {
+                cmd = new SqlCommand("Sp_UpdatePasswordByEmail", sqlcon);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Email", email);
+                cmd.Parameters.AddWithValue("@NewPassword", newPassword);
 
+
+                await sqlcon.OpenAsync();
+                string result = await cmd.ExecuteScalarAsync() as string;
+                return "Success";
+            }
+            catch (Exception ex)
+            {
+                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "UpdatePasswordBymail: ErrorMessage - " + ex.Message.ToString()));
+                throw ex;
+            }
+        }
     }
 }
