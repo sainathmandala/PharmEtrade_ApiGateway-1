@@ -13,6 +13,6 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         //this method only in this not BAL
         Task<UserEmailViewModel> ForgotPassword(string email);
         Task SendEmailAsync(string toEmail, string subject, string message);
-
+        Task<Response> UpdatePasswordByEmail(string email, string newPassword);
     }
 }
