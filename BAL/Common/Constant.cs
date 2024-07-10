@@ -21,5 +21,7 @@ namespace BAL.Common
         public const string SoftDeleteAddtoCartProductSuccessMsg = "Product successfully soft deleted from cart.";
         public const string InsertWishlistproductSuccessMsg = "Product Added to wishlist successfully";
         public const string DeleteWishlistproductSuccessMsg = "Product deleted from wishlist successfully";
+        public const string SendOtpSuccessMsg = "Otp Send successfully";
+        public const string OtpExperiedMsg = "OTP is invalid or has expired.";
     }
 }

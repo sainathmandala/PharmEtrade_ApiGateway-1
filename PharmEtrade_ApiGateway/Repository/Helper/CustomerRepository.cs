@@ -327,5 +327,71 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             }
             return response;
         }
+
+        // Author: [shiva]
+        // Created Date: [10/07/2024]
+        // Description: Method for Send Otp TO mail
+        public async Task<Response> SendOTPEmail(string email)
+        {
+            Response response = new Response();
+            try
+            {
+                string status = await _icustomerHelper.SendOTPEmail(email);
+                if (status.Equals("Success"))
+                {
+                    response.status = 200;
+                    response.message = Constant.SendOtpSuccessMsg;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.message = ex.Message;
+
+            }
+            return response;
+        }
+        // Author: [Shiva]
+        // Created Date: [10/07/2024]
+        // Description: Method for  login  with Otp
+        public async Task<loginViewModel> OtpLogin(string email, string otp)
+        {
+            loginViewModel response = new loginViewModel();
+
+            try
+            {
+                var dtResult = await _icustomerHelper.OtpLogin(email, otp);
+
+                if (dtResult != null && dtResult.Rows.Count > 0)
+                {
+                    DataRow row = dtResult.Rows[0];
+                    response.LoginStatus = row["LoginStatus"].ToString();
+                    response.UserId = Convert.ToInt32(row["user_id"]);
+                    response.Username = row["username"].ToString();
+                    response.UserEmail = row["email"].ToString();
+                    response.Role = row["role"].ToString();
+
+                    if (response.LoginStatus == "Success")
+                    {
+                        response.token = _jwtTokenService.GenerateToken(response.Username, response.Role);
+                        response.statusCode = 200;
+                        //response.message = LoginSuccessMsg;
+                    }
+                    else
+                    {
+                        response.statusCode = 400;
+                        response.message = Constant.OtpExperiedMsg;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                response.statusCode = 500;
+                response.message = $"An error occurred: {ex.Message}";
+            }
+
+            return response;
+
+        }
     }
 }
