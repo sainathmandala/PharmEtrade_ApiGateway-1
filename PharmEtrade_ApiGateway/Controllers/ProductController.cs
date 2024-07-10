@@ -25,11 +25,28 @@ namespace PharmEtrade_ApiGateway.Controllers
             try
             {
                 var result = await _productRepo.InsertAddProduct(productviewmodel);
-                return Ok(result); 
+                return Ok(result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}"); 
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        // Author: [swathi]
+        // Created Date: [10/07/2024]
+        // Description: Method for BulkInsertProducts
+        [HttpPost("InsertOrUploadProduct")]
+        public async Task<IActionResult> InsertOrUploadProduct(IFormFile file)
+        {
+            try
+            {
+                var result = await _productRepo.ProcessExcelFileAsync(file);
+                return Ok(new { status = 200, message = result });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
         // Author: [Mamatha]
