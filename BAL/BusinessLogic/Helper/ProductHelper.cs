@@ -12,7 +12,8 @@ using BAL.Common;
 using BAL.ViewModels;
 using System.Net.Http.Headers;
 using OfficeOpenXml;
-
+using Microsoft.AspNetCore.Http;
+using OfficeOpenXml;
 namespace BAL.BusinessLogic.Helper
 {
     public class ProductHelper : IProductHelper
@@ -27,9 +28,11 @@ namespace BAL.BusinessLogic.Helper
             _connectionString = configuration.GetConnectionString("OnlineexamDB");
             _exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), "ProductExceptionLogs");
         }
+
         // Author: [swathi]
         // Created Date: [02/07/2024]
         // Description: Method for InsertProducts
+
         public async Task<string> InsertAddProduct(ProductFilter productviewmodel)
         {
             using (SqlConnection sqlcon = new SqlConnection(_connectionString))
@@ -77,12 +80,70 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
+        // Author: [swathi]
+        // Created Date: [10/07/2024]
+        // Description: Method for BulkInsertProducts
+        public async Task<string> ProcessExcelFileAsync(IFormFile file)
+        {
+            var products = new List<ProductFilter>();
+
+            using (var stream = new MemoryStream())
+            {
+                await file.CopyToAsync(stream);
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial; 
+                using (var package = new ExcelPackage(stream))
+                {
+                    var worksheet = package.Workbook.Worksheets[0];
+                    var rowCount = worksheet.Dimension.Rows;
+
+                    for (int row = 2; row <= rowCount; row++) 
+                    {
+                        var product = new ProductFilter
+                        {
+                            Productcategory_id = int.Parse(worksheet.Cells[row, 1].Text),
+                            ImageID = int.Parse(worksheet.Cells[row, 2].Text),
+                            Sizeid = int.Parse(worksheet.Cells[row, 3].Text),
+                            ProductName = worksheet.Cells[row, 4].Text,
+                            NDCorUPC = worksheet.Cells[row, 5].Text,
+                            BrandName = worksheet.Cells[row, 6].Text,
+                            PriceName = decimal.Parse(worksheet.Cells[row, 7].Text),
+                            UPNmemberPrice = decimal.Parse(worksheet.Cells[row, 8].Text),
+                            AmountInStock = int.Parse(worksheet.Cells[row, 9].Text),
+                            Taxable = bool.Parse(worksheet.Cells[row, 10].Text),
+                            SalePrice = decimal.Parse(worksheet.Cells[row, 11].Text),
+                            SalePriceFrom = DateTime.Parse(worksheet.Cells[row, 12].Text),
+                            SalePriceTo = DateTime.Parse(worksheet.Cells[row, 13].Text),
+                            Manufacturer = worksheet.Cells[row, 14].Text,
+                            Strength = worksheet.Cells[row, 15].Text,
+                            Fromdate = DateTime.Parse(worksheet.Cells[row, 16].Text),
+                            LotNumber = worksheet.Cells[row, 17].Text,
+                            ExpirationDate = DateTime.Parse(worksheet.Cells[row, 18].Text),
+                            PackQuantity = int.Parse(worksheet.Cells[row, 19].Text),
+                            PackType = worksheet.Cells[row, 20].Text,
+                            PackCondition = worksheet.Cells[row, 21].Text,
+                            ProductDescription = worksheet.Cells[row, 22].Text
+                        };
+
+                        products.Add(product);
+                    }
+                }
+            }
+
+            foreach (var product in products)
+            {
+                await InsertAddProduct(product);
+            }
+
+            return "Success";
+        }
+    
 
 
-        // Author: [Mamatha]
-        // Created Date: [04/07/2024]
-        // Description: Method for EditProductDetails
-        public async Task<string> EditProductDetails(int AddproductID,ProductFilter productfilter)
+
+    // Author: [Mamatha]
+    // Created Date: [04/07/2024]
+    // Description: Method for EditProductDetails
+    public async Task<string> EditProductDetails(int AddproductID,ProductFilter productfilter)
         {
             SqlConnection sqlcon = new SqlConnection(_connectionString);
             SqlCommand cmd = new SqlCommand();

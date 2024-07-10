@@ -1,6 +1,7 @@
 ﻿using BAL.ViewModel;
 using System.Threading.Tasks;
 using BAL.ViewModels;
+using Microsoft.AspNetCore.Http;
 
 namespace BAL.BusinessLogic.Interface
 {
@@ -17,6 +18,10 @@ namespace BAL.BusinessLogic.Interface
         Task<string> InsertWishlistproduct(Wishlistviewmodel wishlistviewmodel);
         Task<IEnumerable<UserProductViewModel>> GetwhislistByUserId(int userid);
         Task<string> DeleteWishlistproduct(int wishlistid);
+
+        Task<string> ProcessExcelFileAsync(IFormFile file);
+
+
 
     }
 }
