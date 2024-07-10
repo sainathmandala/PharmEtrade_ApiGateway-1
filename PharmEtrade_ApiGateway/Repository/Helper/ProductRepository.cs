@@ -25,7 +25,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             try
             {
 
-                // Add any business logic or validation here if necessary
+               
                 string status = await _productHelper.InsertAddProduct(productviewmodel);
                 if (status.Equals("Success"))
                 {
@@ -42,6 +42,34 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return response;
 
         }
+        // Author: [swathi]
+        // Created Date: [10/07/2024]
+        // Description: Method for BulkInsertProducts
+        public async  Task<Response> ProcessExcelFileAsync(IFormFile file)
+        {
+            Response response = new Response();
+            try
+            {
+
+                
+                string status = await _productHelper.ProcessExcelFileAsync(file);
+                if (status.Equals("Success"))
+                {
+                    response.status = 200;
+                    response.message = Constant.InsertAddProductSuccessMsg;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.message = ex.Message;
+
+            }
+            return response;
+
+        }
+
+
         //Author:[Mamatha]
         //Created Date:[04/07/2024]
         //Description:Method for EditProductDetails

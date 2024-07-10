@@ -15,6 +15,7 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<Response> InsertWishlistproduct(Wishlistviewmodel wishlistviewmodel);
         Task<IEnumerable<UserProductViewModel>> GetwhislistByUserId(int userId);
         Task<Response> DeleteWishlistproduct(int wishlistid);
+        Task<Response> ProcessExcelFileAsync(IFormFile file);
 
     }
 }
