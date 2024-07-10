@@ -303,5 +303,29 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                 throw;
             }
         }
+
+        // Author: [shiva]
+        // Created Date: [08/07/2024]
+        // Description: Method for Update  Password By mail (Reset Password)
+        public async Task<Response> UpdatePasswordByEmail(string mail, string newPassword)
+        {
+            Response response = new Response();
+            try
+            {
+                string status = await _icustomerHelper.UpdatePasswordByEmail(mail, newPassword);
+                if (status.Equals("Success"))
+                {
+                    response.status = 200;
+                    response.message = Constant.UpdatePasswordSuccessMsg;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.message = ex.Message;
+
+            }
+            return response;
+        }
     }
 }

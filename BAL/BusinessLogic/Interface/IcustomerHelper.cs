@@ -17,5 +17,6 @@ namespace BAL.BusinessLogic.Interface
         Task<DataTable> GetUserDetailsById(int userId);
         Task<string> UpdatePassword(int userId,string password);
         Task<DataTable> GetUserDetailsByEmail(string email);
+        Task<string> UpdatePasswordByEmail(string email, string password);
     }
 }

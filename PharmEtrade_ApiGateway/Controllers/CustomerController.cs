@@ -4,8 +4,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using PharmEtrade_ApiGateway.Extensions;
 using PharmEtrade_ApiGateway.Repository.Interface;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace PharmEtrade_ApiGateway.Controllers
@@ -16,10 +20,12 @@ namespace PharmEtrade_ApiGateway.Controllers
     {
         private readonly IcustomerRepo _icustomerRepo;
         private readonly JwtAuthenticationExtensions _jwtTokenService;
-        public CustomerController(IcustomerRepo icustomerRepo, JwtAuthenticationExtensions jwtTokenService)
+        private readonly IConfiguration _configuration;
+        public CustomerController(IcustomerRepo icustomerRepo, JwtAuthenticationExtensions jwtTokenService, IConfiguration configuration)
         {
             _icustomerRepo = icustomerRepo;
             _jwtTokenService = jwtTokenService;
+            _configuration = configuration;
         }
 
         // Author: [Shiva]
@@ -115,7 +121,7 @@ namespace PharmEtrade_ApiGateway.Controllers
 
         // Author: [shiva]
         // Created Date: [04/07/2024]
-        // Description: Method for Get the data Of Users From User Table by email
+        // Description: Method for Forgot Password
 
         [HttpGet]
         [Route("ForgotPassword")]
@@ -187,8 +193,8 @@ namespace PharmEtrade_ApiGateway.Controllers
             display: inline-block;
             padding: 12px 25px;
             margin: 20px 0;
-            color: #ffffff;
-            background-color: #004d99;
+            color: #eceef1;
+            background-color: #b6d4f1;
             text-decoration: none;
             border-radius: 5px;
             font-size: 16px;
@@ -213,7 +219,7 @@ namespace PharmEtrade_ApiGateway.Controllers
 <body>
     <div class='email-container'>
         <div class='header'>
-            <img src='C:\Users\User\Downloads\logo_04.png' alt='Company Logo' />
+            <img src='https://localhost:7189/Images/logo_04.png' alt='Company Logo' />
         </div>
         <div class='body'>
             <h1>Password Reset Request</h1>
@@ -236,6 +242,84 @@ namespace PharmEtrade_ApiGateway.Controllers
 
             return Ok(new { message = "If this email is registered, a password reset link will be sent." });
         }
+
+        // Author: [shiva]
+        // Created Date: [08/07/2024]
+        // Description: Method for ResetPassword
+        [HttpPost]
+        [Route("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel resetPasswordDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _icustomerRepo.GetUserDetailsByEmail(resetPasswordDto.Email);
+            if (user == null)
+            {
+                // Don't reveal that the user does not exist or is not confirmed
+                return Ok("Password reset link has been sent to your email.");
+            }
+
+            // Validate the JWT token
+            if (!ValidateToken(resetPasswordDto.Token,resetPasswordDto.Email))
+            {
+                return BadRequest("Invalid token.");
+            }
+
+            // Update the password
+            var result = await _icustomerRepo.UpdatePasswordByEmail(resetPasswordDto.Email, resetPasswordDto.NewPassword);
+
+            if (result!=null)
+            {
+                return Ok("Password has been reset successfully.");
+            }
+
+           
+
+            return BadRequest();
+        }
+
+        // Author: [shiva]
+        // Created Date: [08/07/2024]
+        // Description: Method for validating token 
+        private bool ValidateToken(string token, string expectedUsername)
+        {
+            var jwtSettings = _configuration.GetSection("JwtSettings");
+            var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            try
+            {
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = jwtSettings["Audience"],
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero // Adjust as necessary
+                };
+
+                var principal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+
+                var jwtToken = (JwtSecurityToken)validatedToken;
+                var username = jwtToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+
+                // Ensure the username in the token matches the expected username
+                return username == expectedUsername;
+            }
+            catch
+            {
+                // Token validation failed
+                return false;
+            }
+        }
+
+
 
     }
 
