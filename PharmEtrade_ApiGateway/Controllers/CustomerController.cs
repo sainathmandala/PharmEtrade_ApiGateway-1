@@ -319,8 +319,35 @@ namespace PharmEtrade_ApiGateway.Controllers
             }
         }
 
+        // Author: [shiva]
+        // Created Date: [10/07/2024]
+        // Description: Method for Send Otp
+        [HttpPost]
+        [Route("SendOtp")]
+        public async Task<IActionResult> SendOtp(string Email)
+        {
+            return Ok(await _icustomerRepo.SendOTPEmail(Email));
+        }
+        // Author: [Shiva]
+        // Created Date: [10/07/2024]
+        // Description: Method for  login with Otp
+        [HttpPost]
+        [Route("LoginWithOtp")]
+        public async Task<IActionResult> LoginWithOtp(string email, string otp)
+        {
+            var response = await _icustomerRepo.OtpLogin(email, otp);
+            if (response != null && response.LoginStatus == "Success")
+            {
+                return Ok(new
+                {
+                    Token = response.token,
+                    //Username = response.Username,
+                    //Role = response.Role
+                });
+            }
 
-
+            return Unauthorized();
+        }
     }
 
 
