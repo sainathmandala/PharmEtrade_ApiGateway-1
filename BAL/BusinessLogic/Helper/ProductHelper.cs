@@ -11,6 +11,7 @@ using DAL;
 using BAL.Common;
 using BAL.ViewModels;
 using System.Net.Http.Headers;
+using OfficeOpenXml;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -26,7 +27,9 @@ namespace BAL.BusinessLogic.Helper
             _connectionString = configuration.GetConnectionString("OnlineexamDB");
             _exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), "ProductExceptionLogs");
         }
-
+        // Author: [swathi]
+        // Created Date: [02/07/2024]
+        // Description: Method for InsertProducts
         public async Task<string> InsertAddProduct(ProductFilter productviewmodel)
         {
             using (SqlConnection sqlcon = new SqlConnection(_connectionString))
@@ -73,6 +76,9 @@ namespace BAL.BusinessLogic.Helper
                 }
             }
         }
+
+
+
         // Author: [Mamatha]
         // Created Date: [04/07/2024]
         // Description: Method for EditProductDetails
@@ -154,7 +160,58 @@ namespace BAL.BusinessLogic.Helper
         //        }
         //    }
         //}
+        // Author: [swathi]
+        // Created Date: [02/07/2024]
+        // Description: Method for AddtoCartProducts
+        //public async Task<string> InsertAddToCartProduct(AddToCartViewModel addToCartModel)
+        //{
+        //    using (SqlConnection sqlcon = new SqlConnection(_connectionString))
+        //    {
+        //        using (SqlCommand cmd = new SqlCommand("InsertAddtoCartProduct", sqlcon))
+        //        {
+        //            cmd.CommandType = CommandType.StoredProcedure;
 
+        //            cmd.Parameters.AddWithValue("@Userid", addToCartModel.Userid);
+        //            cmd.Parameters.AddWithValue("@Imageid", addToCartModel.Imageid);
+        //            cmd.Parameters.AddWithValue("@ProductId", addToCartModel.ProductId);
+
+        //            try
+        //            {
+        //                await sqlcon.OpenAsync();
+
+
+        //                bool isProductAlreadyAdded = await IsProductAlreadyAdded(sqlcon, addToCartModel.Userid, addToCartModel.Imageid, addToCartModel.ProductId);
+
+        //                if (isProductAlreadyAdded)
+        //                {
+        //                    throw new Exception("Product is already added to the cart.");
+        //                }
+
+        //                var result = await cmd.ExecuteScalarAsync();
+
+
+        //                if (result != null && int.TryParse(result.ToString(), out int newAddtoCartId))
+        //                {
+        //                    return "Success"; 
+        //                }
+        //                else
+        //                {
+
+        //                    throw new Exception("Failed to add product to cart.");
+        //                }
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertAddToCartProduct : errormessage:" + ex.Message.ToString()));
+        //                throw;
+        //            }
+        //        }
+        //    }
+        //}
+
+        // Author: [swathi]
+        // Created Date: [02/07/2024]
+        // Description: Method for AddtoCartProducts
         public async Task<string> InsertAddToCartProduct(AddToCartViewModel addToCartModel)
         {
             using (SqlConnection sqlcon = new SqlConnection(_connectionString))
@@ -166,31 +223,30 @@ namespace BAL.BusinessLogic.Helper
                     cmd.Parameters.AddWithValue("@Userid", addToCartModel.Userid);
                     cmd.Parameters.AddWithValue("@Imageid", addToCartModel.Imageid);
                     cmd.Parameters.AddWithValue("@ProductId", addToCartModel.ProductId);
+                    cmd.Parameters.AddWithValue("@Quantity", addToCartModel.Quantity);
+
+                    SqlParameter newCartIdParam = new SqlParameter("@NewCartId", SqlDbType.Int);
+                    newCartIdParam.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(newCartIdParam);
 
                     try
                     {
                         await sqlcon.OpenAsync();
+                        await cmd.ExecuteNonQueryAsync();
 
-                       
-                        bool isProductAlreadyAdded = await IsProductAlreadyAdded(sqlcon, addToCartModel.Userid, addToCartModel.Imageid, addToCartModel.ProductId);
-
-                        if (isProductAlreadyAdded)
+                        if (newCartIdParam.Value != null && int.TryParse(newCartIdParam.Value.ToString(), out int newAddtoCartId))
                         {
-                            throw new Exception("Product is already added to the cart.");
-                        }
-
-                        var result = await cmd.ExecuteScalarAsync();
-
-                      
-                        if (result != null && int.TryParse(result.ToString(), out int newAddtoCartId))
-                        {
-                            return "Success"; 
+                            return "Success";
                         }
                         else
                         {
-                           
                             throw new Exception("Failed to add product to cart.");
                         }
+                    }
+                    catch (SqlException ex) when (ex.Number == 500) // SQL Server user-defined error
+                    {
+                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertAddToCartProduct : errormessage:" + ex.Message.ToString()));
+                        return "Error: " + ex.Message;
                     }
                     catch (Exception ex)
                     {
@@ -200,6 +256,11 @@ namespace BAL.BusinessLogic.Helper
                 }
             }
         }
+
+
+        // Usage example
+
+
 
         private async Task<bool> IsProductAlreadyAdded(SqlConnection sqlcon, int userId, int imageId, int productId)
         {
@@ -219,7 +280,9 @@ namespace BAL.BusinessLogic.Helper
             // Dummy implementation
             return Task.FromResult(pvm);
         }
-
+        // Author: [swathi]
+        // Created Date: [03/07/2024]
+        // Description: Method for GetCartProducts based on userid
         public async Task<IEnumerable<UserProductViewModel>> GetByUserId(int userId)
         {
             var products = new List<UserProductViewModel>();
@@ -259,6 +322,9 @@ namespace BAL.BusinessLogic.Helper
 
             return products;
         }
+        // Author: [swathi]
+        // Created Date: [04/07/2024]
+        // Description: Method for  Delete CartProduct
         public async Task<string> SoftDeleteAddtoCartProduct(int addToCartId)
         {
             using (SqlConnection sqlcon = new SqlConnection(_connectionString))
@@ -295,6 +361,9 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
+        // Author: [swathi]
+        // Created Date: [05/07/2024]
+        // Description: Method for  Insert WishlistProduct
         public async Task<string> InsertWishlistproduct(Wishlistviewmodel wishlistviewmodel)
         {
             using (SqlConnection sqlcon = new SqlConnection(_connectionString))
@@ -355,6 +424,9 @@ namespace BAL.BusinessLogic.Helper
                 return (int)count > 0;
             }
         }
+        // Author: [swathi]
+        // Created Date: [05/07/2024]
+        // Description: Method for  GetwishlistProduct by userid
         public async Task<IEnumerable<UserProductViewModel>> GetwhislistByUserId(int userId)
         {
             var products = new List<UserProductViewModel>();
@@ -394,6 +466,9 @@ namespace BAL.BusinessLogic.Helper
 
             return products;
         }
+        // Author: [swathi]
+        // Created Date: [05/07/2024]
+        // Description: Method for  Delete WishListProduct
         public async Task<string> DeleteWishlistproduct(int wishlistid)
         {
             using (SqlConnection sqlcon = new SqlConnection(_connectionString))

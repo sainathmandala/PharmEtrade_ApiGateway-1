@@ -16,14 +16,16 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             _productRepo = productRepo;
         }
-
+        // Author: [swathi]
+        // Created Date: [02/07/2024]
+        // Description: Method for InsertProducts
         [HttpPost("InsertProduct")]
         public async Task<IActionResult> InsertProduct([FromBody] ProductFilter productviewmodel)
         {
             try
             {
                 var result = await _productRepo.InsertAddProduct(productviewmodel);
-                return Ok(result); // Return appropriate response
+                return Ok(result); 
             }
             catch (Exception ex)
             {
@@ -41,7 +43,9 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(await _productRepo.EditProductDetails(AddproductID, productfilter));
         }
 
-
+        // Author: [swathi]
+        // Created Date: [02/07/2024]
+        // Description: Method for AddtoCartProducts
         [HttpPost("AddToCart")]
         public async Task<IActionResult> AddToCart([FromBody] AddToCartViewModel addToCartModel)
         {
@@ -60,13 +64,18 @@ namespace PharmEtrade_ApiGateway.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [HttpGet("GetByUserId/{userId}")]
-        public async Task<ActionResult<IEnumerable<UserProductViewModel>>> GetByUserId(int userId)
+        // Author: [swathi]
+        // Created Date: [03/07/2024]
+        // Description: Method for GetCartProducts based on userid
+        [HttpGet("GetCartByUserId/{userId}")]
+        public async Task<ActionResult<IEnumerable<UserProductViewModel>>> GetCartByUserId(int userId)
         {
             var products = await _productRepo.GetByUserId(userId);
             return Ok(products);
         }
-
+        // Author: [swathi]
+        // Created Date: [04/07/2024]
+        // Description: Method for  Delete CartProduct
         [HttpPost("SoftDeleteAddtoCartProduct")]
         public async Task<IActionResult> SoftDeleteAddtoCartProduct([FromBody] int addToCartId)
         {
@@ -87,7 +96,9 @@ namespace PharmEtrade_ApiGateway.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
+        // Author: [swathi]
+        // Created Date: [05/07/2024]
+        // Description: Method for  Insert WishlistProduct
         [HttpPost("AddWishlist")]
         public async Task<IActionResult> AddWishlist([FromBody] Wishlistviewmodel wishlistviewmodel)
         {
@@ -106,6 +117,9 @@ namespace PharmEtrade_ApiGateway.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        // Author: [swathi]
+        // Created Date: [05/07/2024]
+        // Description: Method for  GetwishlistProduct by userid
         [HttpGet("GetwishlistByUserId/{userId}")]
         public async Task<ActionResult<IEnumerable<UserProductViewModel>>> GetwishlistByUserId(int userId)
         {
@@ -113,7 +127,9 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(products);
         }
 
-
+        // Author: [swathi]
+        // Created Date: [05/07/2024]
+        // Description: Method for  Delete WishListProduct
         [HttpPost("DeleteWishlistProduct")]
         public async Task<IActionResult> DeleteWishlistProduct([FromBody] int wishlistid)
         {

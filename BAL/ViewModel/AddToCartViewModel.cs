@@ -15,5 +15,6 @@ namespace BAL.ViewModel
         public int ProductId { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
+        public int Quantity { get; set; }
     }
 }
