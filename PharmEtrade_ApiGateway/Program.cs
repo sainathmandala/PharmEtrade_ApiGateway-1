@@ -17,7 +17,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+//var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+var keyString = jwtSettings["Key"];
+
+if (string.IsNullOrEmpty(keyString))
+{
+    throw new InvalidOperationException("JWT Key is not configured. Please ensure 'JwtSettings:Key' is set in appsettings.json.");
+}
+
+var key = Encoding.UTF8.GetBytes(keyString);
 
 // Add services to the container
 builder.Services.AddControllers();
