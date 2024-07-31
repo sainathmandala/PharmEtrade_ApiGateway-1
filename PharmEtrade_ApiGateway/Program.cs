@@ -13,8 +13,11 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using BAL.ViewModels;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
 // Add services to the container
 builder.Services.AddControllers();
@@ -22,8 +25,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     // Configure JWT authentication
-    var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-    var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+    //var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+    //var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
     var securityScheme = new OpenApiSecurityScheme
     {
@@ -53,8 +56,8 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityRequirement(securityRequirement);
 });
 
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+//var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+//var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
 // Configure JWT authentication
 builder.Services.AddAuthentication(options =>
