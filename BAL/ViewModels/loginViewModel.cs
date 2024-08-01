@@ -16,13 +16,15 @@ namespace BAL.ViewModels
         public int UserId { get; set; }
 
        
-        public string Username { get; set; }
+        public string Firstname { get; set; }
 
-     
+        public string lastname { get; set; }
+
+
         public string UserEmail { get; set; }
 
       
-        public string Role { get; set; }
+        public string userType { get; set; }
         
         public string token { get; set; }
 

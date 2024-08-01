@@ -12,6 +12,7 @@ using System.Net.Mail;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -36,19 +37,19 @@ namespace BAL.BusinessLogic.Helper
         // Description: Method for Customer login
         public async Task<DataTable> CustomerLogin(string username, string password)
         {
-            SqlConnection sqlcon = new SqlConnection(_connectionString);
-            SqlCommand cmd = new SqlCommand();
+            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
+            MySqlCommand cmd = new MySqlCommand();
             try
             {
-                cmd = new SqlCommand("SP_CustomerLogin", sqlcon);
+                cmd = new MySqlCommand("SP_Login", sqlcon);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Email", username);
-                cmd.Parameters.AddWithValue("@Password", password);
+                cmd.Parameters.AddWithValue("p_Email", username);
+                cmd.Parameters.AddWithValue("p_Password", password);
                 return await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
             }
             catch (Exception ex)
             {
-                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "CustomerLogin_SP :  errormessage:" + ex.Message.ToString()));
+                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "Login_SP :  errormessage:" + ex.Message.ToString()));
 
                 throw ex;
             }
@@ -56,11 +57,11 @@ namespace BAL.BusinessLogic.Helper
 
         public async Task<int> AddToCart(int userId, int imageId, int productId)
         {
-            SqlConnection sqlcon = new SqlConnection(_connectionString);
-            SqlCommand cmd = new SqlCommand();
+            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
+            MySqlCommand cmd = new MySqlCommand();
             try
             {
-                cmd = new SqlCommand("InsertAddtoCartProduct", sqlcon);
+                cmd = new MySqlCommand("InsertAddtoCartProduct", sqlcon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@Userid", userId);
                 cmd.Parameters.AddWithValue("@Imageid", imageId);
@@ -84,17 +85,20 @@ namespace BAL.BusinessLogic.Helper
         // Description: Method for registration of User 
         public async Task<string> SaveCustomerData(UserViewModel userViewModel)
         {
-            SqlConnection sqlcon = new SqlConnection(_connectionString);
-            SqlCommand cmd = new SqlCommand();
+            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
+            MySqlCommand cmd = new MySqlCommand();
             try
             {
-                cmd = new SqlCommand("SP_InsertUser", sqlcon);
+                cmd = new MySqlCommand("SP_InsertUser", sqlcon);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Username", userViewModel.Username);
-                cmd.Parameters.AddWithValue("@Email", userViewModel.Email);
-                cmd.Parameters.AddWithValue("@Password", userViewModel.Password);
-                cmd.Parameters.AddWithValue("@PhoneNumber", userViewModel.PhoneNumber);
-                cmd.Parameters.AddWithValue("@RoleId", userViewModel.RoleId);
+                cmd.Parameters.AddWithValue("p_firstname", userViewModel.firstname);
+                cmd.Parameters.AddWithValue("p_lastname", userViewModel.lastname);
+                cmd.Parameters.AddWithValue("p_Email", userViewModel.Email);
+                cmd.Parameters.AddWithValue("p_Password", userViewModel.Password);
+                cmd.Parameters.AddWithValue("p_PhoneNumber", userViewModel.PhoneNumber);
+                cmd.Parameters.AddWithValue("p_usertypeid", userViewModel.UsertypeId);
+                cmd.Parameters.AddWithValue("p_accounttype", userViewModel.Accounttype);
+                cmd.Parameters.AddWithValue("p_upnmember", userViewModel.UpnMember);
 
                 await sqlcon.OpenAsync();
                 await _isqlDataHelper.ExcuteNonQueryasync(cmd);
@@ -115,13 +119,13 @@ namespace BAL.BusinessLogic.Helper
         public async Task<DataTable> GetUserDetailsById(int userId)
         {
 
-            SqlConnection sqlcon = new SqlConnection(_connectionString);
-            SqlCommand cmd = new SqlCommand();
+            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
+            MySqlCommand cmd = new MySqlCommand();
             try
             {
-                cmd = new SqlCommand("Sp_GetUserById", sqlcon);
+                cmd = new MySqlCommand("Sp_GetUserById", sqlcon);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@user_id", userId);
+                cmd.Parameters.AddWithValue("p_user_id", userId);
 
 
                 return await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
@@ -139,14 +143,14 @@ namespace BAL.BusinessLogic.Helper
         // Description: Method for update password
         public async Task<string> UpdatePassword(int id,  string newPassword)
         {
-            SqlConnection sqlcon = new SqlConnection(_connectionString);
-            SqlCommand cmd = new SqlCommand();
+            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
+            MySqlCommand cmd = new MySqlCommand();
             try
             {
-                cmd = new SqlCommand("Sp_UpdatePassword", sqlcon);
+                cmd = new MySqlCommand("Sp_UpdatePassword", sqlcon);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@UserId", id);
-                cmd.Parameters.AddWithValue("@NewPassword", newPassword);
+                cmd.Parameters.AddWithValue("p_UserId", id);
+                cmd.Parameters.AddWithValue("p_NewPassword", newPassword);
                
 
                 await sqlcon.OpenAsync();
@@ -167,13 +171,13 @@ namespace BAL.BusinessLogic.Helper
         public async Task<DataTable> GetUserDetailsByEmail(string email)
         {
 
-            SqlConnection sqlcon = new SqlConnection(_connectionString);
-            SqlCommand cmd = new SqlCommand();
+            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
+            MySqlCommand cmd = new MySqlCommand();
             try
             {
-                cmd = new SqlCommand("Sp_GetUserByEmail", sqlcon);
+                cmd = new MySqlCommand("Sp_GetUserByEmail", sqlcon);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Email", email);
+                cmd.Parameters.AddWithValue("p_Email", email);
 
 
                 return await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
@@ -191,14 +195,14 @@ namespace BAL.BusinessLogic.Helper
         // Description: Method for update password by email(reset Password)
         public async Task<string> UpdatePasswordByEmail(string email, string newPassword)
         {
-            SqlConnection sqlcon = new SqlConnection(_connectionString);
-            SqlCommand cmd = new SqlCommand();
+            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
+            MySqlCommand cmd = new MySqlCommand();
             try
             {
-                cmd = new SqlCommand("Sp_UpdatePasswordByEmail", sqlcon);
+                cmd = new MySqlCommand("Sp_UpdatePasswordByEmail", sqlcon);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Email", email);
-                cmd.Parameters.AddWithValue("@NewPassword", newPassword);
+                cmd.Parameters.AddWithValue("p_Email", email);
+                cmd.Parameters.AddWithValue("p_NewPassword", newPassword);
 
 
                 await sqlcon.OpenAsync();
@@ -219,15 +223,15 @@ namespace BAL.BusinessLogic.Helper
         {
             var otp = GenerateOTP();
             var otpExpiration = DateTime.Now.AddMinutes(5);
-            SqlConnection sqlcon = new SqlConnection(_connectionString);
-            SqlCommand cmd = new SqlCommand();
+            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
+            MySqlCommand cmd = new MySqlCommand();
             try
             {
-                cmd = new SqlCommand("sp_GenerateAndStoreOTP", sqlcon);
+                cmd = new MySqlCommand("sp_GenerateAndStoreOTP", sqlcon);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Email", email);
-                cmd.Parameters.AddWithValue("@OTP", otp);
-                cmd.Parameters.AddWithValue("@OTPExpiration", otpExpiration);
+                cmd.Parameters.AddWithValue("p_Email", email);
+                cmd.Parameters.AddWithValue("p_OTP", otp);
+                cmd.Parameters.AddWithValue("p_OTPExpiration", otpExpiration);
 
                 await sqlcon.OpenAsync();
                 string result = await cmd.ExecuteScalarAsync() as string;
@@ -381,14 +385,14 @@ namespace BAL.BusinessLogic.Helper
         // Description: Method for Otp login
         public async Task<DataTable> OtpLogin(string email, string otp)
         {
-            SqlConnection sqlcon = new SqlConnection(_connectionString);
-            SqlCommand cmd = new SqlCommand();
+            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
+            MySqlCommand cmd = new MySqlCommand();
             try
             {
-                cmd = new SqlCommand("sp_ValidateOTP", sqlcon);
+                cmd = new MySqlCommand("sp_ValidateOTP", sqlcon);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Email", email);
-                cmd.Parameters.AddWithValue("@OTP", otp);
+                cmd.Parameters.AddWithValue("p_Email", email);
+                cmd.Parameters.AddWithValue("p_OTP", otp);
                 return await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
             }
             catch (Exception ex)

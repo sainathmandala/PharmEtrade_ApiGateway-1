@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 using System.Data;
+using MySql.Data.MySqlClient;
 
 namespace DAL
 {
@@ -20,9 +21,9 @@ namespace DAL
             _connectionString = configuration.GetConnectionString("OnlineexamDB");
         }
 
-        public async Task<int> ExcuteNonQueryasync(SqlCommand cmd)
+        public async Task<int> ExcuteNonQueryasync(MySqlCommand cmd)
         {
-            SqlConnection sqlcon = new SqlConnection(_connectionString);
+            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
             int i = 0;
             try
             {
@@ -41,15 +42,15 @@ namespace DAL
             }
 
         }
-        public async Task<DataTable> SqlDataAdapterasync(SqlCommand cmd)
+        public async Task<DataTable> SqlDataAdapterasync(MySqlCommand cmd)
         {
-            SqlDataAdapter adp = new SqlDataAdapter();
-            SqlConnection sqlcon = new SqlConnection(_connectionString);
+            MySqlDataAdapter adp = new MySqlDataAdapter();
+            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
             DataTable dt = new DataTable();
             try
             {
                 await sqlcon.OpenAsync();
-                adp = new SqlDataAdapter(cmd);
+                adp = new MySqlDataAdapter(cmd);
                 await Task.Run(() => adp.Fill(dt));
                 await sqlcon.CloseAsync();
                 cmd.Dispose();

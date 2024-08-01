@@ -13,7 +13,11 @@ namespace BAL.ViewModels
 
         [Required]
         [StringLength(50)]
-        public string Username { get; set; }
+        public string firstname { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string lastname { get; set; }
+
 
         [Required]
         [EmailAddress]
@@ -29,8 +33,13 @@ namespace BAL.ViewModels
         public string PhoneNumber { get; set; }
 
         [Required]
-        public int RoleId { get; set; }
+        public int UsertypeId { get; set; }
 
-       
+        [Required]
+        public string Accounttype { get; set; }
+
+        public bool UpnMember { get; set; }
+
+
     }
 }
