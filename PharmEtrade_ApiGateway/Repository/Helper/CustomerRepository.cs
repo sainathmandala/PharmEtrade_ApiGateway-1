@@ -52,15 +52,16 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                 if (dtResult != null && dtResult.Rows.Count > 0)
                 {
                     DataRow row = dtResult.Rows[0];
-                    response.LoginStatus = row["LoginStatus"].ToString();
-                    response.UserId = Convert.ToInt32(row["UserId"]);
-                    response.Username = row["Username"].ToString();
-                    response.UserEmail = row["UserEmail"].ToString();
-                    response.Role = row["Role"].ToString();
+                    response.LoginStatus = row["v_LoginStatus"].ToString();
+                    response.UserId = Convert.ToInt32(row["v_UserId"]);
+                    response.Firstname = row["v_firstname"].ToString();
+                    response.lastname = row["v_lastname"].ToString();
+                    response.UserEmail = row["v_UserEmail"].ToString();
+                    response.userType = row["v_Usertype"].ToString();
 
                     if (response.LoginStatus == "Success")
                     {
-                        response.token = _jwtTokenService.GenerateToken(response.Username, response.Role);
+                        response.token = _jwtTokenService.GenerateToken(response.Firstname, response.userType);
                         response.statusCode = 200;
                         //response.message = LoginSuccessMsg;
                     }
@@ -140,7 +141,8 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                 {
                     UserViewModel user = new UserViewModel();
                     user.UserId = Convert.ToInt32(row["user_id"]);
-                    user.Username = row["username"].ToString();
+                    user.firstname = row["first_name"].ToString();
+                    user.lastname = row["last_name"].ToString();
                     user.Email = row["email"].ToString();
                     user.Password = row["password"].ToString();
                     user.PhoneNumber =row["phone_number"].ToString();
@@ -213,10 +215,11 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                 {
                     UserEmailViewModel user = new UserEmailViewModel();
                     user.UserId = Convert.ToInt32(row["user_id"]);
-                    user.Username = row["username"].ToString();
+                    user.Firstname = row["first_name"].ToString();
+                    user.lastname = row["last_name"].ToString();
                     user.Email = row["email"].ToString();
                     user.PhoneNumber = row["phone_number"].ToString();
-                    user.Role = row["role"].ToString();
+                    user.Usertype = row["role"].ToString();
 
 
                     userlst.Add(user);
@@ -244,10 +247,11 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                     DataRow row = dtResult.Rows[0];
                   
                     response.UserId = Convert.ToInt32(row["user_id"]);
-                    response.Username = row["username"].ToString();
+                    response.Firstname = row["first_name"].ToString();
+                    response.lastname = row["last_name"].ToString();
                     response.Email = row["email"].ToString();
                     response.PhoneNumber = row["phone_number"].ToString();
-                    response.Role = row["role"].ToString();
+                    response.Usertype = row["role"].ToString();
 
                   
                     return response;
@@ -367,13 +371,14 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                     DataRow row = dtResult.Rows[0];
                     response.LoginStatus = row["LoginStatus"].ToString();
                     response.UserId = Convert.ToInt32(row["user_id"]);
-                    response.Username = row["username"].ToString();
+                    response.Firstname = row["first_name"].ToString();
+                    response.lastname = row["last_name"].ToString();
                     response.UserEmail = row["email"].ToString();
-                    response.Role = row["role"].ToString();
+                    response.userType = row["user_type"].ToString();
 
                     if (response.LoginStatus == "Success")
                     {
-                        response.token = _jwtTokenService.GenerateToken(response.Username, response.Role);
+                        response.token = _jwtTokenService.GenerateToken(response.UserEmail, response.userType);
                         response.statusCode = 200;
                         //response.message = LoginSuccessMsg;
                     }

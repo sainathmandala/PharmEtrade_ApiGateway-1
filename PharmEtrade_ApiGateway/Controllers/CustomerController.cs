@@ -136,7 +136,7 @@ namespace PharmEtrade_ApiGateway.Controllers
             }
 
             // Generate password reset token
-            var token = _jwtTokenService.GenerateToken(user.Email, user.Role);
+            var token = _jwtTokenService.GenerateToken(user.Email, user.Usertype);
 
             // Generate reset link
             var resetLink = Url.Action("GetUserDetailsByEmail", "Customer", new { token, email = user.Email }, Request.Scheme);
