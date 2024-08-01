@@ -7,10 +7,10 @@ namespace BAL.BusinessLogic.Interface
 {
     public interface IProductHelper
     {
-        Task<string> InsertAddProduct(ProductFilter productviewmodel);
+        Task<string> InsertAddProduct(ProductFilter productviewmodel, Stream imageFileStream, string imageFileName);
         Task<Productviewmodel> DummyInterface(Productviewmodel pvm);
         Task<string> InsertAddToCartProduct(AddToCartViewModel addToCartModel);
-       Task<IEnumerable<UserProductViewModel>> GetByUserId(int userId);
+       Task<IEnumerable<UserProductViewModel>> GetCartByUserId(int userId);
         Task<string> EditProductDetails(int AddproductID,ProductFilter productfilter);
 
         Task<string> SoftDeleteAddtoCartProduct(int addToCartId);

@@ -34,7 +34,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                         {
                             AddproductID = Convert.ToInt32(row["AddproductID"]),
                             Productcategory_id = Convert.ToInt32(row["Productcategory_id"]),
-                            ImageID = Convert.ToInt32(row["ImageID"]),
+                            //ImageID = Convert.ToInt32(row["ImageID"]),
                             Sizeid = Convert.ToInt32(row["Sizeid"]),
                             ProductName = row["ProductName"].ToString(),
                             NDCorUPC = row["NDCorUPC"].ToString(),
@@ -130,7 +130,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                     ProductFilter user = new ProductFilter();
                     user.AddproductID = Convert.ToInt32(row["AddproductID"]);
                     user.Productcategory_id = Convert.ToInt32(row["Productcategory_id"]);
-                    user.ImageID = Convert.ToInt32(row["ImageID"]);
+                    //user.ImageID = Convert.ToInt32(row["ImageID"]);
                     user.Sizeid = Convert.ToInt32(row["Sizeid"]);
                     user.ProductName = row["ProductName"].ToString();
                     user.NDCorUPC = row["NDCorUPC"].ToString();

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace BAL.ViewModels
 {
@@ -8,8 +9,6 @@ namespace BAL.ViewModels
         public int AddproductID { get; set; }
         [Required]
         public int Productcategory_id { get; set; }
-        [Required]
-        public int ImageID { get; set; }
         [Required]
         public int Sizeid { get; set; }
         [Required]
@@ -56,5 +55,21 @@ namespace BAL.ViewModels
         public string PackCondition { get; set; }
         [StringLength(500, ErrorMessage = "Product description cannot exceed 500 characters.")]
         public string ProductDescription { get; set; }
+
+        public IFormFile ImageUrl { get; set; }
+        public string Caption { get; set; }
+        [Required]
+         public IFormFile ImageFile { get; set; }
+
+        public string MetaKeywords { get; set; }
+        public string MetaTitle { get; set; }
+        public string MetaDescription { get; set; }
+        public string SaltComposition { get; set; }
+        public string UriKey { get; set; }
+        public string AboutTheProduct { get; set; }
+        public int CategorySpecificationId { get; set; }
+        public int ProductTypeId { get; set; }
+
+
     }
 }

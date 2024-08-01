@@ -14,6 +14,7 @@ using System.Net.Http.Headers;
 using OfficeOpenXml;
 using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
+using MySql.Data.MySqlClient;
 namespace BAL.BusinessLogic.Helper
 {
     public class ProductHelper : IProductHelper
@@ -21,9 +22,12 @@ namespace BAL.BusinessLogic.Helper
         private readonly IsqlDataHelper _isqlDataHelper;
         private readonly string _connectionString;
         private readonly string _exPathToSave;
-
+        private readonly IConfiguration _configuration;
+        private readonly S3Helper _s3Helper;
         public ProductHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper)
         {
+            _s3Helper = new S3Helper(configuration);
+            _configuration = configuration;
             _isqlDataHelper = isqlDataHelper;
             _connectionString = configuration.GetConnectionString("OnlineexamDB");
             _exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), "ProductExceptionLogs");
@@ -32,54 +36,92 @@ namespace BAL.BusinessLogic.Helper
         // Author: [swathi]
         // Created Date: [02/07/2024]
         // Description: Method for InsertProducts
-
-        public async Task<string> InsertAddProduct(ProductFilter productviewmodel)
-        {
-            using (SqlConnection sqlcon = new SqlConnection(_connectionString))
+        public async Task<string> InsertAddProduct(ProductFilter productviewmodel, Stream imageFileStream, string imageFileName)
+         {
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("InsertAddProduct", sqlcon))
+                try
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
+                    await sqlcon.OpenAsync();
 
-                    cmd.Parameters.AddWithValue("@Productcategory_id", productviewmodel.Productcategory_id);
-                    cmd.Parameters.AddWithValue("@ImageID", productviewmodel.ImageID);
-                    cmd.Parameters.AddWithValue("@Sizeid", productviewmodel.Sizeid);
-                    cmd.Parameters.AddWithValue("@ProductName", productviewmodel.ProductName);
-                    cmd.Parameters.AddWithValue("@NDCorUPC", productviewmodel.NDCorUPC);
-                    cmd.Parameters.AddWithValue("@BrandName", productviewmodel.BrandName);
-                    cmd.Parameters.AddWithValue("@PriceName", productviewmodel.PriceName);
-                    cmd.Parameters.AddWithValue("@UPNmemberPrice", productviewmodel.UPNmemberPrice);
-                    cmd.Parameters.AddWithValue("@AmountInStock", productviewmodel.AmountInStock);
-                    cmd.Parameters.AddWithValue("@Taxable", productviewmodel.Taxable);
-                    cmd.Parameters.AddWithValue("@SalePrice", productviewmodel.SalePrice);
-                    cmd.Parameters.AddWithValue("@SalePriceFrom", productviewmodel.SalePriceFrom);
-                    cmd.Parameters.AddWithValue("@SalePriceTo", productviewmodel.SalePriceTo);
-                    cmd.Parameters.AddWithValue("@Manufacturer", productviewmodel.Manufacturer);
-                    cmd.Parameters.AddWithValue("@Strength", productviewmodel.Strength);
-                    cmd.Parameters.AddWithValue("@Fromdate", productviewmodel.Fromdate);
-                    cmd.Parameters.AddWithValue("@LotNumber", productviewmodel.LotNumber);
-                    cmd.Parameters.AddWithValue("@ExpirationDate", productviewmodel.ExpirationDate);
-                    cmd.Parameters.AddWithValue("@PackQuantity", productviewmodel.PackQuantity);
-                    cmd.Parameters.AddWithValue("@PackType", productviewmodel.PackType);
-                    cmd.Parameters.AddWithValue("@PackCondition", productviewmodel.PackCondition);
-                    cmd.Parameters.AddWithValue("@ProductDescription", productviewmodel.ProductDescription);
+                    // Begin a transaction
+                    MySqlTransaction transaction = await sqlcon.BeginTransactionAsync();
 
-                    try
+                    // Step 1: Define the folder name
+                    string folderName = "PharmaEtrade";
+
+                    // Step 2: Upload Image to AWS S3
+                    string imageUrl = await _s3Helper.UploadFileAsync(imageFileStream, folderName, imageFileName);
+
+                    // Step 3: Insert Image URL and get ImageID
+                    using (MySqlCommand cmdImage = new MySqlCommand("InsertImageUrl", sqlcon, transaction))
                     {
-                        await sqlcon.OpenAsync();
-                        var result = await cmd.ExecuteNonQueryAsync();
-                        return "Success"; // Return the number of affected rows
+                        cmdImage.CommandType = CommandType.StoredProcedure;
+                        cmdImage.Parameters.AddWithValue("@p_ImageUrl", imageUrl);
+                        cmdImage.Parameters.AddWithValue("@p_Caption", productviewmodel.Caption);
+                        MySqlParameter imageIDParam = new MySqlParameter("@p_ImageID", MySqlDbType.Int32)
+                        {
+                            Direction = ParameterDirection.Output
+                        };
+                        cmdImage.Parameters.Add(imageIDParam);
+
+                        await cmdImage.ExecuteNonQueryAsync();
+                        int imageID = (int)imageIDParam.Value;
+
+                        // Step 4: Insert Product using the obtained ImageID
+                        using (MySqlCommand cmdProduct = new MySqlCommand("InsertAddProduct", sqlcon, transaction))
+                        {
+                            cmdProduct.CommandType = CommandType.StoredProcedure;
+
+                            cmdProduct.Parameters.AddWithValue("@p_Productcategory_id", productviewmodel.Productcategory_id);
+                            cmdProduct.Parameters.AddWithValue("@p_ImageID", imageID);
+                            cmdProduct.Parameters.AddWithValue("@p_Sizeid", productviewmodel.Sizeid);
+                            cmdProduct.Parameters.AddWithValue("@p_ProductName", productviewmodel.ProductName);
+                            cmdProduct.Parameters.AddWithValue("@p_NDCorUPC", productviewmodel.NDCorUPC);
+                            cmdProduct.Parameters.AddWithValue("@p_BrandName", productviewmodel.BrandName);
+                            cmdProduct.Parameters.AddWithValue("@p_PriceName", productviewmodel.PriceName);
+                            cmdProduct.Parameters.AddWithValue("@p_UPNmemberPrice", productviewmodel.UPNmemberPrice);
+                            cmdProduct.Parameters.AddWithValue("@p_AmountInStock", productviewmodel.AmountInStock);
+                            cmdProduct.Parameters.AddWithValue("@p_Taxable", productviewmodel.Taxable);
+                            cmdProduct.Parameters.AddWithValue("@p_SalePrice", productviewmodel.SalePrice);
+                            cmdProduct.Parameters.AddWithValue("@p_SalePriceFrom", productviewmodel.SalePriceFrom);
+                            cmdProduct.Parameters.AddWithValue("@p_SalePriceTo", productviewmodel.SalePriceTo);
+                            cmdProduct.Parameters.AddWithValue("@p_Manufacturer", productviewmodel.Manufacturer);
+                            cmdProduct.Parameters.AddWithValue("@p_Strength", productviewmodel.Strength);
+                            cmdProduct.Parameters.AddWithValue("@p_Fromdate", productviewmodel.Fromdate);
+                            cmdProduct.Parameters.AddWithValue("@p_LotNumber", productviewmodel.LotNumber);
+                            cmdProduct.Parameters.AddWithValue("@p_ExpirationDate", productviewmodel.ExpirationDate);
+                            cmdProduct.Parameters.AddWithValue("@p_PackQuantity", productviewmodel.PackQuantity);
+                            cmdProduct.Parameters.AddWithValue("@p_PackType", productviewmodel.PackType);
+                            cmdProduct.Parameters.AddWithValue("@p_PackCondition", productviewmodel.PackCondition);
+                            cmdProduct.Parameters.AddWithValue("@p_ProductDescription", productviewmodel.ProductDescription);
+                            cmdProduct.Parameters.AddWithValue("@p_MetaKeywords", productviewmodel.MetaKeywords);
+                            cmdProduct.Parameters.AddWithValue("@p_MetaTitle", productviewmodel.MetaTitle);
+                            cmdProduct.Parameters.AddWithValue("@p_MetaDescription", productviewmodel.MetaDescription);
+                            cmdProduct.Parameters.AddWithValue("@p_SaltComposition", productviewmodel.SaltComposition);
+                            cmdProduct.Parameters.AddWithValue("@p_UriKey", productviewmodel.UriKey);
+                            cmdProduct.Parameters.AddWithValue("@p_AboutTheProduct", productviewmodel.AboutTheProduct);
+                            cmdProduct.Parameters.AddWithValue("@p_CategorySpecificationId", productviewmodel.CategorySpecificationId);
+                            cmdProduct.Parameters.AddWithValue("@p_ProductTypeId", productviewmodel.ProductTypeId);
+
+
+                            await cmdProduct.ExecuteNonQueryAsync();
+                        }
+
+                        // Commit the transaction
+                        await transaction.CommitAsync();
+
+                        return "Success";
                     }
-                    catch (Exception ex)
-                    {
-                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message.ToString()));
-                        // Handle the exception as needed
-                        throw;
-                    }
+                }
+                catch (Exception ex)
+                {
+                    Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message.ToString()));
+                    // Handle the exception as needed
+                    throw;
                 }
             }
         }
-
         // Author: [swathi]
         // Created Date: [10/07/2024]
         // Description: Method for BulkInsertProducts
@@ -101,7 +143,7 @@ namespace BAL.BusinessLogic.Helper
                         var product = new ProductFilter
                         {
                             Productcategory_id = int.Parse(worksheet.Cells[row, 1].Text),
-                            ImageID = int.Parse(worksheet.Cells[row, 2].Text),
+                           // ImageID = int.Parse(worksheet.Cells[row, 2].Text),
                             Sizeid = int.Parse(worksheet.Cells[row, 3].Text),
                             ProductName = worksheet.Cells[row, 4].Text,
                             NDCorUPC = worksheet.Cells[row, 5].Text,
@@ -121,9 +163,11 @@ namespace BAL.BusinessLogic.Helper
                             PackQuantity = int.Parse(worksheet.Cells[row, 19].Text),
                             PackType = worksheet.Cells[row, 20].Text,
                             PackCondition = worksheet.Cells[row, 21].Text,
-                            ProductDescription = worksheet.Cells[row, 22].Text
+                            ProductDescription = worksheet.Cells[row, 22].Text,
+                           // ImageUrl = worksheet.Cells[row,23].Text,
+                            Caption = worksheet.Cells[row,24].Text
                         };
-
+                        
                         products.Add(product);
                     }
                 }
@@ -131,7 +175,7 @@ namespace BAL.BusinessLogic.Helper
 
             foreach (var product in products)
             {
-                await InsertAddProduct(product);
+                await InsertAddProduct(product, Stream.Null, string.Empty);
             }
 
             return "Success";
@@ -143,7 +187,7 @@ namespace BAL.BusinessLogic.Helper
     // Author: [Mamatha]
     // Created Date: [04/07/2024]
     // Description: Method for EditProductDetails
-    public async Task<string> EditProductDetails(int AddproductID,ProductFilter productfilter)
+      public async Task<string> EditProductDetails(int AddproductID,ProductFilter productfilter)
         {
             SqlConnection sqlcon = new SqlConnection(_connectionString);
             SqlCommand cmd = new SqlCommand();
@@ -153,7 +197,7 @@ namespace BAL.BusinessLogic.Helper
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@AddproductID", productfilter.AddproductID);
                 cmd.Parameters.AddWithValue("@Productcategory_id", productfilter.Productcategory_id);
-                cmd.Parameters.AddWithValue("@ImageID", productfilter.ImageID);
+               //cmd.Parameters.AddWithValue("@ImageID", productfilter.ImageID);
                 cmd.Parameters.AddWithValue("@Sizeid", productfilter.Sizeid);
                 cmd.Parameters.AddWithValue("@ProductName", productfilter.ProductName);
                 cmd.Parameters.AddWithValue("@NDCorUPC", productfilter.NDCorUPC);
@@ -185,108 +229,26 @@ namespace BAL.BusinessLogic.Helper
                 throw ex;
             }
         }
-        //public async Task<int> InsertAddToCartProduct(AddToCartViewModel addToCartModel)
-        //{
-        //    using (SqlConnection sqlcon = new SqlConnection(_connectionString))
-        //    {
-        //        using (SqlCommand cmd = new SqlCommand("InsertAddtoCartProduct", sqlcon))
-        //        {
-        //            cmd.CommandType = CommandType.StoredProcedure;
-
-        //            cmd.Parameters.AddWithValue("@Userid", addToCartModel.Userid);
-        //            cmd.Parameters.AddWithValue("@Imageid", addToCartModel.Imageid);
-        //            cmd.Parameters.AddWithValue("@ProductId", addToCartModel.ProductId);
-
-        //            try
-        //            {
-        //                await sqlcon.OpenAsync();
-        //                var result = await cmd.ExecuteScalarAsync();
-
-        //                // Check if the product was successfully added
-        //                if (result != null && int.TryParse(result.ToString(), out int newAddtoCartId))
-        //                {
-        //                    return newAddtoCartId; // Return the new AddtoCartId
-        //                }
-        //                else
-        //                {
-        //                    // Handle error or duplicate insert scenario
-        //                    throw new Exception("Failed to add product to cart.");
-        //                }
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertAddToCartProduct : errormessage:" + ex.Message.ToString()));
-        //                throw;
-        //            }
-        //        }
-        //    }
-        //}
+       
+       
         // Author: [swathi]
         // Created Date: [02/07/2024]
         // Description: Method for AddtoCartProducts
-        //public async Task<string> InsertAddToCartProduct(AddToCartViewModel addToCartModel)
-        //{
-        //    using (SqlConnection sqlcon = new SqlConnection(_connectionString))
-        //    {
-        //        using (SqlCommand cmd = new SqlCommand("InsertAddtoCartProduct", sqlcon))
-        //        {
-        //            cmd.CommandType = CommandType.StoredProcedure;
-
-        //            cmd.Parameters.AddWithValue("@Userid", addToCartModel.Userid);
-        //            cmd.Parameters.AddWithValue("@Imageid", addToCartModel.Imageid);
-        //            cmd.Parameters.AddWithValue("@ProductId", addToCartModel.ProductId);
-
-        //            try
-        //            {
-        //                await sqlcon.OpenAsync();
-
-
-        //                bool isProductAlreadyAdded = await IsProductAlreadyAdded(sqlcon, addToCartModel.Userid, addToCartModel.Imageid, addToCartModel.ProductId);
-
-        //                if (isProductAlreadyAdded)
-        //                {
-        //                    throw new Exception("Product is already added to the cart.");
-        //                }
-
-        //                var result = await cmd.ExecuteScalarAsync();
-
-
-        //                if (result != null && int.TryParse(result.ToString(), out int newAddtoCartId))
-        //                {
-        //                    return "Success"; 
-        //                }
-        //                else
-        //                {
-
-        //                    throw new Exception("Failed to add product to cart.");
-        //                }
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertAddToCartProduct : errormessage:" + ex.Message.ToString()));
-        //                throw;
-        //            }
-        //        }
-        //    }
-        //}
-
-        // Author: [swathi]
-        // Created Date: [02/07/2024]
-        // Description: Method for AddtoCartProducts
+       
         public async Task<string> InsertAddToCartProduct(AddToCartViewModel addToCartModel)
         {
-            using (SqlConnection sqlcon = new SqlConnection(_connectionString))
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("InsertAddtoCartProduct", sqlcon))
+                using (MySqlCommand cmd = new MySqlCommand("InsertAddtoCartProduct", sqlcon))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@Userid", addToCartModel.Userid);
-                    cmd.Parameters.AddWithValue("@Imageid", addToCartModel.Imageid);
-                    cmd.Parameters.AddWithValue("@ProductId", addToCartModel.ProductId);
-                    cmd.Parameters.AddWithValue("@Quantity", addToCartModel.Quantity);
+                    cmd.Parameters.AddWithValue("@p_Userid", addToCartModel.Userid);
+                    cmd.Parameters.AddWithValue("@p_Imageid", addToCartModel.Imageid);
+                    cmd.Parameters.AddWithValue("@p_ProductId", addToCartModel.ProductId);
+                    cmd.Parameters.AddWithValue("@p_Quantity", addToCartModel.Quantity);
 
-                    SqlParameter newCartIdParam = new SqlParameter("@NewCartId", SqlDbType.Int);
+                    MySqlParameter newCartIdParam = new MySqlParameter("@p_NewCartId", MySqlDbType.Int32);
                     newCartIdParam.Direction = ParameterDirection.Output;
                     cmd.Parameters.Add(newCartIdParam);
 
@@ -304,7 +266,7 @@ namespace BAL.BusinessLogic.Helper
                             throw new Exception("Failed to add product to cart.");
                         }
                     }
-                    catch (SqlException ex) when (ex.Number == 500) // SQL Server user-defined error
+                    catch (MySqlException ex) when (ex.Number == 500)
                     {
                         Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertAddToCartProduct : errormessage:" + ex.Message.ToString()));
                         return "Error: " + ex.Message;
@@ -319,7 +281,7 @@ namespace BAL.BusinessLogic.Helper
         }
 
 
-        // Usage example
+        
 
 
 
@@ -344,16 +306,16 @@ namespace BAL.BusinessLogic.Helper
         // Author: [swathi]
         // Created Date: [03/07/2024]
         // Description: Method for GetCartProducts based on userid
-        public async Task<IEnumerable<UserProductViewModel>> GetByUserId(int userId)
+        public async Task<IEnumerable<UserProductViewModel>> GetCartByUserId(int userId)
         {
             var products = new List<UserProductViewModel>();
 
-            using (SqlConnection sqlcon = new SqlConnection(_connectionString))
+            using (var sqlcon = new MySqlConnection(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("GetByUserId", sqlcon))
+                using (var cmd = new MySqlCommand("GetCartByUserId", sqlcon))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@UserId", userId);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@p_UserId", userId);
 
                     try
                     {
@@ -388,12 +350,12 @@ namespace BAL.BusinessLogic.Helper
         // Description: Method for  Delete CartProduct
         public async Task<string> SoftDeleteAddtoCartProduct(int addToCartId)
         {
-            using (SqlConnection sqlcon = new SqlConnection(_connectionString))
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("SoftDeleteAddtoCartproduct", sqlcon))
+                using (MySqlCommand cmd = new MySqlCommand("SoftDeleteAddtoCartproduct", sqlcon))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@AddtoCartId", addToCartId);
+                    cmd.Parameters.AddWithValue("@p_AddtoCartId", addToCartId);
 
                     try
                     {
@@ -402,16 +364,21 @@ namespace BAL.BusinessLogic.Helper
 
                         if (result != null && result.ToString() == "AlreadyDeleted")
                         {
-                            return "Failed"; 
+                            return "Failed";
                         }
                         else if (result != null && result.ToString() == "Success")
                         {
-                            return "Success"; 
+                            return "Success";
                         }
                         else
                         {
-                            return "Failed"; 
+                            return "Failed";
                         }
+                    }
+                    catch (MySqlException ex)
+                    {
+                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "SoftDeleteAddtoCartProduct : errormessage:" + ex.Message.ToString()));
+                        throw;
                     }
                     catch (Exception ex)
                     {
@@ -427,15 +394,15 @@ namespace BAL.BusinessLogic.Helper
         // Description: Method for  Insert WishlistProduct
         public async Task<string> InsertWishlistproduct(Wishlistviewmodel wishlistviewmodel)
         {
-            using (SqlConnection sqlcon = new SqlConnection(_connectionString))
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("InsertWishlistItem", sqlcon))
+                using (MySqlCommand cmd = new MySqlCommand("InsertWishlistItem", sqlcon))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@Userid", wishlistviewmodel.Userid);
-                    cmd.Parameters.AddWithValue("@Imageid", wishlistviewmodel.Imageid);
-                    cmd.Parameters.AddWithValue("@ProductId", wishlistviewmodel.ProductId);
+                    cmd.Parameters.AddWithValue("@p_Userid", wishlistviewmodel.Userid);
+                    cmd.Parameters.AddWithValue("@p_Imageid", wishlistviewmodel.Imageid);
+                    cmd.Parameters.AddWithValue("@p_ProductId", wishlistviewmodel.ProductId);
 
                     try
                     {
@@ -452,39 +419,41 @@ namespace BAL.BusinessLogic.Helper
                         var result = await cmd.ExecuteScalarAsync();
 
                         // Check if the product was successfully added
-                        if (result != null && int.TryParse(result.ToString(), out int newWishlistid))
+                        if (result != null && int.TryParse(result.ToString(), out int newWishlistId))
                         {
-                            return "Success"; 
+                            return "Success";
                         }
                         else
                         {
-                           
                             throw new Exception("Failed to add product to wishlist.");
                         }
                     }
+                    catch (MySqlException ex)
+                    {
+                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertWishlistProduct : errormessage:" + ex.Message.ToString()));
+                        throw;
+                    }
                     catch (Exception ex)
                     {
-                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertWishlistproduct : errormessage:" + ex.Message.ToString()));
+                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertWishlistProduct : errormessage:" + ex.Message.ToString()));
                         throw;
                     }
                 }
-
-
             }
-
         }
-        private async Task<bool> WishlistIsProductAlreadyAdded(SqlConnection sqlcon, int userId, int imageId, int productId)
+        private async Task<bool> WishlistIsProductAlreadyAdded(MySqlConnection sqlcon, int userId, int imageId, int productId)
         {
-            using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM [PharmEtradeDB].[dbo].[Wishlist] WHERE Userid = @Userid AND Imageid = @Imageid AND ProductId = @ProductId", sqlcon))
+            using (MySqlCommand cmd = new MySqlCommand("SELECT COUNT(*) FROM `Wishlist` WHERE Userid = @p_Userid AND Imageid = @p_Imageid AND ProductId = @p_ProductId", sqlcon))
             {
-                cmd.Parameters.AddWithValue("@Userid", userId);
-                cmd.Parameters.AddWithValue("@Imageid", imageId);
-                cmd.Parameters.AddWithValue("@ProductId", productId);
+                cmd.Parameters.AddWithValue("@p_Userid", userId);
+                cmd.Parameters.AddWithValue("@p_Imageid", imageId);
+                cmd.Parameters.AddWithValue("@p_ProductId", productId);
 
                 var count = await cmd.ExecuteScalarAsync();
-                return (int)count > 0;
+                return Convert.ToInt32(count) > 0;
             }
         }
+
         // Author: [swathi]
         // Created Date: [05/07/2024]
         // Description: Method for  GetwishlistProduct by userid
@@ -492,12 +461,12 @@ namespace BAL.BusinessLogic.Helper
         {
             var products = new List<UserProductViewModel>();
 
-            using (SqlConnection sqlcon = new SqlConnection(_connectionString))
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("GetWishlistByUserId", sqlcon))
+                using (MySqlCommand cmd = new MySqlCommand("GetWishlistByUserId", sqlcon))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@UserId", userId);
+                    cmd.Parameters.AddWithValue("@p_UserId", userId);
 
                     try
                     {
@@ -519,7 +488,8 @@ namespace BAL.BusinessLogic.Helper
                     }
                     catch (Exception ex)
                     {
-                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "GetwhislistByUserId : errormessage:" + ex.Message.ToString()));
+                        // Ensure LogFileException and _exPathToSave are defined in your project
+                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "GetWishlistByUserIdAsync : errormessage:" + ex.Message));
                         throw;
                     }
                 }
@@ -532,12 +502,12 @@ namespace BAL.BusinessLogic.Helper
         // Description: Method for  Delete WishListProduct
         public async Task<string> DeleteWishlistproduct(int wishlistid)
         {
-            using (SqlConnection sqlcon = new SqlConnection(_connectionString))
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("SoftDeleteWishlistItem", sqlcon))
+                using (MySqlCommand cmd = new MySqlCommand("SoftDeleteWishlistItem", sqlcon))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@WishlistId", wishlistid);
+                    cmd.Parameters.AddWithValue("@p_WishlistId", wishlistid);
 
                     try
                     {
@@ -557,14 +527,18 @@ namespace BAL.BusinessLogic.Helper
                             return "Failed";
                         }
                     }
+                    catch (MySqlException ex)
+                    {
+                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "DeleteWishlistProduct : errormessage:" + ex.Message.ToString()));
+                        throw;
+                    }
                     catch (Exception ex)
                     {
-                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "DeleteWishlistproduct : errormessage:" + ex.Message.ToString()));
+                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "DeleteWishlistProduct : errormessage:" + ex.Message.ToString()));
                         throw;
                     }
                 }
             }
-
         }
 
 
