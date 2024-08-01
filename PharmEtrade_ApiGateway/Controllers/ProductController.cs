@@ -19,19 +19,42 @@ namespace PharmEtrade_ApiGateway.Controllers
         // Author: [swathi]
         // Created Date: [02/07/2024]
         // Description: Method for InsertProducts
+        //[HttpPost("InsertProduct")]
+        //public async Task<IActionResult> InsertProduct([FromBody] ProductFilter productviewmodel)
+        //{
+        //    try
+        //    {
+        //        var result = await _productRepo.InsertAddProduct(productviewmodel);
+        //        return Ok(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
         [HttpPost("InsertProduct")]
-        public async Task<IActionResult> InsertProduct([FromBody] ProductFilter productviewmodel)
+        public async Task<IActionResult> InsertProduct([FromForm] ProductFilter productviewmodel, [FromForm] IFormFile imageFile)
         {
+            if (productviewmodel == null || imageFile == null)
+            {
+                return BadRequest("Invalid product data or image file.");
+            }
+
             try
             {
-                var result = await _productRepo.InsertAddProduct(productviewmodel);
-                return Ok(result);
+                using (var memoryStream = new MemoryStream())
+                {
+                    await imageFile.CopyToAsync(memoryStream);
+                    var result = await _productRepo.InsertAddProduct(productviewmodel, memoryStream, imageFile.FileName);
+                    return Ok(result);
+                }
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
         // Author: [swathi]
         // Created Date: [10/07/2024]

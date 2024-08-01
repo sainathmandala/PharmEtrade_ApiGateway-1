@@ -1,0 +1,1 @@
+260724133539PM:GetByUserId : errormessage:Procedure or function 'GetByUserId' cannot be found in database ''. Verify that user 'root'@'localhost' has enough privileges to execute.
