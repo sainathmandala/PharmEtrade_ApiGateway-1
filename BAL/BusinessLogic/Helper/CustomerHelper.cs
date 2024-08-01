@@ -99,6 +99,8 @@ namespace BAL.BusinessLogic.Helper
                 cmd.Parameters.AddWithValue("p_usertypeid", userViewModel.UsertypeId);
                 cmd.Parameters.AddWithValue("p_accounttype", userViewModel.Accounttype);
                 cmd.Parameters.AddWithValue("p_upnmember", userViewModel.UpnMember);
+                cmd.Parameters.AddWithValue("p_otp", null);
+                cmd.Parameters.AddWithValue("p_otp_expiration",null);
 
                 await sqlcon.OpenAsync();
                 await _isqlDataHelper.ExcuteNonQueryasync(cmd);
