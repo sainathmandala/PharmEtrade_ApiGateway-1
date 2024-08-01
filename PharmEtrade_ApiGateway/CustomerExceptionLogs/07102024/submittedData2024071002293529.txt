@@ -1,0 +1,2 @@
+100724142943PM:SendOTPEmail: ErrorMessage - The ROLLBACK TRANSACTION request has no corresponding BEGIN TRANSACTION.
+User with specified email does not exist.

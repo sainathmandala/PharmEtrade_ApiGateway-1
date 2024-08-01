@@ -13,10 +13,21 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using BAL.ViewModels;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Amazon.S3;
 using Amazon.Extensions.NETCore.Setup;
 
 var builder = WebApplication.CreateBuilder(args);
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+//var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+var keyString = jwtSettings["Key"];
+
+if (string.IsNullOrEmpty(keyString))
+{
+    throw new InvalidOperationException("JWT Key is not configured. Please ensure 'JwtSettings:Key' is set in appsettings.json.");
+}
+
+var key = Encoding.UTF8.GetBytes(keyString);
 
 // Add services to the container
 builder.Services.AddAWSService<IAmazonS3>();
@@ -25,8 +36,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     // Configure JWT authentication
-    var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-    var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+    //var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+    //var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
     var securityScheme = new OpenApiSecurityScheme
     {
@@ -56,8 +67,8 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityRequirement(securityRequirement);
 });
 
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+//var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+//var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
 // Configure JWT authentication
 builder.Services.AddAuthentication(options =>
