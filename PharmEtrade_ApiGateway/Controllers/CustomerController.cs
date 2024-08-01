@@ -88,7 +88,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         // Author: [shiva]
         // Created Date: [02/07/2024]
         // Description: Method for Get the data Of Users From User Table 
-        [Authorize(Policy = "CustomerPolicy")]
+        //[Authorize(Policy = "CustomerPolicy")]
         [HttpGet]
         [Route("GetUserDetailsByUserId")]
         public async Task<IActionResult> GetUserDetailsByUserId(int userId)

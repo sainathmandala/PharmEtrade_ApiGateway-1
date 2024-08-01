@@ -52,16 +52,16 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                 if (dtResult != null && dtResult.Rows.Count > 0)
                 {
                     DataRow row = dtResult.Rows[0];
-                    response.LoginStatus = row["v_LoginStatus"].ToString();
-                    response.UserId = Convert.ToInt32(row["v_UserId"]);
-                    response.Firstname = row["v_firstname"].ToString();
-                    response.lastname = row["v_lastname"].ToString();
-                    response.UserEmail = row["v_UserEmail"].ToString();
-                    response.userType = row["v_Usertype"].ToString();
+                    response.LoginStatus = row["LoginStatus"].ToString();
+                    response.UserId = Convert.ToInt32(row["UserId"]);
+                    response.Firstname = row["Firstname"].ToString();
+                    response.lastname = row["Lastname"].ToString();
+                    response.UserEmail = row["UserEmail"].ToString();
+                    response.userType = row["userType"].ToString();
 
                     if (response.LoginStatus == "Success")
                     {
-                        response.token = _jwtTokenService.GenerateToken(response.Firstname, response.userType);
+                        response.token = _jwtTokenService.GenerateToken(response.UserEmail, response.userType);
                         response.statusCode = 200;
                         //response.message = LoginSuccessMsg;
                     }
