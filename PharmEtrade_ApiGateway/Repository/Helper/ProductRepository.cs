@@ -19,14 +19,12 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         // Author: [swathi]
         // Created Date: [02/07/2024]
         // Description: Method for InsertProducts
-        public async Task<Response> InsertAddProduct(ProductFilter productviewmodel)
+        public async Task<Response> InsertAddProduct(ProductFilter productviewmodel, Stream imageFileStream, string imageFileName)
         {
             Response response = new Response();
             try
             {
-
-               
-                string status = await _productHelper.InsertAddProduct(productviewmodel);
+                string status = await _productHelper.InsertAddProduct(productviewmodel, imageFileStream, imageFileName);
                 if (status.Equals("Success"))
                 {
                     response.status = 200;
@@ -37,10 +35,8 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             {
                 response.status = 500;
                 response.message = ex.Message;
-
             }
             return response;
-
         }
         // Author: [swathi]
         // Created Date: [10/07/2024]
@@ -123,7 +119,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         // Description: Method for GetCartProducts based on userid
         public async Task<IEnumerable<UserProductViewModel>> GetByUserId(int userId)
         {
-            return await _productHelper.GetByUserId(userId);
+            return await _productHelper.GetCartByUserId(userId);
         }
         // Author: [swathi]
         // Created Date: [04/07/2024]
