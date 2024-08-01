@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using static System.Net.Mime.MediaTypeNames;
 using System.Security.AccessControl;
 using DAL.Models;
-
+using MySql.Data.MySqlClient;
 namespace BAL.BusinessLogic.Helper
 {
     public  class ProductFilterHelper:IProductFilter
@@ -34,16 +34,16 @@ namespace BAL.BusinessLogic.Helper
         // Description: Method for GetProductFilter
         public async Task<DataTable> GetFilteredProducts(int? productCategoryId, string productName)
         {
-            SqlConnection sqlcon = new SqlConnection(_connectionString);
-            SqlCommand cmd = new SqlCommand();
+            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
+            MySqlCommand cmd = new MySqlCommand();
             try
             {
-                cmd = new SqlCommand("SP_GetFilteredProducts", sqlcon);
+                cmd = new MySqlCommand("SP_GetFilteredProducts", sqlcon);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@ProductCategoryID", productCategoryId ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@ProductName", productName ?? (object)DBNull.Value);
                 await sqlcon.OpenAsync();
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                using (MySqlDataAdapter da = new MySqlDataAdapter(cmd))
                 {
                     DataTable dt = new DataTable();
                     da.Fill(dt);
@@ -61,11 +61,11 @@ namespace BAL.BusinessLogic.Helper
         //Description:Method for GetProducts
         public async Task<DataTable> GetProducts()
         {
-            SqlConnection sqlcon = new SqlConnection(_connectionString);
-            SqlCommand cmd = new SqlCommand();
+            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
+            MySqlCommand cmd = new MySqlCommand();
             try
             {
-                cmd = new SqlCommand("SP_GetAllProducts", sqlcon);
+                cmd = new MySqlCommand("SP_GetAllProducts", sqlcon);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                 return await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
@@ -80,11 +80,11 @@ namespace BAL.BusinessLogic.Helper
         }
         public async Task<DataTable> GetProductsById(int AddproductID)
         {
-            SqlConnection sqlcon = new SqlConnection(_connectionString);
-            SqlCommand cmd = new SqlCommand();
+            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
+            MySqlCommand cmd = new MySqlCommand();
             try
             {
-                cmd = new SqlCommand("SP_GetProductById", sqlcon);
+                cmd = new MySqlCommand("SP_GetProductById", sqlcon);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@AddproductID", AddproductID);
 
