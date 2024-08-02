@@ -103,6 +103,7 @@ namespace BAL.BusinessLogic.Helper
                             cmdProduct.Parameters.AddWithValue("@p_AboutTheProduct", productviewmodel.AboutTheProduct);
                             cmdProduct.Parameters.AddWithValue("@p_CategorySpecificationId", productviewmodel.CategorySpecificationId);
                             cmdProduct.Parameters.AddWithValue("@p_ProductTypeId", productviewmodel.ProductTypeId);
+                            cmdProduct.Parameters.AddWithValue("@p_SellerId", productviewmodel.SellerId);
 
 
                             await cmdProduct.ExecuteNonQueryAsync();
