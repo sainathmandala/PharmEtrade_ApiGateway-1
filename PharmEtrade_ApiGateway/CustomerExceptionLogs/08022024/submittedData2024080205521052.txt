@@ -1,0 +1,1 @@
+020824175210PM:GetusersdataByEmail_sp :  errormessage:Table 'pharmetradedb.userTypes' doesn't exist
