@@ -19,9 +19,9 @@ namespace PharmEtrade_ApiGateway.Controllers
         // Description: Method for GetFilteredProducts
         [HttpGet]
         [Route("GetFilteredProducts")]
-        public async Task<IActionResult> GetFilteredProducts(int? productCategoryId, string productName)
+        public async Task<IActionResult> GetFilteredProducts(string productName)
         {
-            var products = await _iproductFilterRepo.GetFilteredProducts(productCategoryId, productName);
+            var products = await _iproductFilterRepo.GetFilteredProducts(productName);
 
             if (products == null || products.Count == 0)
             {

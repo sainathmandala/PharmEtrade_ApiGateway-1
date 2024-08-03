@@ -32,30 +32,30 @@ namespace BAL.BusinessLogic.Helper
         // Author: [Mamatha]
         // Created Date: [01/07/2024]
         // Description: Method for GetProductFilter
-        public async Task<DataTable> GetFilteredProducts(int? productCategoryId, string productName)
+        public async Task<DataTable> GetFilteredProducts(string productName)
         {
-            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
-            MySqlCommand cmd = new MySqlCommand();
-            try
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+            using (MySqlCommand cmd = new MySqlCommand("SP_GetFilteredProducts", sqlcon))
             {
-                cmd = new MySqlCommand("SP_GetFilteredProducts", sqlcon);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@ProductCategoryID", productCategoryId ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@ProductName", productName ?? (object)DBNull.Value);
-                await sqlcon.OpenAsync();
-                using (MySqlDataAdapter da = new MySqlDataAdapter(cmd))
+                try
                 {
-                    DataTable dt = new DataTable();
-                    da.Fill(dt);
+
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    //cmd.Parameters.AddWithValue("ProductCategoryID", productCategoryId);
+                    cmd.Parameters.AddWithValue("inputProductName", productName);
+                    await sqlcon.OpenAsync();
+                    DataTable dt = await _isqlDataHelper.SqlDataAdapterasync(cmd);
                     return dt;
                 }
+
+                catch (Exception ex)
+                {
+                    await Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "GetFilteredProducts_sp :  errormessage:" + ex.Message.ToString()));
+                    throw;
+                }
             }
-            catch (Exception ex)
-            {
-                await Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "GetFilteredProducts_sp :  errormessage:" + ex.Message.ToString()));
-                throw ex;
-            }     
         }
+
         //Author:[Mamatha]
         //Created Date:[02/07/2024]
         //Description:Method for GetProducts
@@ -86,7 +86,7 @@ namespace BAL.BusinessLogic.Helper
             {
                 cmd = new MySqlCommand("SP_GetProductById", sqlcon);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@AddproductID", AddproductID);
+                cmd.Parameters.AddWithValue("in_AddproductID", AddproductID);
 
                 return await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
             }
