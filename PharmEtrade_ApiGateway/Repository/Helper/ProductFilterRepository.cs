@@ -18,55 +18,27 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             _IProductFilter = iproductfilter;
         }
-        public async Task<List<ProductFilter>> GetFilteredProducts(int? productCategoryId, string productName)
+        public async Task<List<ProductFilter>> GetFilteredProducts(string productName)
         {
-            List<ProductFilter> response = new List<ProductFilter>();
-
             try
             {
-                var dtResult = await _IProductFilter.GetFilteredProducts(productCategoryId, productName);
+                var dtResult = await _IProductFilter.GetFilteredProducts(productName);
 
-                if (dtResult != null && dtResult.Rows.Count > 0)
-                {
-                    foreach (DataRow row in dtResult.Rows)
-                    {
-                        response.Add(new ProductFilter
-                        {
-                            AddproductID = Convert.ToInt32(row["AddproductID"]),
-                            Productcategory_id = Convert.ToInt32(row["Productcategory_id"]),
-                            //ImageID = Convert.ToInt32(row["ImageID"]),
-                            Sizeid = Convert.ToInt32(row["Sizeid"]),
-                            ProductName = row["ProductName"].ToString(),
-                            NDCorUPC = row["NDCorUPC"].ToString(),
-                            BrandName = row["BrandName"].ToString(),
-                            PriceName = Convert.ToDecimal(row["PriceName"]),
-                            UPNmemberPrice = Convert.ToDecimal(row["UPNmemberPrice"]),
-                            AmountInStock = Convert.ToInt32(row["AmountInStock"]),
-                            Taxable = Convert.ToBoolean(row["Taxable"]),
-                            SalePrice = Convert.ToDecimal(row["SalePrice"]),
-                            SalePriceFrom = Convert.ToDateTime(row["SalePriceFrom"]),
-                            SalePriceTo = Convert.ToDateTime(row["SalePriceTo"]),
-                            Manufacturer = row["Manufacturer"].ToString(),
-                            Strength = row["Strength"].ToString(),
-                            Fromdate = Convert.ToDateTime(row["Fromdate"]),
-                            LotNumber = row["LotNumber"].ToString(),
-                            ExpirationDate = Convert.ToDateTime(row["ExpirationDate"]),
-                            PackQuantity = Convert.ToInt32(row["PackQuantity"]),
-                            PackType = row["PackType"].ToString(),
-                            PackCondition = row["PackCondition"].ToString(),
-                            ProductDescription = row["ProductDescription"].ToString()
-                        });
-                    }
-                }
+                var response = ConvertDataTabletoProductList(dtResult);
+
+                return response;
             }
+
             catch (Exception ex)
             {
                 // Handle the exception, log it, and/or return an appropriate error response.
                 throw new Exception($"An error occurred while fetching products: {ex.Message}");
             }
 
-            return response;
+
         }
+
+
         // Author: [Mamatha]
         // Created Date: [02/07/2024]
         // Description: Method for GetProducts
@@ -121,47 +93,56 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
 
         private List<ProductFilter> ConvertDataTabletoProductList(DataTable dt)
         {
-            List<ProductFilter> productfilter = new List<ProductFilter>();
+            List<ProductFilter> productFilterList = new List<ProductFilter>();
 
             if (dt != null && dt.Rows.Count > 0)
             {
                 foreach (DataRow row in dt.Rows)
                 {
-                    ProductFilter user = new ProductFilter();
-                    user.AddproductID = Convert.ToInt32(row["AddproductID"]);
-                    user.Productcategory_id = Convert.ToInt32(row["Productcategory_id"]);
-                    //user.ImageID = Convert.ToInt32(row["ImageID"]);
-                    user.Sizeid = Convert.ToInt32(row["Sizeid"]);
-                    user.ProductName = row["ProductName"].ToString();
-                    user.NDCorUPC = row["NDCorUPC"].ToString();
-                    user.BrandName = row["BrandName"].ToString();
-                    user.PriceName = Convert.ToDecimal(row["PriceName"]);
-                    user.UPNmemberPrice = Convert.ToDecimal(row["UPNmemberPrice"]);
-                    user.AmountInStock = Convert.ToInt32(row["AmountInStock"]);
-                    user.Taxable = Convert.ToBoolean(row["Taxable"]);
-                    user.SalePrice = Convert.ToDecimal(row["SalePrice"]);
-                    user.SalePriceFrom = Convert.ToDateTime(row["SalePriceFrom"]);
-                    user.SalePriceTo = Convert.ToDateTime(row["SalePriceTo"]);
-                    user.Manufacturer = row["Manufacturer"].ToString();
-                    user.Strength = row["Strength"].ToString();
-                    user.Fromdate = Convert.ToDateTime(row["Fromdate"]);
-                    user.LotNumber = row["LotNumber"].ToString();
-                    user.ExpirationDate = Convert.ToDateTime(row["ExpirationDate"]);
-                    user.PackQuantity = Convert.ToInt32(row["PackQuantity"]);
-                    user.PackType = row["PackType"].ToString();
-                    user.PackCondition = row["PackCondition"].ToString();
-                    user.ProductDescription = row["ProductDescription"].ToString();
+                    ProductFilter productFilter = new ProductFilter();
 
+                    productFilter.AddproductID = dt.Columns.Contains("AddproductID") && row["AddproductID"] != DBNull.Value ? Convert.ToInt32(row["AddproductID"]) : 0;
+                    productFilter.Productcategory_id = row["Productcategory_id"] != DBNull.Value ? Convert.ToInt32(row["Productcategory_id"]) : 0;
+                    productFilter.Sizeid = row["Sizeid"] != DBNull.Value ? Convert.ToInt32(row["Sizeid"]) : 0;
+                    productFilter.ProductName = row["ProductName"].ToString();
+                    productFilter.NDCorUPC = row["NDCorUPC"].ToString();
+                    productFilter.BrandName = row["BrandName"].ToString();
+                    productFilter.PriceName = row["PriceName"] != DBNull.Value ? Convert.ToDecimal(row["PriceName"]) : 0;
+                    productFilter.UPNmemberPrice = row["UPNmemberPrice"] != DBNull.Value ? Convert.ToDecimal(row["UPNmemberPrice"]) : 0;
+                    productFilter.AmountInStock = row["AmountInStock"] != DBNull.Value ? Convert.ToInt32(row["AmountInStock"]) : 0;
+                    productFilter.Taxable = row["Taxable"] != DBNull.Value ? Convert.ToBoolean(row["Taxable"]) : false;
+                    productFilter.SalePrice = row["SalePrice"] != DBNull.Value ? Convert.ToDecimal(row["SalePrice"]) : 0;
+                    productFilter.SalePriceFrom = Convert.ToDateTime(row["SalePriceFrom"]);
+                    productFilter.SalePriceTo = Convert.ToDateTime(row["SalePriceTo"]);
+                    productFilter.Manufacturer = row["Manufacturer"].ToString();
+                    productFilter.Strength = row["Strength"].ToString();
+                    productFilter.Fromdate = Convert.ToDateTime(row["Fromdate"]);
+                    productFilter.LotNumber = row["LotNumber"].ToString();
+                    productFilter.ExpirationDate = Convert.ToDateTime(row["ExpirationDate"]);
+                    productFilter.PackQuantity = row["PackQuantity"] != DBNull.Value ? Convert.ToInt32(row["PackQuantity"]) : 0;
+                    productFilter.PackType = row["PackType"].ToString();
+                    productFilter.PackCondition = row["PackCondition"].ToString();
+                    productFilter.ProductDescription = row["ProductDescription"].ToString();
+                    productFilter.MetaKeywords = row["MetaKeywords"].ToString();
+                    productFilter.MetaTitle = row["MetaTitle"].ToString();
+                    productFilter.MetaDescription = row["MetaDescription"].ToString();
+                    productFilter.SaltComposition = row["SaltComposition"].ToString();
+                    productFilter.UriKey = row["UriKey"].ToString();
+                    productFilter.AboutTheProduct = row["AboutTheProduct"].ToString();
+                    productFilter.CategorySpecificationId = row["CategorySpecificationId"] != DBNull.Value ? Convert.ToInt32(row["CategorySpecificationId"]) : 0;
+                    productFilter.ProductTypeId = row["ProductTypeId"] != DBNull.Value ? Convert.ToInt32(row["ProductTypeId"]) : 0;
+                    productFilter.SellerId = row["SellerId"] != DBNull.Value ? Convert.ToInt32(row["SellerId"]) : 0;
 
-                    productfilter.Add(user);
-
+                    productFilterList.Add(productFilter);
                 }
-                return productfilter;
-            }
-            else
 
-                return productfilter;
+            }
+
+
+            return productFilterList;
         }
+
+
     }
 
 }
