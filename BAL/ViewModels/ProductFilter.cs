@@ -58,8 +58,8 @@ namespace BAL.ViewModels
 
         public IFormFile ImageUrl { get; set; }
         public string Caption { get; set; }
-        [Required]
-         public IFormFile ImageFile { get; set; }
+        //[Required]
+        // public IFormFile ImageFile { get; set; }
 
         public string MetaKeywords { get; set; }
         public string MetaTitle { get; set; }

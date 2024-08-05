@@ -36,8 +36,96 @@ namespace BAL.BusinessLogic.Helper
         // Author: [swathi]
         // Created Date: [02/07/2024]
         // Description: Method for InsertProducts
+        //public async Task<string> InsertAddProduct(ProductFilter productviewmodel, Stream imageFileStream, string imageFileName)
+        // {
+        //    using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+        //    {
+        //        try
+        //        {
+        //            await sqlcon.OpenAsync();
+
+        //            // Begin a transaction
+        //            MySqlTransaction transaction = await sqlcon.BeginTransactionAsync();
+
+        //            // Step 1: Define the folder name
+        //            string folderName = "PharmaEtrade";
+
+        //            // Step 2: Upload Image to AWS S3
+        //            string imageUrl = await _s3Helper.UploadFileAsync(imageFileStream, folderName, imageFileName);
+
+        //            // Step 3: Insert Image URL and get ImageID
+        //            using (MySqlCommand cmdImage = new MySqlCommand("InsertImageUrl", sqlcon, transaction))
+        //            {
+        //                cmdImage.CommandType = CommandType.StoredProcedure;
+        //                cmdImage.Parameters.AddWithValue("@p_ImageUrl", imageUrl);
+        //                cmdImage.Parameters.AddWithValue("@p_Caption", productviewmodel.Caption);
+        //                MySqlParameter imageIDParam = new MySqlParameter("@p_ImageID", MySqlDbType.Int32)
+        //                {
+        //                    Direction = ParameterDirection.Output
+        //                };
+        //                cmdImage.Parameters.Add(imageIDParam);
+
+        //                await cmdImage.ExecuteNonQueryAsync();
+        //                int imageID = (int)imageIDParam.Value;
+
+        //                // Step 4: Insert Product using the obtained ImageID
+        //                using (MySqlCommand cmdProduct = new MySqlCommand("InsertAddProduct", sqlcon, transaction))
+        //                {
+        //                    cmdProduct.CommandType = CommandType.StoredProcedure;
+
+        //                    cmdProduct.Parameters.AddWithValue("@p_Productcategory_id", productviewmodel.Productcategory_id);
+        //                    cmdProduct.Parameters.AddWithValue("@p_ImageID", imageID);
+        //                    cmdProduct.Parameters.AddWithValue("@p_Sizeid", productviewmodel.Sizeid);
+        //                    cmdProduct.Parameters.AddWithValue("@p_ProductName", productviewmodel.ProductName);
+        //                    cmdProduct.Parameters.AddWithValue("@p_NDCorUPC", productviewmodel.NDCorUPC);
+        //                    cmdProduct.Parameters.AddWithValue("@p_BrandName", productviewmodel.BrandName);
+        //                    cmdProduct.Parameters.AddWithValue("@p_PriceName", productviewmodel.PriceName);
+        //                    cmdProduct.Parameters.AddWithValue("@p_UPNmemberPrice", productviewmodel.UPNmemberPrice);
+        //                    cmdProduct.Parameters.AddWithValue("@p_AmountInStock", productviewmodel.AmountInStock);
+        //                    cmdProduct.Parameters.AddWithValue("@p_Taxable", productviewmodel.Taxable);
+        //                    cmdProduct.Parameters.AddWithValue("@p_SalePrice", productviewmodel.SalePrice);
+        //                    cmdProduct.Parameters.AddWithValue("@p_SalePriceFrom", productviewmodel.SalePriceFrom);
+        //                    cmdProduct.Parameters.AddWithValue("@p_SalePriceTo", productviewmodel.SalePriceTo);
+        //                    cmdProduct.Parameters.AddWithValue("@p_Manufacturer", productviewmodel.Manufacturer);
+        //                    cmdProduct.Parameters.AddWithValue("@p_Strength", productviewmodel.Strength);
+        //                    cmdProduct.Parameters.AddWithValue("@p_Fromdate", productviewmodel.Fromdate);
+        //                    cmdProduct.Parameters.AddWithValue("@p_LotNumber", productviewmodel.LotNumber);
+        //                    cmdProduct.Parameters.AddWithValue("@p_ExpirationDate", productviewmodel.ExpirationDate);
+        //                    cmdProduct.Parameters.AddWithValue("@p_PackQuantity", productviewmodel.PackQuantity);
+        //                    cmdProduct.Parameters.AddWithValue("@p_PackType", productviewmodel.PackType);
+        //                    cmdProduct.Parameters.AddWithValue("@p_PackCondition", productviewmodel.PackCondition);
+        //                    cmdProduct.Parameters.AddWithValue("@p_ProductDescription", productviewmodel.ProductDescription);
+        //                    cmdProduct.Parameters.AddWithValue("@p_MetaKeywords", productviewmodel.MetaKeywords);
+        //                    cmdProduct.Parameters.AddWithValue("@p_MetaTitle", productviewmodel.MetaTitle);
+        //                    cmdProduct.Parameters.AddWithValue("@p_MetaDescription", productviewmodel.MetaDescription);
+        //                    cmdProduct.Parameters.AddWithValue("@p_SaltComposition", productviewmodel.SaltComposition);
+        //                    cmdProduct.Parameters.AddWithValue("@p_UriKey", productviewmodel.UriKey);
+        //                    cmdProduct.Parameters.AddWithValue("@p_AboutTheProduct", productviewmodel.AboutTheProduct);
+        //                    cmdProduct.Parameters.AddWithValue("@p_CategorySpecificationId", productviewmodel.CategorySpecificationId);
+        //                    cmdProduct.Parameters.AddWithValue("@p_ProductTypeId", productviewmodel.ProductTypeId);
+        //                    cmdProduct.Parameters.AddWithValue("@p_SellerId", productviewmodel.SellerId);
+
+
+        //                    await cmdProduct.ExecuteNonQueryAsync();
+        //                }
+
+        //                // Commit the transaction
+        //                await transaction.CommitAsync();
+
+        //                return "Success";
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message.ToString()));
+        //            // Handle the exception as needed
+        //            throw;
+        //        }
+        //    }
+        //}
+
         public async Task<string> InsertAddProduct(ProductFilter productviewmodel, Stream imageFileStream, string imageFileName)
-         {
+        {
             using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
                 try
@@ -105,7 +193,6 @@ namespace BAL.BusinessLogic.Helper
                             cmdProduct.Parameters.AddWithValue("@p_ProductTypeId", productviewmodel.ProductTypeId);
                             cmdProduct.Parameters.AddWithValue("@p_SellerId", productviewmodel.SellerId);
 
-
                             await cmdProduct.ExecuteNonQueryAsync();
                         }
 
@@ -123,6 +210,7 @@ namespace BAL.BusinessLogic.Helper
                 }
             }
         }
+
         // Author: [swathi]
         // Created Date: [10/07/2024]
         // Description: Method for BulkInsertProducts
@@ -444,7 +532,7 @@ namespace BAL.BusinessLogic.Helper
         }
         private async Task<bool> WishlistIsProductAlreadyAdded(MySqlConnection sqlcon, int userId, int imageId, int productId)
         {
-            using (MySqlCommand cmd = new MySqlCommand("SELECT COUNT(*) FROM `Wishlist` WHERE Userid = @p_Userid AND Imageid = @p_Imageid AND ProductId = @p_ProductId", sqlcon))
+            using (MySqlCommand cmd = new MySqlCommand("SELECT COUNT(*) FROM `wishlist` WHERE Userid = @p_Userid AND Imageid = @p_Imageid AND ProductId = @p_ProductId", sqlcon))
             {
                 cmd.Parameters.AddWithValue("@p_Userid", userId);
                 cmd.Parameters.AddWithValue("@p_Imageid", imageId);
