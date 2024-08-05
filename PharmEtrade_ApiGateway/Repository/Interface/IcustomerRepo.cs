@@ -16,5 +16,6 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<Response> UpdatePasswordByEmail(string email, string newPassword);
         Task<Response> SendOTPEmail(string email);
         Task<loginViewModel> OtpLogin(string email, string otp);
+        Task<Response> SaveBusinessInfoData(BusinessInfoViewModel businessInfo);
     }
 }

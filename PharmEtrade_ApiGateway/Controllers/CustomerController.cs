@@ -348,6 +348,16 @@ namespace PharmEtrade_ApiGateway.Controllers
 
             return Unauthorized();
         }
+
+        // Author: [shiva]
+        // Created Date: [05/08/2024]
+        // Description:Method for Save the data of Business Info Of User
+        [HttpPost]
+        [Route("SaveBusinessInfo")]
+        public async Task<IActionResult> SaveBusinessInfoData([FromForm]BusinessInfoViewModel businessInfo)
+        {
+            return Ok(await _icustomerRepo.SaveBusinessInfoData(businessInfo));
+        }
     }
 
 
