@@ -1,0 +1,1 @@
+020824143219PM:UpdatePasswordBymail: ErrorMessage - New password must be at least 6 characters long.

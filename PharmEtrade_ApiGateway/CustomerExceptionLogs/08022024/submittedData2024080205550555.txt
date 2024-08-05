@@ -1,0 +1,1 @@
+020824175505PM:UpdatePassword: ErrorMessage - New password must be at least 6 characters long.
