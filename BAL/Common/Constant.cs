@@ -25,5 +25,6 @@ namespace BAL.Common
         public const string DeleteWishlistproductSuccessMsg = "Product deleted from wishlist successfully";
         public const string SendOtpSuccessMsg = "Otp Send successfully";
         public const string OtpExperiedMsg = "OTP is invalid or has expired.";
+        public const string BusinessInfoSuccessMsg = "Business Info Stored Successfully";
     }
 }

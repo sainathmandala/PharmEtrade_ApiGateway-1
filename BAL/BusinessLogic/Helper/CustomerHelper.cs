@@ -23,6 +23,7 @@ namespace BAL.BusinessLogic.Helper
         private string exFolder = Path.Combine("CustomerExceptionLogs");
         private string exPathToSave = string.Empty;
         private readonly SmtpSettings _smtpSettings;
+        private readonly S3Helper _s3Helper;
 
         public CustomerHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper, SmtpSettings smtpSettings)
         {
@@ -30,6 +31,7 @@ namespace BAL.BusinessLogic.Helper
             _connectionString = configuration.GetConnectionString("OnlineexamDB");
             exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), exFolder);
             _smtpSettings = smtpSettings;
+            _s3Helper = new S3Helper(configuration);
         }
 
         // Author: [Shiva]
@@ -400,6 +402,88 @@ namespace BAL.BusinessLogic.Helper
             catch (Exception ex)
             {
                 Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "OtpLogin :  errormessage:" + ex.Message.ToString()));
+
+                throw ex;
+            }
+        }
+
+
+        // Author: [Shiva]
+        // Created Date: [04/08/2024]
+        // Description: Method for Save the data of Business Info Of User
+        public async Task<string> SaveBusinessInfoData(BusinessInfoViewModel businessInfo)
+        {
+            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
+            MySqlCommand cmd = new MySqlCommand();
+            string deaLicenseS3Path = null;
+            string pharmacyLicenseS3Path = null;
+          string folderName = "User_BusinessInfo";
+            try
+            {
+                // Upload files to S3
+                if (businessInfo.DEAlicenseCopy != null)
+                {
+                    deaLicenseS3Path = await _s3Helper.UploadFileAsync(businessInfo.DEAlicenseCopy, folderName);
+                }
+
+                if (businessInfo.PharmacyLicenseCopy != null)
+                {
+                    pharmacyLicenseS3Path = await _s3Helper.UploadFileAsync(businessInfo.PharmacyLicenseCopy, folderName);
+                }
+
+                await sqlcon.OpenAsync();
+                using (var transaction = await sqlcon.BeginTransactionAsync())
+                {
+                    cmd = new MySqlCommand("SP_InsertBusinessInfo", sqlcon, transaction);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("p_user_id", businessInfo.UserId);
+                    cmd.Parameters.AddWithValue("p_shop_name", businessInfo.ShopName);
+                    cmd.Parameters.AddWithValue("p_dba", businessInfo.DBA);
+                    cmd.Parameters.AddWithValue("p_legal_business_name", businessInfo.LegalBusinessName);
+                    cmd.Parameters.AddWithValue("p_address", businessInfo.Address);
+                    cmd.Parameters.AddWithValue("p_city", businessInfo.City);
+                    cmd.Parameters.AddWithValue("p_state", businessInfo.State);
+                    cmd.Parameters.AddWithValue("p_zip", businessInfo.Zip);
+                    cmd.Parameters.AddWithValue("p_business_phone", businessInfo.BusinessPhone);
+                    cmd.Parameters.AddWithValue("p_business_fax", businessInfo.BusinessFax);
+                    cmd.Parameters.AddWithValue("p_business_email", businessInfo.BusinessEmail);
+                    cmd.Parameters.AddWithValue("p_federal_tax_id", businessInfo.FederalTaxId);
+                    cmd.Parameters.AddWithValue("p_dea", businessInfo.DEA);
+                    cmd.Parameters.AddWithValue("p_pharmacy_licence", businessInfo.PharmacyLicence);
+                    cmd.Parameters.AddWithValue("p_dea_expiration_date", businessInfo.DEAExpirationDate);
+                    cmd.Parameters.AddWithValue("p_pharmacy_license_expiration_date", businessInfo.PharmacyLicenseExpirationDate);
+                    cmd.Parameters.AddWithValue("p_dea_license_copy", deaLicenseS3Path); // Use S3 path
+                    cmd.Parameters.AddWithValue("p_pharmacy_license_copy", pharmacyLicenseS3Path); // Use S3 path
+                    cmd.Parameters.AddWithValue("p_npi", businessInfo.NPI);
+                    cmd.Parameters.AddWithValue("p_ncpdp", businessInfo.NCPDP);
+
+                    var result = await cmd.ExecuteScalarAsync();
+                    if (result != null && result.ToString() == "Business info inserted successfully.")
+                    {
+                        await transaction.CommitAsync();
+                        return "Success";
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        throw new Exception("Stored procedure execution failed.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "SaveBusinessInfoData: errormessage:" + ex.Message.ToString()));
+
+                //Delete files from S3 if stored procedure fails
+                if (!string.IsNullOrEmpty(deaLicenseS3Path))
+                {
+                    await _s3Helper.DeleteFileAsync($"User_BusinessInfo/{businessInfo.DEAlicenseCopy.FileName}");
+                }
+
+                if (!string.IsNullOrEmpty(pharmacyLicenseS3Path))
+                {
+                    await _s3Helper.DeleteFileAsync($"User_BusinessInfo/{businessInfo.PharmacyLicenseCopy.FileName}");
+                }
 
                 throw ex;
             }

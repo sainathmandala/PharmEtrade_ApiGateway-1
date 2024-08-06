@@ -20,5 +20,6 @@ namespace BAL.BusinessLogic.Interface
         Task<string> UpdatePasswordByEmail(string email, string password);
         Task<string> SendOTPEmail(string email);
         Task<DataTable> OtpLogin(string email, string otp);
+        Task<string> SaveBusinessInfoData(BusinessInfoViewModel businessInfo);
     }
 }

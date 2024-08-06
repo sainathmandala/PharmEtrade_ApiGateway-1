@@ -398,5 +398,29 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return response;
 
         }
+
+        // Author: [shiva]
+        // Created Date: [04/08/2024]
+        // Description:Method for Save the data of Business Info Of User
+        public async Task<Response> SaveBusinessInfoData(BusinessInfoViewModel businessInfo)
+        {
+            Response response = new Response();
+            try
+            {
+                string status = await _icustomerHelper.SaveBusinessInfoData(businessInfo);
+                if (status.Equals("Success"))
+                {
+                    response.status = 200;
+                    response.message = Constant.BusinessInfoSuccessMsg;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.status = 500;
+                response.message = ex.Message;
+
+            }
+            return response;
+        }
     }
 }

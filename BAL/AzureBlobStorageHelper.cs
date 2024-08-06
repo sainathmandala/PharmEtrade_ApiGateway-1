@@ -2,7 +2,11 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
+using BAL.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using MySqlX.XDevAPI;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -11,6 +15,9 @@ public class S3Helper
 {
     private readonly IAmazonS3 _s3Client;
     private readonly string _bucketName;
+ 
+  
+
 
     public S3Helper(IConfiguration configuration)
     {
@@ -23,6 +30,7 @@ public class S3Helper
         );
 
         _bucketName = awsOptions["BucketName"];
+       
     }
 
     public async Task<string> UploadFileAsync(Stream inputStream, string folderName, string fileName)
@@ -69,4 +77,56 @@ public class S3Helper
             // If the bucket already exists, we can ignore the Conflict exception
         }
     }
+
+
+    // Author: [Shiva]
+    // Created Date: [05/08/2024]
+    // Description: Method for upload the file in Bucket
+
+    public async Task<string> UploadFileAsync(IFormFile file, string folderName)
+    {
+      
+
+        await EnsureBucketExistsAsync(_bucketName);
+
+        var key = $"{folderName}/{file.FileName}";
+
+        var transferUtility = new TransferUtility(_s3Client);
+
+        using (var stream = new MemoryStream())
+        {
+            await file.CopyToAsync(stream);
+            stream.Position = 0;  // Reset stream position
+
+            var uploadRequest = new TransferUtilityUploadRequest
+            {
+                InputStream = stream,
+                Key = key,
+                BucketName = _bucketName
+            };
+
+            await transferUtility.UploadAsync(uploadRequest);
+        }
+
+        return $"https://{_bucketName}.s3.amazonaws.com/{key}";
+    }
+
+
+    // Author: [Shiva]
+    // Created Date: [05/08/2024]
+    // Description: Method for delete the file in Bucket
+    public async Task DeleteFileAsync(string key)
+    {
+        var deleteObjectRequest = new DeleteObjectRequest
+        {
+            BucketName = _bucketName,
+            Key = key
+        };
+
+        await _s3Client.DeleteObjectAsync(deleteObjectRequest);
+    }
+
+
+
+
 }
