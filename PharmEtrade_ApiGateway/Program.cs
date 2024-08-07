@@ -110,6 +110,16 @@ builder.Services.AddSingleton<IProductFilterRepo, ProductFilterRepository>();
 
 
 var app = builder.Build();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
