@@ -107,9 +107,6 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddSingleton<IProductFilter, ProductFilterHelper>();
 builder.Services.AddSingleton<IProductFilterRepo, ProductFilterRepository>();
 
-
-
-var app = builder.Build();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -120,6 +117,9 @@ builder.Services.AddCors(options =>
                    .AllowAnyHeader();
         });
 });
+
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
