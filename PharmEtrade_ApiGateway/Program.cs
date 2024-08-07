@@ -22,10 +22,10 @@ var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 //var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 var keyString = jwtSettings["Key"];
 
-if (string.IsNullOrEmpty(keyString))
-{
+ if (string.IsNullOrEmpty(keyString))
+ {
     throw new InvalidOperationException("JWT Key is not configured. Please ensure 'JwtSettings:Key' is set in appsettings.json.");
-}
+ }
 
 var key = Encoding.UTF8.GetBytes(keyString);
 
