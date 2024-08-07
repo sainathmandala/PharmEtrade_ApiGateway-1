@@ -29,5 +29,11 @@ namespace PharmEtrade_ApiGateway.Controllers
             })
             .ToArray();
         }
+
+        [HttpGet("[action]")]
+        public IActionResult Gets()
+        {
+            return Ok("Test API");
+        }
     }
 }
