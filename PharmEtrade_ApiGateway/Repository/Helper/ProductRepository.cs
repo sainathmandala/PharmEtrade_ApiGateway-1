@@ -4,6 +4,7 @@ using BAL.ViewModels;
 using PharmEtrade_ApiGateway.Repository.Interface;
 using System.Threading.Tasks;
 using BAL.Common;
+using System.IO;
 
 namespace PharmEtrade_ApiGateway.Repository.Helper
 {
@@ -69,12 +70,23 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         //Author:[Mamatha]
         //Created Date:[04/07/2024]
         //Description:Method for EditProductDetails
-        public async Task<ProductViewModel> EditProductDetails(int AddproductID, ProductFilter productfilter)
+        public async Task<ProductViewModel> EditProductDetails(int AddproductID, ProductFilter productfilter, Stream imageFileStream, string imageFileName)
         {
             ProductViewModel response = new ProductViewModel();
             try
             {
-                string status = await _productHelper.EditProductDetails(AddproductID, productfilter);
+                // Check if ImageUrl is not null and create a memory stream
+                Stream memoryStream = Stream.Null;
+                if (productfilter.ImageUrl != null)
+                {
+                    memoryStream = new MemoryStream();
+                    await productfilter.ImageUrl.CopyToAsync(memoryStream);
+                    memoryStream.Position = 0; // Reset the stream position
+                }
+
+                // Call the helper method with the appropriate parameters
+                string status = await _productHelper.EditProductDetails(AddproductID, productfilter, memoryStream, productfilter.ImageUrl?.FileName);
+
                 if (status.Equals("Success"))
                 {
                     response.statusCode = 200;
@@ -83,7 +95,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 response.statusCode = 500;
                 response.message = ex.Message;
