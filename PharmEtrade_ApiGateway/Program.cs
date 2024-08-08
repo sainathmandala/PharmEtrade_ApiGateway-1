@@ -22,10 +22,10 @@ var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 //var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 var keyString = jwtSettings["Key"];
 
-if (string.IsNullOrEmpty(keyString))
-{
+ if (string.IsNullOrEmpty(keyString))
+ {
     throw new InvalidOperationException("JWT Key is not configured. Please ensure 'JwtSettings:Key' is set in appsettings.json.");
-}
+ }
 
 var key = Encoding.UTF8.GetBytes(keyString);
 
@@ -107,9 +107,20 @@ builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddSingleton<IProductFilter, ProductFilterHelper>();
 builder.Services.AddSingleton<IProductFilterRepo, ProductFilterRepository>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 
 
 var app = builder.Build();
+app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

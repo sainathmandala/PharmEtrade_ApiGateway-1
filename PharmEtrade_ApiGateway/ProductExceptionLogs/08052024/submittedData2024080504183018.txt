@@ -1,0 +1,1 @@
+050824161830PM:InsertProduct :  errormessage:Parameter 'p_caption' not found in the collection.
