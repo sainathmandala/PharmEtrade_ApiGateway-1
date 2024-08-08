@@ -75,13 +75,33 @@ namespace PharmEtrade_ApiGateway.Controllers
         // Author: [Mamatha]
         // Created Date: [04/07/2024]
         // Description: Method for EditProductDetails
-        [HttpPost]
-        [Route("EditProductDetails")]
-        public async Task<IActionResult> EditProductDetails(int AddproductID, ProductFilter productfilter)
+        [HttpPost("EditProductDetails")]
+        public async Task<IActionResult> EditProductDetails(int AddproductID, [FromForm] ProductFilter productviewmodel, [FromForm] IFormFile ImageUrl)
         {
+            if (productviewmodel == null)
+            {
+                return BadRequest("Invalid product data.");
+            }
 
-            return Ok(await _productRepo.EditProductDetails(AddproductID, productfilter));
+            try
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    if (ImageUrl != null)
+                    {
+                        await ImageUrl.CopyToAsync(memoryStream);
+                    }
+
+                    var result = await _productRepo.EditProductDetails(AddproductID, productviewmodel, ImageUrl != null ? memoryStream : Stream.Null, ImageUrl?.FileName);
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+
 
         // Author: [swathi]
         // Created Date: [02/07/2024]
