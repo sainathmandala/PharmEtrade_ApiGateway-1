@@ -13,6 +13,9 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using System.Data.Common;
+using BAL.ResponseModels;
+using Microsoft.AspNetCore.Http;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -489,5 +492,119 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
+        public async Task<string> AddUpdateCustomer(Customer customer)
+        {
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                try
+                {
+                    await sqlcon.OpenAsync();
+                    cmd = new MySqlCommand("sp_AddCustomer", sqlcon);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("p_FirstName", customer.FirstName);
+                    cmd.Parameters.AddWithValue("p_LastName", customer.LastName);
+                    cmd.Parameters.AddWithValue("p_Email", customer.Email);
+                    cmd.Parameters.AddWithValue("p_Password", customer.Password);
+                    cmd.Parameters.AddWithValue("p_Mobile", customer.Mobile);
+                    cmd.Parameters.AddWithValue("p_CustomerTypeId", customer.CustomerTypeId);
+                    cmd.Parameters.AddWithValue("p_AccountTypeId", customer.AccountTypeId);
+                    cmd.Parameters.AddWithValue("p_IsUPNMember", customer.IsUPNMember);
+                    cmd.Parameters.AddWithValue("p_LoginOTP", null);
+                    cmd.Parameters.AddWithValue("p_OTPExpiryDate", null);
+                    
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        return reader["Status"].ToString() ?? "";
+                    }
+                    return "";
+                }
+                catch (Exception ex)
+                {
+                    Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "AddUpdate Customer :  errormessage:" + ex.Message.ToString()));
+                    return "ERROR : " + ex.Message;
+                }
+            }                
+        }
+
+        public async Task<UploadResponse> UploadImage(IFormFile image)
+        {
+            UploadResponse response = new UploadResponse();
+            string folderName = "User_BusinessInfo";
+            try
+            {
+                // Upload files to S3
+                if (image != null)
+                {
+                    response.ImageUrl = await _s3Helper.UploadFileAsync(image, folderName);
+                    response.Status = 200;
+                    response.Message = "Image Uploaded Successfully.";
+                }
+            }
+            catch (Exception ex)
+            {
+                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "SaveBusinessInfoData: errormessage:" + ex.Message.ToString()));
+
+                response.Status = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<string> AddUpdateBusinessInfo(CustomerBusinessInfo businessInfo)
+        {
+            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
+            MySqlCommand cmd = new MySqlCommand();           
+            
+            try
+            {
+                await sqlcon.OpenAsync();
+                using (var transaction = await sqlcon.BeginTransactionAsync())
+                {
+                    cmd = new MySqlCommand("sp_AddUpdateBusinessInfo", sqlcon, transaction);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("p_CustomerId", businessInfo.CustomerId);
+                    cmd.Parameters.AddWithValue("p_ShopName", businessInfo.ShopName);
+                    cmd.Parameters.AddWithValue("p_DBA", businessInfo.DBA);
+                    cmd.Parameters.AddWithValue("p_LegalBusinessName", businessInfo.LegalBusinessName);
+                    cmd.Parameters.AddWithValue("p_Address", businessInfo.Address);
+                    cmd.Parameters.AddWithValue("p_City", businessInfo.City);
+                    cmd.Parameters.AddWithValue("p_State", businessInfo.State);
+                    cmd.Parameters.AddWithValue("p_Zip", businessInfo.Zip);
+                    cmd.Parameters.AddWithValue("p_BusinessPhone", businessInfo.BusinessPhone);
+                    cmd.Parameters.AddWithValue("p_BusinessFax", businessInfo.BusinessFax);
+                    cmd.Parameters.AddWithValue("p_BusinessEmail", businessInfo.BusinessEmail);
+                    cmd.Parameters.AddWithValue("p_FederalTaxId", businessInfo.FederalTaxId);
+                    cmd.Parameters.AddWithValue("p_DEA", businessInfo.DEA);
+                    cmd.Parameters.AddWithValue("p_PharmacyLicence", businessInfo.PharmacyLicence);
+                    cmd.Parameters.AddWithValue("p_DEAExpirationDate", businessInfo.DEAExpirationDate);
+                    cmd.Parameters.AddWithValue("p_PharmacyLicenseExpirationDate", businessInfo.PharmacyLicenseExpirationDate);
+                    cmd.Parameters.AddWithValue("p_DEALicenseCopy", businessInfo.DEALicenseCopy); // Use S3 path
+                    cmd.Parameters.AddWithValue("p_PharmacyLicenseCopy", businessInfo.PharmacyLicenseCopy); // Use S3 path
+                    cmd.Parameters.AddWithValue("p_NPI", businessInfo.NPI);
+                    cmd.Parameters.AddWithValue("p_NCPDP", businessInfo.NCPDP);
+
+                    var result = await cmd.ExecuteScalarAsync();
+                    if (result != null && result.ToString() == "Business Info Updated successfully.")
+                    {
+                        await transaction.CommitAsync();
+                        return "SUCCESS";
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return "ERROR";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "SaveBusinessInfoData: errormessage:" + ex.Message.ToString()));
+
+                return "ERROR : " + ex.Message;
+            }
+        }
     }
 }
