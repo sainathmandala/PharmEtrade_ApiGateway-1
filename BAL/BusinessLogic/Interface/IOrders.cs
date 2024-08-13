@@ -11,5 +11,7 @@ namespace BAL.BusinessLogic.Interface
     public interface IOrders
     {
         Task<OrderResponse> AddOrder(OrderRequest orderRequest);
+        Task<List<OrderResponse>> GetOrdersByCustomerId(string customerId);
+
     }
 }

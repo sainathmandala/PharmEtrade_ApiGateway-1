@@ -81,5 +81,63 @@ namespace BAL.BusinessLogic.Helper
                 }
             }
         }
+
+        public async Task<List<OrderResponse>> GetOrdersByCustomerId(string customerId)
+        {
+            List<OrderResponse> ordersList = new List<OrderResponse>();
+
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("sp_GetOrders", sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@p_CustomerId", customerId);
+
+                    try
+                    {
+                        DataTable tblOrders = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
+
+                        if (tblOrders.Rows.Count > 0)
+                        {
+                            foreach (DataRow row in tblOrders.Rows)
+                            {
+                                ordersList.Add(new OrderResponse
+                                {
+                                    OrderId = row["OrderId"].ToString(),
+                                    CustomerName = row["CustomerName"].ToString(),
+                                    ProductName = row["ProductName"].ToString(),
+                                    //VendorName = row["VendorName"].ToString(),
+
+                                   Message = "Order retrieved successfully"
+                                });
+                            }
+                        }
+                        
+                    }
+
+                    catch (MySqlException ex)
+                    {
+                        ordersList.Add(new OrderResponse
+                        {
+                            Status = 500,
+                            Message = "Database error: " + ex.Message
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        ordersList.Add(new OrderResponse
+                        {
+                            Status = 500,
+                            Message = "Unexpected error: " + ex.Message
+                        });
+                    }
+
+
+                    return ordersList;
+                }
+            }
+        }
+
+
     }
 }
