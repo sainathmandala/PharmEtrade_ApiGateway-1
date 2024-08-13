@@ -42,29 +42,45 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         // Author: [swathi]
         // Created Date: [10/07/2024]
         // Description: Method for BulkInsertProducts
-        public async  Task<Response> ProcessExcelFileAsync(IFormFile file)
+        public async Task<Response> ProcessExcelFileAsync(IFormFile file)
         {
             Response response = new Response();
+
+            if (file == null || file.Length == 0)
+            {
+                response.status = 400; // Bad Request
+                response.message = "No file uploaded.";
+                return response;
+            }
+
             try
             {
-
-                
-                string status = await _productHelper.ProcessExcelFileAsync(file);
-                if (status.Equals("Success"))
+                // Convert IFormFile to a Stream
+                using (var excelFileStream = file.OpenReadStream())
                 {
-                    response.status = 200;
-                    response.message = Constant.InsertAddProductSuccessMsg;
+                    string status = await _productHelper.InsertProductsFromExcel(excelFileStream);
+
+                    if (status.Equals("Success"))
+                    {
+                        response.status = 200; // OK
+                        response.message = Constant.InsertAddProductSuccessMsg;
+                    }
+                    else
+                    {
+                        response.status = 500; // Internal Server Error
+                        response.message = "An error occurred while processing the file.";
+                    }
                 }
             }
             catch (Exception ex)
             {
-                response.status = 500;
+                response.status = 500; // Internal Server Error
                 response.message = ex.Message;
-
             }
-            return response;
 
+            return response;
         }
+
 
 
         //Author:[Mamatha]
