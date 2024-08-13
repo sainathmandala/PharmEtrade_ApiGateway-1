@@ -64,7 +64,7 @@ namespace BAL.ViewModels
         public int CategorySpecificationId { get; set; }
         public int ProductTypeId { get; set; }
 
-        public int SellerId { get; set; }
+        public string SellerId { get; set; }
 
 
     }

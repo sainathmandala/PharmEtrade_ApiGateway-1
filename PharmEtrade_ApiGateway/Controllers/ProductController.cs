@@ -33,19 +33,14 @@ namespace PharmEtrade_ApiGateway.Controllers
         //    }
         //}
         [HttpPost("InsertProduct")]
-        public async Task<IActionResult> InsertProduct([FromForm] ProductFilter productviewmodel, [FromForm] IFormFile ImageUrl)
+        public async Task<IActionResult> InsertProduct([FromForm] ProductFilter productviewmodel)
         {
-            if (productviewmodel == null || ImageUrl == null)
-            {
-                return BadRequest("Invalid product data or image file.");
-            }
-
             try
             {
                 using (var memoryStream = new MemoryStream())
                 {
-                    await ImageUrl.CopyToAsync(memoryStream);
-                    var result = await _productRepo.InsertAddProduct(productviewmodel, memoryStream, ImageUrl.FileName);
+                    await productviewmodel.ImageUrl.CopyToAsync(memoryStream);
+                    var result = await _productRepo.InsertAddProduct(productviewmodel, memoryStream, productviewmodel.ImageUrl.FileName);
                     return Ok(result);
                 }
             }

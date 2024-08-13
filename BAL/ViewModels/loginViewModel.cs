@@ -13,7 +13,7 @@ namespace BAL.ViewModels
         public string LoginStatus { get; set; }
 
       
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
        
         public string Firstname { get; set; }

@@ -106,6 +106,8 @@ builder.Services.AddTransient<IProductHelper, ProductHelper>();
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddSingleton<IProductFilter, ProductFilterHelper>();
 builder.Services.AddSingleton<IProductFilterRepo, ProductFilterRepository>();
+builder.Services.AddSingleton<IOrdersRepository, OrdersRepository>();
+builder.Services.AddSingleton<IOrders, OrdersHelper>();
 
 builder.Services.AddCors(options =>
 {

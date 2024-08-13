@@ -54,7 +54,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                 {
                     DataRow row = dtResult.Rows[0];
                     response.LoginStatus = row["LoginStatus"].ToString();
-                    response.UserId = Convert.ToInt32(row["UserId"]);
+                    response.UserId = row["UserId"].ToString();
                     response.Firstname = row["Firstname"].ToString();
                     response.lastname = row["Lastname"].ToString();
                     response.UserEmail = row["UserEmail"].ToString();
@@ -71,6 +71,11 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                         response.statusCode = 400;
                         response.message = "Invalid credentials or user role not found";
                     }
+                }
+                else
+                {
+                    response.statusCode = 400;
+                    response.message = "Invalid credentials or user role not found";
                 }
             }
             catch (Exception ex)
@@ -371,7 +376,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                 {
                     DataRow row = dtResult.Rows[0];
                     response.LoginStatus = row["LoginStatus"].ToString();
-                    response.UserId = Convert.ToInt32(row["user_id"]);
+                    response.UserId = row["user_id"].ToString();
                     response.Firstname = row["first_name"].ToString();
                     response.lastname = row["last_name"].ToString();
                     response.UserEmail = row["email"].ToString();

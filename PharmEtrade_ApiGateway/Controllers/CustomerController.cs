@@ -39,12 +39,7 @@ namespace PharmEtrade_ApiGateway.Controllers
             var response = await _icustomerRepo.CustomerLogin(UserName,Password);
             if (response != null && response.LoginStatus == "Success")
             {
-                return Ok(new
-                {
-                    Token = response.token,
-                    //Username = response.Username,
-                    //Role = response.Role
-                });
+                return Ok(response);
             }
 
             return Unauthorized();

@@ -202,7 +202,7 @@ namespace BAL.BusinessLogic.Helper
                                 AboutTheProduct = worksheet.Cells[row, 28].Value.ToString(),
                                 CategorySpecificationId = Convert.ToInt32(worksheet.Cells[row, 29].Value),
                                 ProductTypeId = Convert.ToInt32(worksheet.Cells[row, 30].Value),
-                                SellerId = Convert.ToInt32(worksheet.Cells[row, 31].Value)
+                                SellerId = worksheet.Cells[row, 31].Value.ToString()
                             };
 
                             // Assuming image file is stored locally or in a place from where you can read the stream

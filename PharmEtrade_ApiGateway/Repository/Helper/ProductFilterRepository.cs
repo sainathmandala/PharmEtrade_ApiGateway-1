@@ -131,7 +131,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                     productFilter.AboutTheProduct = row["AboutTheProduct"].ToString();
                     productFilter.CategorySpecificationId = row["CategorySpecificationId"] != DBNull.Value ? Convert.ToInt32(row["CategorySpecificationId"]) : 0;
                     productFilter.ProductTypeId = row["ProductTypeId"] != DBNull.Value ? Convert.ToInt32(row["ProductTypeId"]) : 0;
-                    productFilter.SellerId = row["SellerId"] != DBNull.Value ? Convert.ToInt32(row["SellerId"]) : 0;
+                    productFilter.SellerId = row["SellerId"].ToString();
 
                     productFilterList.Add(productFilter);
                 }
