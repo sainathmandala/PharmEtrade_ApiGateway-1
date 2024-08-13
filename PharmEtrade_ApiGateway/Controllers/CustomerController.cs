@@ -1,4 +1,5 @@
-﻿using BAL.ViewModels;
+﻿using BAL.ResponseModels;
+using BAL.ViewModels;
 using DAL.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -85,6 +86,41 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             return Ok(await _icustomerRepo.UserRegistration(userViewModel));
         }
+
+        /// <summary>
+        /// Register new customer or update existing customer - Only for Registration Process
+        /// </summary>
+        /// <param name="customer"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Register")]
+        public async Task<IActionResult> RegisterCustomer(Customer customer)
+        {
+            RegistrationResponse response = await _icustomerRepo.RegisterCustomer(customer);
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Uploads an Image to AWS S3 bucket and return the url
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Upload")]
+        public async Task<IActionResult> UploadImage(IFormFile image)
+        {
+            UploadResponse response = await _icustomerRepo.UploadImage(image);
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("BusinessInfo")]
+        public async Task<IActionResult> BusinessInfo(CustomerBusinessInfo businessInfo)
+        {
+            BusinessInfoResponse response = await _icustomerRepo.AddUpdateBusinessInfo(businessInfo);
+            return Ok(response);
+        }
+
         // Author: [shiva]
         // Created Date: [02/07/2024]
         // Description: Method for Get the data Of Users From User Table 

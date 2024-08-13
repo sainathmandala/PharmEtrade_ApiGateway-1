@@ -1,4 +1,6 @@
-﻿using BAL.ViewModels;
+﻿using BAL.ResponseModels;
+using BAL.ViewModels;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -21,5 +23,8 @@ namespace BAL.BusinessLogic.Interface
         Task<string> SendOTPEmail(string email);
         Task<DataTable> OtpLogin(string email, string otp);
         Task<string> SaveBusinessInfoData(BusinessInfoViewModel businessInfo);
+        Task<string> AddUpdateCustomer(Customer customer);
+        Task<string> AddUpdateBusinessInfo(CustomerBusinessInfo businessInfo);
+        Task<UploadResponse> UploadImage(IFormFile image);
     }
 }

@@ -1,4 +1,5 @@
-﻿using BAL.ViewModels;
+﻿using BAL.ResponseModels;
+using BAL.ViewModels;
 
 namespace PharmEtrade_ApiGateway.Repository.Interface
 {
@@ -17,5 +18,8 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<Response> SendOTPEmail(string email);
         Task<loginViewModel> OtpLogin(string email, string otp);
         Task<Response> SaveBusinessInfoData(BusinessInfoViewModel businessInfo);
+        Task<RegistrationResponse> RegisterCustomer(Customer customer);
+        Task<UploadResponse> UploadImage(IFormFile image);
+        Task<BusinessInfoResponse> AddUpdateBusinessInfo(CustomerBusinessInfo businessInfo);
     }
 }

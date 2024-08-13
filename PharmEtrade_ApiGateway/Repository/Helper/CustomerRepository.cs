@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using System.Net.Mail;
 using System.Net;
 using Microsoft.Extensions.Options;
+using BAL.ResponseModels;
 
 namespace PharmEtrade_ApiGateway.Repository.Helper
 {
@@ -418,6 +419,65 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             {
                 response.status = 500;
                 response.message = ex.Message;
+
+            }
+            return response;
+        }
+
+        public async Task<RegistrationResponse> RegisterCustomer(Customer customer)
+        {
+            RegistrationResponse response = new RegistrationResponse();
+            try
+            {
+                string result = await _icustomerHelper.AddUpdateCustomer(customer);
+                if (!result.StartsWith("ERROR"))
+                {
+                    response.Status = 200;
+                    response.CustomerId = result;
+                    response.Message = Constant.UserCreationSuccessMsg;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Status = 500;
+                response.Message = ex.Message;
+
+            }
+            return response;
+        }
+
+        public async Task<UploadResponse> UploadImage(IFormFile image)
+        {
+            UploadResponse response = new UploadResponse();
+            try
+            {
+                response = await _icustomerHelper.UploadImage(image);                
+            }
+            catch (Exception ex)
+            {
+                //response.Status = 500;
+                //response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<BusinessInfoResponse> AddUpdateBusinessInfo(CustomerBusinessInfo businessInfo)
+        {            
+            BusinessInfoResponse response = new BusinessInfoResponse();
+            response.CustomerId = businessInfo.CustomerId ?? "";
+            try
+            {
+                string result = await _icustomerHelper.AddUpdateBusinessInfo(businessInfo);
+                if (!result.StartsWith("ERROR"))
+                {
+                    response.Status = 200;                    
+                    response.Message = Constant.BusinessInfoSuccessMsg;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Status = 500;
+                response.Message = ex.Message;
 
             }
             return response;
