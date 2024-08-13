@@ -8,6 +8,7 @@ namespace BAL.BusinessLogic.Interface
     public interface IProductHelper
     {
         Task<string> InsertAddProduct(ProductFilter productviewmodel, Stream imageFileStream, string imageFileName);
+        Task<string> InsertProductsFromExcel(Stream excelFileStream);
         Task<Productviewmodel> DummyInterface(Productviewmodel pvm);
         Task<string> InsertAddToCartProduct(AddToCartViewModel addToCartModel);
        Task<IEnumerable<UserProductViewModel>> GetCartByUserId(int userId);
@@ -19,7 +20,7 @@ namespace BAL.BusinessLogic.Interface
         Task<IEnumerable<UserProductViewModel>> GetwhislistByUserId(int userid);
         Task<string> DeleteWishlistproduct(int wishlistid);
 
-        Task<string> ProcessExcelFileAsync(IFormFile file);
+        //Task<string> ProcessExcelFileAsync(IFormFile file);
 
 
 

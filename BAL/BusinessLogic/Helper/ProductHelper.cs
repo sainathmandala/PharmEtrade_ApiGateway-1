@@ -19,6 +19,7 @@ using Google.Protobuf.WellKnownTypes;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System.Drawing.Imaging;
 using System.Security.AccessControl;
+using Microsoft.AspNetCore.Http.Internal;
 namespace BAL.BusinessLogic.Helper
 {
     public class ProductHelper : IProductHelper
@@ -40,181 +41,6 @@ namespace BAL.BusinessLogic.Helper
         // Author: [swathi]
         // Created Date: [02/07/2024]
         // Description: Method for InsertProducts
-        //public async Task<string> InsertAddProduct(ProductFilter productviewmodel, Stream imageFileStream, string imageFileName)
-        // {
-        //    using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
-        //    {
-        //        try
-        //        {
-        //            await sqlcon.OpenAsync();
-
-        //            // Begin a transaction
-        //            MySqlTransaction transaction = await sqlcon.BeginTransactionAsync();
-
-        //            // Step 1: Define the folder name
-        //            string folderName = "PharmaEtrade";
-
-        //            // Step 2: Upload Image to AWS S3
-        //            string imageUrl = await _s3Helper.UploadFileAsync(imageFileStream, folderName, imageFileName);
-
-        //            // Step 3: Insert Image URL and get ImageID
-        //            using (MySqlCommand cmdImage = new MySqlCommand("InsertImageUrl", sqlcon, transaction))
-        //            {
-        //                cmdImage.CommandType = CommandType.StoredProcedure;
-        //                cmdImage.Parameters.AddWithValue("@p_ImageUrl", imageUrl);
-        //                cmdImage.Parameters.AddWithValue("@p_Caption", productviewmodel.Caption);
-        //                MySqlParameter imageIDParam = new MySqlParameter("@p_ImageID", MySqlDbType.Int32)
-        //                {
-        //                    Direction = ParameterDirection.Output
-        //                };
-        //                cmdImage.Parameters.Add(imageIDParam);
-
-        //                await cmdImage.ExecuteNonQueryAsync();
-        //                int imageID = (int)imageIDParam.Value;
-
-        //                // Step 4: Insert Product using the obtained ImageID
-        //                using (MySqlCommand cmdProduct = new MySqlCommand("InsertAddProduct", sqlcon, transaction))
-        //                {
-        //                    cmdProduct.CommandType = CommandType.StoredProcedure;
-
-        //                    cmdProduct.Parameters.AddWithValue("@p_Productcategory_id", productviewmodel.Productcategory_id);
-        //                    cmdProduct.Parameters.AddWithValue("@p_ImageID", imageID);
-        //                    cmdProduct.Parameters.AddWithValue("@p_Sizeid", productviewmodel.Sizeid);
-        //                    cmdProduct.Parameters.AddWithValue("@p_ProductName", productviewmodel.ProductName);
-        //                    cmdProduct.Parameters.AddWithValue("@p_NDCorUPC", productviewmodel.NDCorUPC);
-        //                    cmdProduct.Parameters.AddWithValue("@p_BrandName", productviewmodel.BrandName);
-        //                    cmdProduct.Parameters.AddWithValue("@p_PriceName", productviewmodel.PriceName);
-        //                    cmdProduct.Parameters.AddWithValue("@p_UPNmemberPrice", productviewmodel.UPNmemberPrice);
-        //                    cmdProduct.Parameters.AddWithValue("@p_AmountInStock", productviewmodel.AmountInStock);
-        //                    cmdProduct.Parameters.AddWithValue("@p_Taxable", productviewmodel.Taxable);
-        //                    cmdProduct.Parameters.AddWithValue("@p_SalePrice", productviewmodel.SalePrice);
-        //                    cmdProduct.Parameters.AddWithValue("@p_SalePriceFrom", productviewmodel.SalePriceFrom);
-        //                    cmdProduct.Parameters.AddWithValue("@p_SalePriceTo", productviewmodel.SalePriceTo);
-        //                    cmdProduct.Parameters.AddWithValue("@p_Manufacturer", productviewmodel.Manufacturer);
-        //                    cmdProduct.Parameters.AddWithValue("@p_Strength", productviewmodel.Strength);
-        //                    cmdProduct.Parameters.AddWithValue("@p_Fromdate", productviewmodel.Fromdate);
-        //                    cmdProduct.Parameters.AddWithValue("@p_LotNumber", productviewmodel.LotNumber);
-        //                    cmdProduct.Parameters.AddWithValue("@p_ExpirationDate", productviewmodel.ExpirationDate);
-        //                    cmdProduct.Parameters.AddWithValue("@p_PackQuantity", productviewmodel.PackQuantity);
-        //                    cmdProduct.Parameters.AddWithValue("@p_PackType", productviewmodel.PackType);
-        //                    cmdProduct.Parameters.AddWithValue("@p_PackCondition", productviewmodel.PackCondition);
-        //                    cmdProduct.Parameters.AddWithValue("@p_ProductDescription", productviewmodel.ProductDescription);
-        //                    cmdProduct.Parameters.AddWithValue("@p_MetaKeywords", productviewmodel.MetaKeywords);
-        //                    cmdProduct.Parameters.AddWithValue("@p_MetaTitle", productviewmodel.MetaTitle);
-        //                    cmdProduct.Parameters.AddWithValue("@p_MetaDescription", productviewmodel.MetaDescription);
-        //                    cmdProduct.Parameters.AddWithValue("@p_SaltComposition", productviewmodel.SaltComposition);
-        //                    cmdProduct.Parameters.AddWithValue("@p_UriKey", productviewmodel.UriKey);
-        //                    cmdProduct.Parameters.AddWithValue("@p_AboutTheProduct", productviewmodel.AboutTheProduct);
-        //                    cmdProduct.Parameters.AddWithValue("@p_CategorySpecificationId", productviewmodel.CategorySpecificationId);
-        //                    cmdProduct.Parameters.AddWithValue("@p_ProductTypeId", productviewmodel.ProductTypeId);
-        //                    cmdProduct.Parameters.AddWithValue("@p_SellerId", productviewmodel.SellerId);
-
-
-        //                    await cmdProduct.ExecuteNonQueryAsync();
-        //                }
-
-        //                // Commit the transaction
-        //                await transaction.CommitAsync();
-
-        //                return "Success";
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message.ToString()));
-        //            // Handle the exception as needed
-        //            throw;
-        //        }
-        //    }
-        //}
-
-        //public async Task<string> InsertAddProduct(ProductFilter productviewmodel, Stream imageFileStream, string imageFileName)
-        //{
-        //    using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
-        //    {
-        //        try
-        //        {
-        //            await sqlcon.OpenAsync();
-
-        //            // Begin a transaction
-        //            MySqlTransaction transaction = await sqlcon.BeginTransactionAsync();
-
-        //            // Step 1: Define the folder name
-        //            string folderName = "PharmaEtrade";
-
-        //            // Step 2: Upload Image to AWS S3
-        //            string imageUrl = await _s3Helper.UploadFileAsync(imageFileStream, folderName, imageFileName);
-
-        //            // Step 3: Insert Image URL and get ImageID
-        //            using (MySqlCommand cmdImage = new MySqlCommand("InsertImageUrl", sqlcon, transaction))
-        //            {
-        //                cmdImage.CommandType = CommandType.StoredProcedure;
-        //                cmdImage.Parameters.AddWithValue("@p_ImageUrl", imageUrl);
-        //                cmdImage.Parameters.AddWithValue("@p_Caption", productviewmodel.Caption);
-        //                MySqlParameter imageIDParam = new MySqlParameter("@p_ImageID", MySqlDbType.Int32)
-        //                {
-        //                    Direction = ParameterDirection.Output
-        //                };
-        //                cmdImage.Parameters.Add(imageIDParam);
-
-        //                await cmdImage.ExecuteNonQueryAsync();
-        //                int imageID = (int)imageIDParam.Value;
-
-        //                // Step 4: Insert Product using the obtained ImageID
-        //                using (MySqlCommand cmdProduct = new MySqlCommand("InsertAddProduct", sqlcon, transaction))
-        //                {
-        //                    cmdProduct.CommandType = CommandType.StoredProcedure;
-
-        //                    cmdProduct.Parameters.AddWithValue("@p_Productcategory_id", productviewmodel.Productcategory_id);
-        //                    cmdProduct.Parameters.AddWithValue("@p_ImageID", imageID);
-        //                    cmdProduct.Parameters.AddWithValue("@p_Sizeid", productviewmodel.Sizeid);
-        //                    cmdProduct.Parameters.AddWithValue("@p_ProductName", productviewmodel.ProductName);
-        //                    cmdProduct.Parameters.AddWithValue("@p_NDCorUPC", productviewmodel.NDCorUPC);
-        //                    cmdProduct.Parameters.AddWithValue("@p_BrandName", productviewmodel.BrandName);
-        //                    cmdProduct.Parameters.AddWithValue("@p_PriceName", productviewmodel.PriceName);
-        //                    cmdProduct.Parameters.AddWithValue("@p_UPNmemberPrice", productviewmodel.UPNmemberPrice);
-        //                    cmdProduct.Parameters.AddWithValue("@p_AmountInStock", productviewmodel.AmountInStock);
-        //                    cmdProduct.Parameters.AddWithValue("@p_Taxable", productviewmodel.Taxable);
-        //                    cmdProduct.Parameters.AddWithValue("@p_SalePrice", productviewmodel.SalePrice);
-        //                    cmdProduct.Parameters.AddWithValue("@p_SalePriceFrom", productviewmodel.SalePriceFrom);
-        //                    cmdProduct.Parameters.AddWithValue("@p_SalePriceTo", productviewmodel.SalePriceTo);
-        //                    cmdProduct.Parameters.AddWithValue("@p_Manufacturer", productviewmodel.Manufacturer);
-        //                    cmdProduct.Parameters.AddWithValue("@p_Strength", productviewmodel.Strength);
-        //                    cmdProduct.Parameters.AddWithValue("@p_Fromdate", productviewmodel.Fromdate);
-        //                    cmdProduct.Parameters.AddWithValue("@p_LotNumber", productviewmodel.LotNumber);
-        //                    cmdProduct.Parameters.AddWithValue("@p_ExpirationDate", productviewmodel.ExpirationDate);
-        //                    cmdProduct.Parameters.AddWithValue("@p_PackQuantity", productviewmodel.PackQuantity);
-        //                    cmdProduct.Parameters.AddWithValue("@p_PackType", productviewmodel.PackType);
-        //                    cmdProduct.Parameters.AddWithValue("@p_PackCondition", productviewmodel.PackCondition);
-        //                    cmdProduct.Parameters.AddWithValue("@p_ProductDescription", productviewmodel.ProductDescription);
-        //                    cmdProduct.Parameters.AddWithValue("@p_MetaKeywords", productviewmodel.MetaKeywords);
-        //                    cmdProduct.Parameters.AddWithValue("@p_MetaTitle", productviewmodel.MetaTitle);
-        //                    cmdProduct.Parameters.AddWithValue("@p_MetaDescription", productviewmodel.MetaDescription);
-        //                    cmdProduct.Parameters.AddWithValue("@p_SaltComposition", productviewmodel.SaltComposition);
-        //                    cmdProduct.Parameters.AddWithValue("@p_UriKey", productviewmodel.UriKey);
-        //                    cmdProduct.Parameters.AddWithValue("@p_AboutTheProduct", productviewmodel.AboutTheProduct);
-        //                    cmdProduct.Parameters.AddWithValue("@p_CategorySpecificationId", productviewmodel.CategorySpecificationId);
-        //                    cmdProduct.Parameters.AddWithValue("@p_ProductTypeId", productviewmodel.ProductTypeId);
-        //                    cmdProduct.Parameters.AddWithValue("@p_SellerId", productviewmodel.SellerId);
-
-        //                    await cmdProduct.ExecuteNonQueryAsync();
-        //                }
-
-        //                // Commit the transaction
-        //                await transaction.CommitAsync();
-
-        //                return "Success";
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message.ToString()));
-        //            // Handle the exception as needed
-        //            throw;
-        //        }
-        //    }
-        //}
-
         public async Task<string> InsertAddProduct(ProductFilter productviewmodel, Stream imageFileStream, string imageFileName)
         {
             using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
@@ -232,7 +58,7 @@ namespace BAL.BusinessLogic.Helper
                     using (MySqlCommand cmdImage = new MySqlCommand("InsertImageUrl", sqlcon, transaction))
                     {
                         cmdImage.CommandType = CommandType.StoredProcedure;
-                        cmdImage.Parameters.AddWithValue("@p_ImageUrl", "imageUrl"); // Placeholder URL
+                        cmdImage.Parameters.AddWithValue("@p_ImageUrl", "imageUrl"); 
                         cmdImage.Parameters.AddWithValue("@p_Caption", productviewmodel.Caption);
                         MySqlParameter imageIDParam = new MySqlParameter("@p_ImageID", MySqlDbType.Int32)
                         {
@@ -318,64 +144,159 @@ namespace BAL.BusinessLogic.Helper
         }
 
 
-        // Author: [swathi]
-        // Created Date: [10/07/2024]
-        // Description: Method for BulkInsertProducts
-        public async Task<string> ProcessExcelFileAsync(IFormFile file)
+        //Author: [swathi]
+        //Created Date: [10 / 07 / 2024]
+        //Description: Method for BulkInsertProducts
+        
+
+        public async Task<string> InsertProductsFromExcel(Stream excelFileStream)
         {
-            var products = new List<ProductFilter>();
-
-            using (var stream = new MemoryStream())
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage(excelFileStream))
             {
-                await file.CopyToAsync(stream);
-                ExcelPackage.LicenseContext = LicenseContext.NonCommercial; 
-                using (var package = new ExcelPackage(stream))
-                {
-                    var worksheet = package.Workbook.Worksheets[0];
-                    var rowCount = worksheet.Dimension.Rows;
+                var worksheet = package.Workbook.Worksheets[0]; // Assuming the first worksheet
+                var rowCount = worksheet.Dimension.Rows;
 
-                    for (int row = 2; row <= rowCount; row++) 
+                using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+                {
+                    MySqlTransaction transaction = null;
+                    try
                     {
-                        var product = new ProductFilter
+                        await sqlcon.OpenAsync();
+
+                        // Begin a transaction
+                        transaction = await sqlcon.BeginTransactionAsync();
+
+                        for (int row = 2; row <= rowCount; row++) // Assuming the first row is the header
                         {
-                            Productcategory_id = int.Parse(worksheet.Cells[row, 1].Text),
-                           // ImageID = int.Parse(worksheet.Cells[row, 2].Text),
-                            Sizeid = int.Parse(worksheet.Cells[row, 3].Text),
-                            ProductName = worksheet.Cells[row, 4].Text,
-                            NDCorUPC = worksheet.Cells[row, 5].Text,
-                            BrandName = worksheet.Cells[row, 6].Text,
-                            PriceName = decimal.Parse(worksheet.Cells[row, 7].Text),
-                            UPNmemberPrice = decimal.Parse(worksheet.Cells[row, 8].Text),
-                            AmountInStock = int.Parse(worksheet.Cells[row, 9].Text),
-                            Taxable = bool.Parse(worksheet.Cells[row, 10].Text),
-                            SalePrice = decimal.Parse(worksheet.Cells[row, 11].Text),
-                            SalePriceFrom = DateTime.Parse(worksheet.Cells[row, 12].Text),
-                            SalePriceTo = DateTime.Parse(worksheet.Cells[row, 13].Text),
-                            Manufacturer = worksheet.Cells[row, 14].Text,
-                            Strength = worksheet.Cells[row, 15].Text,
-                            Fromdate = DateTime.Parse(worksheet.Cells[row, 16].Text),
-                            LotNumber = worksheet.Cells[row, 17].Text,
-                            ExpirationDate = DateTime.Parse(worksheet.Cells[row, 18].Text),
-                            PackQuantity = int.Parse(worksheet.Cells[row, 19].Text),
-                            PackType = worksheet.Cells[row, 20].Text,
-                            PackCondition = worksheet.Cells[row, 21].Text,
-                            ProductDescription = worksheet.Cells[row, 22].Text,
-                           // ImageUrl = worksheet.Cells[row,23].Text,
-                            Caption = worksheet.Cells[row,24].Text
-                        };
-                        
-                        products.Add(product);
+                            // Extracting product data from the worksheet
+                            var productViewModel = new ProductFilter
+                            {
+                                Productcategory_id = Convert.ToInt32(worksheet.Cells[row, 1].Value),
+                                Caption = worksheet.Cells[row, 2].Value.ToString(),
+                                Sizeid = Convert.ToInt32(worksheet.Cells[row, 3].Value),
+                                ProductName = worksheet.Cells[row, 4].Value.ToString(),
+                                NDCorUPC = worksheet.Cells[row, 5].Value.ToString(),
+                                BrandName = worksheet.Cells[row, 6].Value.ToString(),
+                                PriceName = Convert.ToDecimal(worksheet.Cells[row, 7].Value),
+                                UPNmemberPrice = Convert.ToDecimal(worksheet.Cells[row, 8].Value),
+                                AmountInStock = Convert.ToInt32(worksheet.Cells[row, 9].Value),
+                                Taxable = Convert.ToBoolean(worksheet.Cells[row, 10].Value),
+                                SalePrice = Convert.ToDecimal(worksheet.Cells[row, 11].Value),
+                                SalePriceFrom = Convert.ToDateTime(worksheet.Cells[row, 12].Value),
+                                SalePriceTo = Convert.ToDateTime(worksheet.Cells[row, 13].Value),
+                                Manufacturer = worksheet.Cells[row, 14].Value.ToString(),
+                                Strength = worksheet.Cells[row, 15].Value.ToString(),
+                                Fromdate = Convert.ToDateTime(worksheet.Cells[row, 16].Value),
+                                LotNumber = worksheet.Cells[row, 17].Value.ToString(),
+                                ExpirationDate = Convert.ToDateTime(worksheet.Cells[row, 18].Value),
+                                PackQuantity = Convert.ToInt32(worksheet.Cells[row, 19].Value),
+                                PackType = worksheet.Cells[row, 20].Value.ToString(),
+                                PackCondition = worksheet.Cells[row, 21].Value.ToString(),
+                                ProductDescription = worksheet.Cells[row, 22].Value.ToString(),
+                                MetaKeywords = worksheet.Cells[row, 23].Value.ToString(),
+                                MetaTitle = worksheet.Cells[row, 24].Value.ToString(),
+                                MetaDescription = worksheet.Cells[row, 25].Value.ToString(),
+                                SaltComposition = worksheet.Cells[row, 26].Value.ToString(),
+                                UriKey = worksheet.Cells[row, 27].Value.ToString(),
+                                AboutTheProduct = worksheet.Cells[row, 28].Value.ToString(),
+                                CategorySpecificationId = Convert.ToInt32(worksheet.Cells[row, 29].Value),
+                                ProductTypeId = Convert.ToInt32(worksheet.Cells[row, 30].Value),
+                                SellerId = Convert.ToInt32(worksheet.Cells[row, 31].Value)
+                            };
+
+                            // Assuming image file is stored locally or in a place from where you can read the stream
+                            var imageFileName = worksheet.Cells[row, 32].Value.ToString();
+                            using (var imageFileStream = new FileStream(imageFileName, FileMode.Open))
+                            {
+                                int imageID;
+                                using (MySqlCommand cmdImage = new MySqlCommand("InsertImageUrl", sqlcon, transaction))
+                                {
+                                    cmdImage.CommandType = CommandType.StoredProcedure;
+                                    cmdImage.Parameters.AddWithValue("@p_ImageUrl", "imageUrl"); // Placeholder URL
+                                    cmdImage.Parameters.AddWithValue("@p_Caption", productViewModel.Caption);
+                                    MySqlParameter imageIDParam = new MySqlParameter("@p_ImageID", MySqlDbType.Int32)
+                                    {
+                                        Direction = ParameterDirection.Output
+                                    };
+                                    cmdImage.Parameters.Add(imageIDParam);
+
+                                    await cmdImage.ExecuteNonQueryAsync();
+                                    imageID = (int)imageIDParam.Value;
+                                }
+
+                                using (MySqlCommand cmdProduct = new MySqlCommand("InsertAddProduct", sqlcon, transaction))
+                                {
+                                    cmdProduct.CommandType = CommandType.StoredProcedure;
+                                    cmdProduct.Parameters.AddWithValue("@p_Productcategory_id", productViewModel.Productcategory_id);
+                                    cmdProduct.Parameters.AddWithValue("@p_ImageID", imageID);
+                                    cmdProduct.Parameters.AddWithValue("@p_Sizeid", productViewModel.Sizeid);
+                                    cmdProduct.Parameters.AddWithValue("@p_ProductName", productViewModel.ProductName);
+                                    cmdProduct.Parameters.AddWithValue("@p_NDCorUPC", productViewModel.NDCorUPC);
+                                    cmdProduct.Parameters.AddWithValue("@p_BrandName", productViewModel.BrandName);
+                                    cmdProduct.Parameters.AddWithValue("@p_PriceName", productViewModel.PriceName);
+                                    cmdProduct.Parameters.AddWithValue("@p_UPNmemberPrice", productViewModel.UPNmemberPrice);
+                                    cmdProduct.Parameters.AddWithValue("@p_AmountInStock", productViewModel.AmountInStock);
+                                    cmdProduct.Parameters.AddWithValue("@p_Taxable", productViewModel.Taxable);
+                                    cmdProduct.Parameters.AddWithValue("@p_SalePrice", productViewModel.SalePrice);
+                                    cmdProduct.Parameters.AddWithValue("@p_SalePriceFrom", productViewModel.SalePriceFrom);
+                                    cmdProduct.Parameters.AddWithValue("@p_SalePriceTo", productViewModel.SalePriceTo);
+                                    cmdProduct.Parameters.AddWithValue("@p_Manufacturer", productViewModel.Manufacturer);
+                                    cmdProduct.Parameters.AddWithValue("@p_Strength", productViewModel.Strength);
+                                    cmdProduct.Parameters.AddWithValue("@p_Fromdate", productViewModel.Fromdate);
+                                    cmdProduct.Parameters.AddWithValue("@p_LotNumber", productViewModel.LotNumber);
+                                    cmdProduct.Parameters.AddWithValue("@p_ExpirationDate", productViewModel.ExpirationDate);
+                                    cmdProduct.Parameters.AddWithValue("@p_PackQuantity", productViewModel.PackQuantity);
+                                    cmdProduct.Parameters.AddWithValue("@p_PackType", productViewModel.PackType);
+                                    cmdProduct.Parameters.AddWithValue("@p_PackCondition", productViewModel.PackCondition);
+                                    cmdProduct.Parameters.AddWithValue("@p_ProductDescription", productViewModel.ProductDescription);
+                                    cmdProduct.Parameters.AddWithValue("@p_MetaKeywords", productViewModel.MetaKeywords);
+                                    cmdProduct.Parameters.AddWithValue("@p_MetaTitle", productViewModel.MetaTitle);
+                                    cmdProduct.Parameters.AddWithValue("@p_MetaDescription", productViewModel.MetaDescription);
+                                    cmdProduct.Parameters.AddWithValue("@p_SaltComposition", productViewModel.SaltComposition);
+                                    cmdProduct.Parameters.AddWithValue("@p_UriKey", productViewModel.UriKey);
+                                    cmdProduct.Parameters.AddWithValue("@p_AboutTheProduct", productViewModel.AboutTheProduct);
+                                    cmdProduct.Parameters.AddWithValue("@p_CategorySpecificationId", productViewModel.CategorySpecificationId);
+                                    cmdProduct.Parameters.AddWithValue("@p_ProductTypeId", productViewModel.ProductTypeId);
+                                    cmdProduct.Parameters.AddWithValue("@p_SellerId", productViewModel.SellerId);
+
+                                    await cmdProduct.ExecuteNonQueryAsync();
+                                }
+
+                                string folderName = "PharmaEtrade";
+                                string imageUrl = await _s3Helper.UploadFileAsync(imageFileStream, folderName, imageFileName);
+
+                                using (MySqlCommand cmdUpdateImage = new MySqlCommand("UpdateImageUrl", sqlcon, transaction))
+                                {
+                                    cmdUpdateImage.CommandType = CommandType.StoredProcedure;
+                                    cmdUpdateImage.Parameters.AddWithValue("@p_ImageID", imageID);
+                                    cmdUpdateImage.Parameters.AddWithValue("@p_ImageUrl", imageUrl);
+                                    cmdUpdateImage.Parameters.AddWithValue("@p_caption", productViewModel.Caption);
+
+                                    await cmdUpdateImage.ExecuteNonQueryAsync();
+                                }
+                            }
+                        }
+
+                        // Commit the transaction
+                        await transaction.CommitAsync();
+                        return "Success";
+                    }
+                    catch (Exception ex)
+                    {
+                        if (transaction != null)
+                        {
+                            await transaction.RollbackAsync();
+                        }
+                        Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProductsFromExcel :  errormessage:" + ex.Message));
+                        throw;
                     }
                 }
             }
-
-            foreach (var product in products)
-            {
-                await InsertAddProduct(product, Stream.Null, string.Empty);
-            }
-
-            return "Success";
         }
+
+
+
 
 
 
