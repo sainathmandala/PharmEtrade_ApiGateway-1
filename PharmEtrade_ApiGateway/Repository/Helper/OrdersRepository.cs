@@ -17,5 +17,10 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             OrderResponse response = await _orders.AddOrder(orderRequest);
             return response;
         }
+
+        public async Task<List<OrderResponse>> GetOrdersByCustomerId(string customerId)
+        {
+            return await _orders.GetOrdersByCustomerId(customerId);
+        }
     }
 }
