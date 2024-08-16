@@ -11,6 +11,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BAL.ViewModels;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -82,61 +83,131 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
-        public async Task<List<OrderResponse>> GetOrdersByCustomerId(string customerId)
+        //public async Task<List<Order>> GetOrdersByCustomerId(string customerId)
+        //{
+        //    List<Order> ordersList = new List<Order>();
+
+        //    using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+        //    {
+        //        using (MySqlCommand cmd = new MySqlCommand("sp_GetOrders", sqlcon))
+        //        {
+        //            cmd.CommandType = CommandType.StoredProcedure;
+        //            cmd.Parameters.AddWithValue("@p_CustomerId", customerId);
+
+        //            try
+        //            {
+        //                DataTable tblOrders = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
+
+        //                if (tblOrders.Rows.Count > 0)
+        //                {
+        //                    foreach (DataRow row in tblOrders.Rows)
+        //                    {
+        //                        ordersList.Add(new Order
+        //                        {
+        //                            OrderId = row["OrderId"].ToString(),
+        //                            CustomerId = row["CustomerId"].ToString(),
+        //                            CustomerName = row["CustomerName"].ToString(),
+        //                            ProductId = Convert.ToInt32(row["ProductId"]),
+        //                            ProductName = row["ProductName"].ToString(),
+        //                            TotalAmount = Convert.ToDouble(row["TotalAmount"]),
+        //                            ShippingMethodId = Convert.ToInt32(row["ShippingMethodId"]),
+        //                            OrderStatusId = Convert.ToInt32(row["OrderStatusId"]),
+        //                            TrackingNumber = row["TrackingNumber"].ToString(),
+        //                            OrderDetailId = row["OrderDetailId"].ToString(),
+        //                            Quantity = Convert.ToInt32(row["Quantity"]),
+        //                            PricePerProduct = Convert.ToDouble(row["PricePerProduct"]),
+        //                            VendorId = row["VendorId"].ToString(),
+        //                            ProductDescription = row["ProductDescription"].ToString(),
+        //                            OrderDate = Convert.ToDateTime(row["OrderDate"])
+        //                        });
+        //                    }
+        //                }
+
+        //            }
+
+        //            catch (MySqlException ex)
+        //            {
+        //                ;
+        //            }
+        //            catch (Exception ex)
+        //            {
+
+        //            }
+
+
+        //            return ordersList;
+        //        }
+        //    }
+        //}
+
+
+        public async Task<List<Order>> GetOrdersByCustomerId(string customerId)
         {
-            List<OrderResponse> ordersList = new List<OrderResponse>();
+            List<Order> ordersList = new List<Order>();
 
             using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
                 using (MySqlCommand cmd = new MySqlCommand("sp_GetOrders", sqlcon))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@p_CustomerId", customerId);
+
+                    // Handle NULL or empty CustomerId
+                    if (string.IsNullOrEmpty(customerId))
+                    {
+                        cmd.Parameters.AddWithValue("@p_CustomerId", DBNull.Value);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@p_CustomerId", customerId);
+                    }
 
                     try
                     {
+                        // Execute the stored procedure and fill the DataTable
                         DataTable tblOrders = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
 
                         if (tblOrders.Rows.Count > 0)
                         {
                             foreach (DataRow row in tblOrders.Rows)
                             {
-                                ordersList.Add(new OrderResponse
+                                ordersList.Add(new Order
                                 {
                                     OrderId = row["OrderId"].ToString(),
+                                    CustomerId = row["CustomerId"].ToString(),
                                     CustomerName = row["CustomerName"].ToString(),
+                                    ProductId = Convert.ToInt32(row["ProductId"]),
                                     ProductName = row["ProductName"].ToString(),
-                                    //VendorName = row["VendorName"].ToString(),
-
-                                   Message = "Order retrieved successfully"
+                                    TotalAmount = Convert.ToDouble(row["TotalAmount"]),
+                                    ShippingMethodId = Convert.ToInt32(row["ShippingMethodId"]),
+                                    OrderStatusId = Convert.ToInt32(row["OrderStatusId"]),
+                                    TrackingNumber = row["TrackingNumber"].ToString(),
+                                    OrderDetailId = row["OrderDetailId"].ToString(),
+                                    Quantity = Convert.ToInt32(row["Quantity"]),
+                                    PricePerProduct = Convert.ToDouble(row["PricePerProduct"]),
+                                    VendorId = row["VendorId"].ToString(),
+                                    ProductDescription = row["ProductDescription"].ToString(),
+                                    //OrderDate = Convert.ToDateTime(row["OrderDate"])
+                                    OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue
                                 });
                             }
                         }
-                        
                     }
-
                     catch (MySqlException ex)
                     {
-                        ordersList.Add(new OrderResponse
-                        {
-                            Status = 500,
-                            Message = "Database error: " + ex.Message
-                        });
+                        // Handle MySQL exceptions
+                        // Log the exception or throw
                     }
                     catch (Exception ex)
                     {
-                        ordersList.Add(new OrderResponse
-                        {
-                            Status = 500,
-                            Message = "Unexpected error: " + ex.Message
-                        });
+                        // Handle general exceptions
+                        // Log the exception or throw
                     }
-
 
                     return ordersList;
                 }
             }
         }
+
 
 
     }
