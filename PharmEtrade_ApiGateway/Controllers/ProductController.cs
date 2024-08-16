@@ -33,7 +33,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         //    }
         //}
         [HttpPost("InsertProduct")]
-        public async Task<IActionResult> InsertProduct(ProductFilter productviewmodel)
+        public async Task<IActionResult> InsertProduct([FromForm] ProductFilter productviewmodel)
         {
             try
             {
