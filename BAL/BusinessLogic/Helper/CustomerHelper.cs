@@ -606,5 +606,96 @@ namespace BAL.BusinessLogic.Helper
                 return "ERROR : " + ex.Message;
             }
         }
+
+
+        public async Task<CustomerResponse> GetCustomerByCustomerId(string customerId)
+        {
+            if (string.IsNullOrEmpty(customerId))
+            {
+                throw new ArgumentException("CustomerId is required.", nameof(customerId));
+            }
+
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("sp_GetCustomerByCustomerId", sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@p_CustomerId", customerId);
+
+                    try
+                    {
+                        // Execute the stored procedure and fill the DataTable
+                        DataTable tblCustomer = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
+
+                        if (tblCustomer.Rows.Count == 0)
+                        {
+                            throw new Exception("Customer not found.");
+                        }
+
+                        var customer = new Customer();
+                        var businessInfoResponse = new CustomerBusinessInfo(); // Use correct type
+
+                        foreach (DataRow row in tblCustomer.Rows)
+                        {
+                            customer.CustomerId = row["CustomerId"] != DBNull.Value ? row["CustomerId"].ToString() : null;
+                            customer.FirstName = row["FirstName"] != DBNull.Value ? row["FirstName"].ToString() : null;
+                            customer.LastName = row["LastName"] != DBNull.Value ? row["LastName"].ToString() : null;
+                            customer.Email = row["Email"] != DBNull.Value ? row["Email"].ToString() : null;
+                            customer.Mobile = row["Mobile"] != DBNull.Value ? row["Mobile"].ToString() : null;
+                            customer.Password = row["Password"] != DBNull.Value ? row["Password"].ToString() : null;
+                            customer.CustomerTypeId = row["CustomerTypeId"] != DBNull.Value ? Convert.ToInt32(row["CustomerTypeId"]) : default;
+                            customer.AccountTypeId = row["AccountTypeId"] != DBNull.Value ? Convert.ToInt32(row["AccountTypeId"]) : default;
+                            customer.IsUPNMember = row["IsUPNMember"] != DBNull.Value ? Convert.ToInt32(row["IsUPNMember"]) : default;  // Use Convert.ToBoolean
+                            customer.LoginOTP = row["LoginOTP"] != DBNull.Value ? row["LoginOTP"].ToString() : null;
+                            customer.OTPExpiryDate = row["OTPExpiryDate"] != DBNull.Value ? Convert.ToDateTime(row["OTPExpiryDate"]) : (DateTime?)null;
+
+                            // Map data to BusinessInfoResponse
+                            businessInfoResponse.CustomerBusinessInfoId = row["CustomerBusinessInfoId"] != DBNull.Value ? Convert.ToInt32(row["CustomerBusinessInfoId"]) : default;
+
+                            businessInfoResponse.ShopName = row["ShopName"] != DBNull.Value ? row["ShopName"].ToString() : null;
+                            businessInfoResponse.DBA = row["DBA"] != DBNull.Value ? row["DBA"].ToString() : null;
+                            businessInfoResponse.LegalBusinessName = row["LegalBusinessName"] != DBNull.Value ? row["LegalBusinessName"].ToString() : null;
+                            businessInfoResponse.Address = row["Address"] != DBNull.Value ? row["Address"].ToString() : null;
+                            businessInfoResponse.City = row["City"] != DBNull.Value ? row["City"].ToString() : null;
+                            businessInfoResponse.State = row["State"] != DBNull.Value ? row["State"].ToString() : null;
+                            businessInfoResponse.Zip = row["Zip"] != DBNull.Value ? row["Zip"].ToString() : null;
+                            businessInfoResponse.BusinessPhone = row["BusinessPhone"] != DBNull.Value ? row["BusinessPhone"].ToString() : null;
+                            businessInfoResponse.BusinessFax = row["BusinessFax"] != DBNull.Value ? row["BusinessFax"].ToString() : null;
+                            businessInfoResponse.BusinessEmail = row["BusinessEmail"] != DBNull.Value ? row["BusinessEmail"].ToString() : null;
+                            businessInfoResponse.FederalTaxId = row["FederalTaxId"] != DBNull.Value ? row["FederalTaxId"].ToString() : null;
+                            businessInfoResponse.DEA = row["DEA"] != DBNull.Value ? row["DEA"].ToString() : null;
+                            businessInfoResponse.PharmacyLicence = row["PharmacyLicence"] != DBNull.Value ? row["PharmacyLicence"].ToString() : null;
+                            businessInfoResponse.DEAExpirationDate = row["DEAExpirationDate"] != DBNull.Value ? Convert.ToDateTime(row["DEAExpirationDate"]) : (DateTime?)null;
+                            businessInfoResponse.PharmacyLicenseExpirationDate = row["PharmacyLicenseExpirationDate"] != DBNull.Value ? Convert.ToDateTime(row["PharmacyLicenseExpirationDate"]) : (DateTime?)null;
+
+                            // Assuming DEALicenseCopy and PharmacyLicenseCopy are paths/URLs, not file uploads
+                            businessInfoResponse.DEALicenseCopy = row["DEALicenseCopy"] != DBNull.Value ? row["DEALicenseCopy"].ToString() : null;
+                            businessInfoResponse.PharmacyLicenseCopy = row["PharmacyLicenseCopy"] != DBNull.Value ? row["PharmacyLicenseCopy"].ToString() : null;
+
+                            businessInfoResponse.NPI = row["NPI"] != DBNull.Value ? row["NPI"].ToString() : null;
+                            businessInfoResponse.NCPDP = row["NCPDP"] != DBNull.Value ? row["NCPDP"].ToString() : null;
+                        }
+
+                        return new CustomerResponse
+                        {
+                            CustomerDetails = customer,
+                            BusinessInfo = businessInfoResponse // Correct type assignment
+                        };
+                    }
+                    catch (MySqlException ex)
+                    {
+                        // Handle MySQL exceptions
+                        throw new Exception("An error occurred while retrieving the customer.", ex);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Handle general exceptions
+                        throw new Exception("An unexpected error occurred.", ex);
+                    }
+                }
+            }
+        }
+
+
     }
 }

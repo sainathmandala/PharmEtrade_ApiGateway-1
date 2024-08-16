@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PharmEtrade_ApiGateway.Extensions;
+using PharmEtrade_ApiGateway.Repository.Helper;
 using PharmEtrade_ApiGateway.Repository.Interface;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
@@ -388,6 +389,31 @@ namespace PharmEtrade_ApiGateway.Controllers
         public async Task<IActionResult> SaveBusinessInfoData([FromForm]BusinessInfoViewModel businessInfo)
         {
             return Ok(await _icustomerRepo.SaveBusinessInfoData(businessInfo));
+        }
+
+
+        [HttpGet]
+        [Route("Get")]
+        public async Task<IActionResult> GetCustomersByCustomerId(string customerId)
+        {
+           if (string.IsNullOrEmpty(customerId))
+            {
+                return BadRequest("CustomerId is required.");
+            }
+
+            try
+            {
+               
+                CustomerResponse response = await _icustomerRepo.GetCustomerByCustomerId(customerId);
+
+            
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+               
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving customer details.");
+            }
         }
     }
 
