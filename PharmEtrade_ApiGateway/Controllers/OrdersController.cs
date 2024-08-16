@@ -25,7 +25,7 @@ namespace PharmEtrade_ApiGateway.Controllers
 
         [HttpGet]
         [Route("Get")]
-        public async Task<IActionResult> GetOrdersByCustomerId(string customerId)
+        public async Task<IActionResult> GetOrdersByCustomerId(string? customerId)
         {
             List<OrderResponse> response = await _ordersRepository.GetOrdersByCustomerId(customerId);
             return Ok(response);

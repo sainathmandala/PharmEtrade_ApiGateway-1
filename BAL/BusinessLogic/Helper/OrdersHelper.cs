@@ -82,7 +82,7 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
-        public async Task<List<OrderResponse>> GetOrdersByCustomerId(string customerId)
+        public async Task<List<OrderResponse>> GetOrdersByCustomerId(string? customerId)
         {
             List<OrderResponse> ordersList = new List<OrderResponse>();
 
