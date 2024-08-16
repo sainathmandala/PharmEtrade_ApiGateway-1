@@ -125,7 +125,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                 {
                     response.statusCode = 200;
                     response.message = Constant.GetUserBYUserIdSuccessMsg;
-                    response.userlist = ConvertDataTabletoStudentList(dtresult);
+                    response.userlist = ConvertDataTabletoList(dtresult);
                 }
             }
             catch (Exception ex)
@@ -138,7 +138,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return response;
         }
 
-        private List<UserViewModel> ConvertDataTabletoStudentList(DataTable dt)
+        private List<UserViewModel> ConvertDataTabletoList(DataTable dt)
         {
             List<UserViewModel> userlst = new List<UserViewModel>();
             if (dt != null && dt.Rows.Count > 0)
@@ -152,10 +152,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                     user.Email = row["email"].ToString();
                     user.Password = row["password"].ToString();
                     user.PhoneNumber =row["phone_number"].ToString();
-                  
-
                     userlst.Add(user);
-
                 }
                 return userlst;
             }
@@ -259,7 +256,6 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                     response.PhoneNumber = row["phone_number"].ToString();
                     response.Usertype = row["role"].ToString();
 
-                  
                     return response;
                 }
             }
@@ -267,9 +263,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             {
                 throw ex;
             }
-
             return response;
-
         }
 
         // Author: [Shiva]
