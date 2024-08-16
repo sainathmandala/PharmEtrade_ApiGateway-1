@@ -16,24 +16,9 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             _productRepo = productRepo;
         }
-        // Author: [swathi]
-        // Created Date: [02/07/2024]
-        // Description: Method for InsertProducts
-        //[HttpPost("InsertProduct")]
-        //public async Task<IActionResult> InsertProduct([FromBody] ProductFilter productviewmodel)
-        //{
-        //    try
-        //    {
-        //        var result = await _productRepo.InsertAddProduct(productviewmodel);
-        //        return Ok(result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
+
         [HttpPost("InsertProduct")]
-        public async Task<IActionResult> InsertProduct([FromForm] ProductFilter productviewmodel)
+        public async Task<IActionResult> InsertProduct(ProductFilter productviewmodel)
         {
             try
             {
@@ -49,7 +34,6 @@ namespace PharmEtrade_ApiGateway.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
 
         // Author: [swathi]
         // Created Date: [10/07/2024]
@@ -67,11 +51,12 @@ namespace PharmEtrade_ApiGateway.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
         // Author: [Mamatha]
         // Created Date: [04/07/2024]
         // Description: Method for EditProductDetails
         [HttpPost("EditProductDetails")]
-        public async Task<IActionResult> EditProductDetails(int AddproductID, [FromForm] ProductFilter productviewmodel, [FromForm] IFormFile ImageUrl)
+        public async Task<IActionResult> EditProductDetails(int AddproductID, ProductFilter productviewmodel, IFormFile ImageUrl)
         {
             if (productviewmodel == null)
             {
@@ -106,7 +91,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             try
             {
-                var userId = addToCartModel.Userid; 
+                var userId = addToCartModel.Userid;
                 var imageId = addToCartModel.Imageid;
                 var productId = addToCartModel.ProductId;
 
@@ -119,6 +104,7 @@ namespace PharmEtrade_ApiGateway.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
         // Author: [swathi]
         // Created Date: [03/07/2024]
         // Description: Method for GetCartProducts based on userid
@@ -128,6 +114,7 @@ namespace PharmEtrade_ApiGateway.Controllers
             var products = await _productRepo.GetByUserId(userId);
             return Ok(products);
         }
+
         // Author: [swathi]
         // Created Date: [04/07/2024]
         // Description: Method for  Delete CartProduct
@@ -151,6 +138,7 @@ namespace PharmEtrade_ApiGateway.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
         // Author: [swathi]
         // Created Date: [05/07/2024]
         // Description: Method for  Insert WishlistProduct
@@ -172,6 +160,7 @@ namespace PharmEtrade_ApiGateway.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
         // Author: [swathi]
         // Created Date: [05/07/2024]
         // Description: Method for  GetwishlistProduct by userid
@@ -205,9 +194,5 @@ namespace PharmEtrade_ApiGateway.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-
     }
-
 }
-
