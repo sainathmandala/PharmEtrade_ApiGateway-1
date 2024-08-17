@@ -27,4 +27,12 @@
     <ProjectReference Include="..\DAL\DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\DELL\Source\Repos\PharmEtrade_ApiGateway\BAL\RequestModels\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\DELL\Source\Repos\PharmEtrade_ApiGateway\BAL\RequestModels\.editorconfig" />
+  </ItemGroup>
+
 </Project>

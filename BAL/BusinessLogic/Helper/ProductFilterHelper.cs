@@ -14,6 +14,9 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Security.AccessControl;
 using DAL.Models;
 using MySql.Data.MySqlClient;
+using BAL.ViewModels;
+using BAL.RequestModels;
+using System.Data.Common;
 namespace BAL.BusinessLogic.Helper
 {
     public  class ProductFilterHelper:IProductFilter
@@ -56,28 +59,78 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
-        //Author:[Mamatha]
-        //Created Date:[02/07/2024]
-        //Description:Method for GetProducts
-        public async Task<DataTable> GetProducts()
+        
+
+        public async Task<List<Products>> GetProducts()
         {
-            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
-            MySqlCommand cmd = new MySqlCommand();
-            try
+            List<Products> products = new List<Products>();
+
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
-                cmd = new MySqlCommand("SP_GetAllProducts", sqlcon);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                using (MySqlCommand cmd = new MySqlCommand("SP_GetAllProducts", sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-                return await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
+                    try
+                    {
+                        await sqlcon.OpenAsync();
 
+                        using (DbDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                Products product = new Products
+                                {
+                                    AddproductID = reader.GetInt32("AddproductID"),
+                                    Productcategory_id = reader.GetInt32("Productcategory_id"),
+                                    Sizeid = reader.GetInt32("Sizeid"),
+                                    ProductName = reader.GetString("ProductName"),
+                                    NDCorUPC = reader.GetString("NDCorUPC"),
+                                    BrandName = reader.GetString("BrandName"),
+                                    PriceName = reader.GetDecimal("PriceName"),
+                                    UPNmemberPrice = reader.GetDecimal("UPNmemberPrice"),
+                                    AmountInStock = reader.GetInt32("AmountInStock"),
+                                    Taxable = reader.GetBoolean("Taxable"),
+                                    SalePrice = reader.GetDecimal("SalePrice"),
+                                    SalePriceFrom = reader.GetDateTime("SalePriceFrom"),
+                                    SalePriceTo = reader.GetDateTime("SalePriceTo"),
+                                    Manufacturer = reader.GetString("Manufacturer"),
+                                    Strength = reader.GetString("Strength"),
+                                    Fromdate = reader.GetDateTime("Fromdate"),
+                                    LotNumber = reader.GetString("LotNumber"),
+                                    ExpirationDate = reader.GetDateTime("ExpirationDate"),
+                                    PackQuantity = reader.GetInt32("PackQuantity"),
+                                    PackType = reader.GetString("PackType"),
+                                    PackCondition = reader.GetString("PackCondition"),
+                                    ProductDescription = reader.GetString("ProductDescription"),
+                                    ImageUrl = reader.GetString("image_url"), // Assuming image_url is the column name for ImageUrl
+                                    Caption = reader.GetString("caption"), // Assuming caption is the column name
+                                    MetaKeywords = reader.GetString("MetaKeywords"),
+                                    MetaTitle = reader.GetString("MetaTitle"),
+                                    MetaDescription = reader.GetString("MetaDescription"),
+                                    SaltComposition = reader.GetString("SaltComposition"),
+                                    UriKey = reader.GetString("UriKey"),
+                                    AboutTheProduct = reader.GetString("AboutTheProduct"),
+                                    CategorySpecificationId = reader.GetInt32("CategorySpecificationId"),
+                                    ProductTypeId = reader.GetInt32("ProductTypeId"),
+                                    SellerId = reader.GetString("SellerId")
+                                };
+
+                                products.Add(product);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "GetAllProducts_sp : errormessage:" + ex.Message));
+                        throw;
+                    }
+                }
             }
-            catch(Exception ex)
-            {
-                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "GetAllProducts_sp :  errormessage:" + ex.Message.ToString()));
-                throw ex;
 
-            }
+            return products;
         }
+
         public async Task<DataTable> GetProductsById(int AddproductID)
         {
             MySqlConnection sqlcon = new MySqlConnection(_connectionString);

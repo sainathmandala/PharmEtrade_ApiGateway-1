@@ -6,6 +6,7 @@ using System.Data;
 
 
 using BAL.Common;
+using BAL.RequestModels;
 
 
 namespace PharmEtrade_ApiGateway.Repository.Helper
@@ -42,30 +43,11 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         // Author: [Mamatha]
         // Created Date: [02/07/2024]
         // Description: Method for GetProducts
-        public async  Task<ProductViewModel> GetProducts()
+        public async Task<List<Products>> GetProducts()
         {
-            ProductViewModel response = new ProductViewModel();
-            try
-            {
-                DataTable dtresult = await _IProductFilter.GetProducts();
-                if (dtresult != null && dtresult.Rows.Count > 0)
-                {
-
-                    response.statusCode = 200;
-                    response.message = Constant.GetProductSuccessMsg;
-                   response.Productfilter = ConvertDataTabletoProductList(dtresult);
-
-                }
-            }
-            catch (Exception ex)
-            {
-                response.statusCode = 500;
-                response.message = ex.Message;
-                response.Productfilter = new List<ProductFilter>();
-
-            }
-            return response;
+            return await _IProductFilter.GetProducts();
         }
+       
         public async Task<ProductViewModel> GetProductsById(int AddproductID)
         {
             ProductViewModel response = new ProductViewModel();
