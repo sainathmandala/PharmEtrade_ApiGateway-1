@@ -1,4 +1,5 @@
-﻿using BAL.ViewModels;
+﻿using BAL.RequestModels;
+using BAL.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +12,7 @@ namespace BAL.BusinessLogic.Interface
     public interface IProductFilter
     {
         Task<DataTable> GetFilteredProducts(string productName);
-        Task<DataTable> GetProducts();
+        Task<List<Products>> GetProducts();
 
         Task<DataTable> GetProductsById(int AddproductID);
 
