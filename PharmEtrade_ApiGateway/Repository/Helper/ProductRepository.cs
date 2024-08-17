@@ -145,13 +145,12 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         // Author: [swathi]
         // Created Date: [03/07/2024]
         // Description: Method for GetCartProducts based on userid
-        public async Task<IEnumerable<UserProductViewModel>> GetByUserId(int userId)
+        public async Task<List<UserProductViewModel>> GetCartByCustomerID(string CustomerID)
         {
-            return await _productHelper.GetCartByUserId(userId);
+            return await _productHelper.GetCartByCustomerID(CustomerID);
+
         }
-        // Author: [swathi]
-        // Created Date: [04/07/2024]
-        // Description: Method for  Delete CartProduct
+        
         public async Task<Response> SoftDeleteAddtoCartProduct(int addToCartId)
         {
             Response response = new Response();

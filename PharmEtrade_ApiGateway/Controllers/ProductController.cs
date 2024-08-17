@@ -105,13 +105,11 @@ namespace PharmEtrade_ApiGateway.Controllers
             }
         }
 
-        // Author: [swathi]
-        // Created Date: [03/07/2024]
-        // Description: Method for GetCartProducts based on userid
-        [HttpGet("GetCartByUserId/{userId}")]
-        public async Task<ActionResult<IEnumerable<UserProductViewModel>>> GetCartByUserId(int userId)
+        
+        [HttpGet("GetCartByCustomerID/{CustomerID}")]
+        public async Task<ActionResult<List<UserProductViewModel>>> GetCartByCustomerID(string CustomerID)
         {
-            var products = await _productRepo.GetByUserId(userId);
+            var products = await _productRepo.GetCartByCustomerID(CustomerID);
             return Ok(products);
         }
 

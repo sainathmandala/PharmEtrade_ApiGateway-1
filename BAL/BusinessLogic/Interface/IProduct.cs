@@ -11,7 +11,7 @@ namespace BAL.BusinessLogic.Interface
         Task<string> InsertProductsFromExcel(Stream excelFileStream);
         Task<Productviewmodel> DummyInterface(Productviewmodel pvm);
         Task<string> InsertAddToCartProduct(AddToCartViewModel addToCartModel);
-       Task<IEnumerable<UserProductViewModel>> GetCartByUserId(int userId);
+      // Task<IEnumerable<UserProductViewModel>> GetCartByUserId(int userId);
         Task<string> EditProductDetails(int AddproductID,ProductFilter productfilter, Stream imageFileStream, string imageFileName);
 
         Task<string> SoftDeleteAddtoCartProduct(int addToCartId);
@@ -21,6 +21,8 @@ namespace BAL.BusinessLogic.Interface
         Task<string> DeleteWishlistproduct(int wishlistid);
 
         //Task<string> ProcessExcelFileAsync(IFormFile file);
+
+        Task<List<UserProductViewModel>> GetCartByCustomerID(string CustomerID);
 
 
 

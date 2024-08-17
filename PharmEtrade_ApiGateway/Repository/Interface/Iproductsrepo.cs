@@ -8,7 +8,8 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
     {
         Task<Response> InsertAddProduct(ProductFilter productviewmodel, Stream imageFileStream, string imageFileName);
         Task<Response> InsertAddToCartProduct(AddToCartViewModel addToCartModel);
-        Task<IEnumerable<UserProductViewModel>> GetByUserId(int userId);
+        Task<List<UserProductViewModel>> GetCartByCustomerID(string CustomerID);
+
         Task<ProductViewModel> EditProductDetails(int AddproductID, ProductFilter productfilter,Stream imageFileStream,string imageFileName);
 
         Task<Response> SoftDeleteAddtoCartProduct(int addToCartId);
