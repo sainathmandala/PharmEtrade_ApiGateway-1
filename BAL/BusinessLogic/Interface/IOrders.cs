@@ -5,14 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BAL.ViewModels;
+using BAL.Models;
 
 namespace BAL.BusinessLogic.Interface
 {
     public interface IOrders
     {
         Task<OrderResponse> AddOrder(OrderRequest orderRequest);
-        Task<List<Order>> GetOrdersByCustomerId(string customerId);
+        Task<Response<Order>> GetOrdersByCustomerId(string customerId);
 
     }
 }

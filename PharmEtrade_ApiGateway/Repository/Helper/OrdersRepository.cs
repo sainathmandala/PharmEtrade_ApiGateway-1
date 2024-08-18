@@ -2,7 +2,8 @@
 using BAL.RequestModels;
 using BAL.ResponseModels;
 using PharmEtrade_ApiGateway.Repository.Interface;
-using BAL.ViewModels;
+using BAL.Models;
+
 namespace PharmEtrade_ApiGateway.Repository.Helper
 {
     public class OrdersRepository : IOrdersRepository
@@ -18,7 +19,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return response;
         }
 
-        public async Task<List<Order>> GetOrdersByCustomerId(string customerId)
+        public async Task<Response<Order>> GetOrdersByCustomerId(string customerId)
         {
             return await _orders.GetOrdersByCustomerId(customerId);
         }

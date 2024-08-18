@@ -29,7 +29,7 @@ namespace BAL.BusinessLogic.Helper
         public ProductFilterHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper)
         {
             _isqlDataHelper = isqlDataHelper;
-            _connectionString = configuration.GetConnectionString("OnlineexamDB");
+            _connectionString = configuration.GetConnectionString("APIDBConnectionString");
             exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), exFolder);
         }
         // Author: [Mamatha]

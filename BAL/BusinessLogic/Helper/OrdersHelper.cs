@@ -11,7 +11,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BAL.ViewModels;
+using BAL.Models;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -25,7 +25,7 @@ namespace BAL.BusinessLogic.Helper
         {            
             _configuration = configuration;
             _isqlDataHelper = isqlDataHelper;
-            _connectionString = configuration.GetConnectionString("OnlineexamDB");            
+            _connectionString = configuration.GetConnectionString("APIDBConnectionString");            
         }
         public async Task<OrderResponse> AddOrder(OrderRequest orderRequest)
         {
@@ -83,67 +83,9 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
-        //public async Task<List<Order>> GetOrdersByCustomerId(string customerId)
-        //{
-        //    List<Order> ordersList = new List<Order>();
-
-        //    using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
-        //    {
-        //        using (MySqlCommand cmd = new MySqlCommand("sp_GetOrders", sqlcon))
-        //        {
-        //            cmd.CommandType = CommandType.StoredProcedure;
-        //            cmd.Parameters.AddWithValue("@p_CustomerId", customerId);
-
-        //            try
-        //            {
-        //                DataTable tblOrders = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
-
-        //                if (tblOrders.Rows.Count > 0)
-        //                {
-        //                    foreach (DataRow row in tblOrders.Rows)
-        //                    {
-        //                        ordersList.Add(new Order
-        //                        {
-        //                            OrderId = row["OrderId"].ToString(),
-        //                            CustomerId = row["CustomerId"].ToString(),
-        //                            CustomerName = row["CustomerName"].ToString(),
-        //                            ProductId = Convert.ToInt32(row["ProductId"]),
-        //                            ProductName = row["ProductName"].ToString(),
-        //                            TotalAmount = Convert.ToDouble(row["TotalAmount"]),
-        //                            ShippingMethodId = Convert.ToInt32(row["ShippingMethodId"]),
-        //                            OrderStatusId = Convert.ToInt32(row["OrderStatusId"]),
-        //                            TrackingNumber = row["TrackingNumber"].ToString(),
-        //                            OrderDetailId = row["OrderDetailId"].ToString(),
-        //                            Quantity = Convert.ToInt32(row["Quantity"]),
-        //                            PricePerProduct = Convert.ToDouble(row["PricePerProduct"]),
-        //                            VendorId = row["VendorId"].ToString(),
-        //                            ProductDescription = row["ProductDescription"].ToString(),
-        //                            OrderDate = Convert.ToDateTime(row["OrderDate"])
-        //                        });
-        //                    }
-        //                }
-
-        //            }
-
-        //            catch (MySqlException ex)
-        //            {
-        //                ;
-        //            }
-        //            catch (Exception ex)
-        //            {
-
-        //            }
-
-
-        //            return ordersList;
-        //        }
-        //    }
-        //}
-
-
-        public async Task<List<Order>> GetOrdersByCustomerId(string customerId)
+        public async Task<Response<Order>> GetOrdersByCustomerId(string customerId)
         {
-            List<Order> ordersList = new List<Order>();
+            var response = new Response<Order>();            
 
             using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
@@ -165,7 +107,7 @@ namespace BAL.BusinessLogic.Helper
                     {
                         // Execute the stored procedure and fill the DataTable
                         DataTable tblOrders = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
-
+                        List<Order> ordersList = new List<Order>();
                         if (tblOrders.Rows.Count > 0)
                         {
                             foreach (DataRow row in tblOrders.Rows)
@@ -190,20 +132,25 @@ namespace BAL.BusinessLogic.Helper
                                     OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue
                                 });
                             }
+                            response.StatusCode = 200;
+                            response.Message = "Successfully Feched data.";
+                            response.Result = ordersList;
                         }
                     }
                     catch (MySqlException ex)
                     {
-                        // Handle MySQL exceptions
-                        // Log the exception or throw
+                        response.StatusCode = 500;
+                        response.Message = ex.Message;
+                        response.Result = null;
                     }
                     catch (Exception ex)
                     {
-                        // Handle general exceptions
-                        // Log the exception or throw
+                        response.StatusCode = 500;
+                        response.Message = ex.Message;
+                        response.Result = null;
                     }
 
-                    return ordersList;
+                    return response;
                 }
             }
         }

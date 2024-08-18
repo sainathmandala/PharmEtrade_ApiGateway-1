@@ -108,6 +108,10 @@ builder.Services.AddSingleton<IProductFilter, ProductFilterHelper>();
 builder.Services.AddSingleton<IProductFilterRepo, ProductFilterRepository>();
 builder.Services.AddSingleton<IOrdersRepository, OrdersRepository>();
 builder.Services.AddSingleton<IOrders, OrdersHelper>();
+builder.Services.AddSingleton<IMenuRepository, MenuRepository>();
+builder.Services.AddSingleton<IMenuHelper, MenuHelper>();
+builder.Services.AddSingleton<ICartRepository, CartRepository>();
+builder.Services.AddSingleton<ICartHelper, CartHelper>();
 
 builder.Services.AddCors(options =>
 {

@@ -31,7 +31,7 @@ namespace BAL.BusinessLogic.Helper
         public CustomerHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper, SmtpSettings smtpSettings)
         {
             _isqlDataHelper = isqlDataHelper;
-            _connectionString = configuration.GetConnectionString("OnlineexamDB");
+            _connectionString = configuration.GetConnectionString("APIDBConnectionString");
             exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), exFolder);
             _smtpSettings = smtpSettings;
             _s3Helper = new S3Helper(configuration);

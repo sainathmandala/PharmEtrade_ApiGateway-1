@@ -3,7 +3,7 @@ using BAL.ResponseModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PharmEtrade_ApiGateway.Repository.Interface;
-using BAL.ViewModels;
+using BAL.Models;
 
 namespace PharmEtrade_ApiGateway.Controllers
 {
@@ -28,7 +28,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         [Route("Get")]
         public async Task<IActionResult> GetOrdersByCustomerId(string? customerId)
         {
-            List<Order> response = await _ordersRepository.GetOrdersByCustomerId(customerId);
+            var response = await _ordersRepository.GetOrdersByCustomerId(customerId);
             return Ok(response);
         }
     }

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BAL.Models;
+using BAL.ResponseModels;
 
 namespace BAL.BusinessLogic.Interface
 {
     public interface ICartHelper
     {
+        Task<Response<Cart>> GetCartItems(string customerId = null, string productId = null);
     }
 }

@@ -34,7 +34,7 @@ namespace BAL.BusinessLogic.Helper
             _s3Helper = new S3Helper(configuration);
             _configuration = configuration;
             _isqlDataHelper = isqlDataHelper;
-            _connectionString = configuration.GetConnectionString("OnlineexamDB");
+            _connectionString = configuration.GetConnectionString("APIDBConnectionString");
             _exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), "ProductExceptionLogs");
         }
 

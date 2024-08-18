@@ -18,7 +18,7 @@ namespace DAL
         public SqlDataHelper(IConfiguration configuration)
         {
             exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), exFolder);
-            _connectionString = configuration.GetConnectionString("OnlineexamDB");
+            _connectionString = configuration.GetConnectionString("APIDBConnectionString");
         }
 
         public async Task<int> ExcuteNonQueryasync(MySqlCommand cmd)
@@ -40,12 +40,12 @@ namespace DAL
                 cmd.Dispose();
                 throw ex;
             }
-
         }
         public async Task<DataTable> SqlDataAdapterasync(MySqlCommand cmd)
         {
             MySqlDataAdapter adp = new MySqlDataAdapter();
             MySqlConnection sqlcon = new MySqlConnection(_connectionString);
+            cmd.Connection = sqlcon;
             DataTable dt = new DataTable();
             try
             {
@@ -64,9 +64,6 @@ namespace DAL
                 adp.Dispose();
                 throw ex;
             }
-
-        }
-
-       
+        }       
     }
 }
