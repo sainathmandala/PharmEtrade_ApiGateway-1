@@ -476,20 +476,27 @@ namespace BAL.BusinessLogic.Helper
             // Dummy implementation
             return Task.FromResult(pvm);
         }
-        // Author: [swathi]
-        // Created Date: [03/07/2024]
-        // Description: Method for GetCartProducts based on userid
-        public async Task<IEnumerable<UserProductViewModel>> GetCartByUserId(int userId)
+        
+      
+        public async Task<List<UserProductViewModel>> GetCartByCustomerID(string CustomerID)
         {
             var products = new List<UserProductViewModel>();
 
             using (var sqlcon = new MySqlConnection(_connectionString))
             {
-                using (var cmd = new MySqlCommand("GetCartByUserId", sqlcon))
+                using (var cmd = new MySqlCommand("GetCartByCustomerId", sqlcon))
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@p_UserId", userId);
+                    // cmd.Parameters.AddWithValue("p_CustomerId", CustomerID);
 
+                    if (string.IsNullOrEmpty(CustomerID))
+                    {
+                        cmd.Parameters.AddWithValue("p_CustomerId", DBNull.Value);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("p_CustomerId", CustomerID);
+                    }
                     try
                     {
                         await sqlcon.OpenAsync();
@@ -510,7 +517,7 @@ namespace BAL.BusinessLogic.Helper
                     }
                     catch (Exception ex)
                     {
-                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "GetByUserId : errormessage:" + ex.Message.ToString()));
+                        Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "GetCartByCustomerId : errormessage:" + ex.Message.ToString()));
                         throw;
                     }
                 }
@@ -518,6 +525,7 @@ namespace BAL.BusinessLogic.Helper
 
             return products;
         }
+
         // Author: [swathi]
         // Created Date: [04/07/2024]
         // Description: Method for  Delete CartProduct
