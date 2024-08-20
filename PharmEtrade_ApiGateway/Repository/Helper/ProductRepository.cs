@@ -5,6 +5,9 @@ using PharmEtrade_ApiGateway.Repository.Interface;
 using System.Threading.Tasks;
 using BAL.Common;
 using System.IO;
+using BAL.Models;
+using BAL.BusinessLogic.Helper;
+using BAL.ResponseModels;
 
 namespace PharmEtrade_ApiGateway.Repository.Helper
 {
@@ -236,6 +239,29 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
 
         }
 
+        public async Task<BAL.ResponseModels.Response<Product>> AddProduct(Product product)
+        {
+            return await _productHelper.AddProduct(product);
+        }
 
+        public async Task<UploadResponse> UploadImage(IFormFile image)
+        {
+            UploadResponse response = new UploadResponse();
+            try
+            {
+                response = await _productHelper.UploadImage(image);
+            }
+            catch (Exception ex)
+            {
+                //response.Status = 500;
+                //response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<Product>> GetAllProducts()
+        {
+            return await _productHelper.GetAllProducts();
+        }
     }
 }

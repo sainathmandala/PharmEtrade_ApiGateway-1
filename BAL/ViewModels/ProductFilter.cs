@@ -6,15 +6,10 @@ namespace BAL.ViewModels
     public class ProductFilter
     {
        
-        public int AddproductID { get; set; }
-  
-        public int Productcategory_id { get; set; }
-       
+        public int AddproductID { get; set; }  
+        public int Productcategory_id { get; set; }       
         public int Sizeid { get; set; }
-     
-       
-        public string ProductName { get; set; }
-     
+        public string ProductName { get; set; }    
       
         public string NDCorUPC { get; set; }
         
@@ -63,9 +58,6 @@ namespace BAL.ViewModels
         public string AboutTheProduct { get; set; }
         public int CategorySpecificationId { get; set; }
         public int ProductTypeId { get; set; }
-
         public string SellerId { get; set; }
-
-
     }
 }

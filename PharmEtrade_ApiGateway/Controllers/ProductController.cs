@@ -1,4 +1,6 @@
-﻿using BAL.ViewModel;
+﻿using BAL.Models;
+using BAL.ResponseModels;
+using BAL.ViewModel;
 using BAL.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +17,28 @@ namespace PharmEtrade_ApiGateway.Controllers
         public ProductController(IProductsRepo productRepo)
         {
             _productRepo = productRepo;
+        }
+
+        [HttpPost("Add")]
+        public async Task<IActionResult> AddProduct(Product product)
+        {
+            var response = await _productRepo.AddProduct(product);
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("Image/Upload")]
+        public async Task<IActionResult> UploadImage(IFormFile image)
+        {
+            UploadResponse response = await _productRepo.UploadImage(image);
+            return Ok(response);
+        }
+
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAllProducts()
+        {
+            var response = await _productRepo.GetAllProducts();
+            return Ok(response);
         }
 
         [HttpPost("InsertProduct")]

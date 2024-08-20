@@ -1,25 +1,19 @@
 ﻿using BAL.ViewModel;
-using DAL.Models;
 using BAL.BusinessLogic.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
-using System.Threading.Tasks;
 using DAL;
 using BAL.Common;
 using BAL.ViewModels;
-using System.Net.Http.Headers;
-using OfficeOpenXml;
-using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
 using MySql.Data.MySqlClient;
-using Google.Protobuf.WellKnownTypes;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System.Drawing.Imaging;
-using System.Security.AccessControl;
-using Microsoft.AspNetCore.Http.Internal;
+using BAL.ResponseModels;
+using BAL.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Microsoft.AspNetCore.Http;
+
 namespace BAL.BusinessLogic.Helper
 {
     public class ProductHelper : IProductHelper
@@ -58,7 +52,7 @@ namespace BAL.BusinessLogic.Helper
                     using (MySqlCommand cmdImage = new MySqlCommand("InsertImageUrl", sqlcon, transaction))
                     {
                         cmdImage.CommandType = CommandType.StoredProcedure;
-                        cmdImage.Parameters.AddWithValue("@p_ImageUrl", "imageUrl"); 
+                        cmdImage.Parameters.AddWithValue("@p_ImageUrl", "imageUrl");
                         cmdImage.Parameters.AddWithValue("@p_Caption", productviewmodel.Caption);
                         MySqlParameter imageIDParam = new MySqlParameter("@p_ImageID", MySqlDbType.Int32)
                         {
@@ -143,11 +137,9 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
-
         //Author: [swathi]
         //Created Date: [10 /07/2024]
         //Description: Method for BulkInsertProducts
-        
 
         public async Task<string> InsertProductsFromExcel(Stream excelFileStream)
         {
@@ -295,12 +287,6 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
-
-
-
-
-
-
         // Author: [Mamatha]
         // Created Date: [04/07/2024]
         // Description: Method for EditProductDetails
@@ -360,20 +346,20 @@ namespace BAL.BusinessLogic.Helper
                         cmdProduct.Parameters.AddWithValue("p_AmountInStock", productviewmodel.AmountInStock);
                         cmdProduct.Parameters.AddWithValue("p_Taxable", productviewmodel.Taxable);
                         cmdProduct.Parameters.AddWithValue("p_SalePrice", productviewmodel.SalePrice);
-                        cmdProduct.Parameters.AddWithValue("p_SalePriceFrom",productviewmodel.SalePriceFrom);
+                        cmdProduct.Parameters.AddWithValue("p_SalePriceFrom", productviewmodel.SalePriceFrom);
                         cmdProduct.Parameters.AddWithValue("p_SalePriceTo", productviewmodel.SalePriceTo);
                         cmdProduct.Parameters.AddWithValue("p_Manufacturer", productviewmodel.Manufacturer);
                         cmdProduct.Parameters.AddWithValue("p_Strength", productviewmodel.Strength);
                         cmdProduct.Parameters.AddWithValue("p_Fromdate", productviewmodel.Fromdate);
-                        cmdProduct.Parameters.AddWithValue("p_LotNumber",productviewmodel.LotNumber);
-                        cmdProduct.Parameters.AddWithValue("p_ExpirationDate",productviewmodel.ExpirationDate);
-                        cmdProduct.Parameters.AddWithValue("p_PackQuantity",productviewmodel.PackQuantity);
+                        cmdProduct.Parameters.AddWithValue("p_LotNumber", productviewmodel.LotNumber);
+                        cmdProduct.Parameters.AddWithValue("p_ExpirationDate", productviewmodel.ExpirationDate);
+                        cmdProduct.Parameters.AddWithValue("p_PackQuantity", productviewmodel.PackQuantity);
                         cmdProduct.Parameters.AddWithValue("p_PackType", productviewmodel.PackType);
                         cmdProduct.Parameters.AddWithValue("p_PackCondition", productviewmodel.PackCondition);
                         cmdProduct.Parameters.AddWithValue("p_ProductDescription", productviewmodel.ProductDescription);
-                        cmdProduct.Parameters.AddWithValue("p_MetaKeywords",productviewmodel.MetaKeywords);
+                        cmdProduct.Parameters.AddWithValue("p_MetaKeywords", productviewmodel.MetaKeywords);
                         cmdProduct.Parameters.AddWithValue("p_MetaTitle", productviewmodel.MetaTitle);
-                        cmdProduct.Parameters.AddWithValue("p_MetaDescription",productviewmodel.MetaDescription);
+                        cmdProduct.Parameters.AddWithValue("p_MetaDescription", productviewmodel.MetaDescription);
                         cmdProduct.Parameters.AddWithValue("p_SaltComposition", productviewmodel.SaltComposition);
                         cmdProduct.Parameters.AddWithValue("p_UriKey", productviewmodel.UriKey);
                         cmdProduct.Parameters.AddWithValue("p_AboutTheProduct", productviewmodel.AboutTheProduct);
@@ -401,8 +387,6 @@ namespace BAL.BusinessLogic.Helper
                 }
             }
         }
-
-
 
         // Author: [swathi]
         // Created Date: [02/07/2024]
@@ -453,11 +437,6 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
-
-        
-
-
-
         private async Task<bool> IsProductAlreadyAdded(SqlConnection sqlcon, int userId, int imageId, int productId)
         {
             using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM [PharmEtradeDB].[dbo].[AddtoCartproduct] WHERE Userid = @Userid AND Imageid = @Imageid AND ProductId = @ProductId", sqlcon))
@@ -476,8 +455,7 @@ namespace BAL.BusinessLogic.Helper
             // Dummy implementation
             return Task.FromResult(pvm);
         }
-        
-      
+
         public async Task<List<UserProductViewModel>> GetCartByCustomerID(string CustomerID)
         {
             var products = new List<UserProductViewModel>();
@@ -722,7 +700,155 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
+        public async Task<Response<Product>> AddProduct(Product product)
+        {
+            Response<Product> response = new Response<Product>();
+            try
+            {
+                MySqlCommand cmdProduct = new MySqlCommand("sp_AddUpdateProduct");
+                cmdProduct.CommandType = CommandType.StoredProcedure;
 
+                cmdProduct.Parameters.AddWithValue("@p_ProductId", product.ProductID);
+                cmdProduct.Parameters.AddWithValue("@p_ProductGalleryId", product.ProductGalleryId);
+                cmdProduct.Parameters.AddWithValue("@p_ProductCategoryId", product.ProductCategoryId);
+                cmdProduct.Parameters.AddWithValue("@p_ProductSizeId", product.ProductSizeId);
+                cmdProduct.Parameters.AddWithValue("@p_ProductName", product.ProductName);
+                cmdProduct.Parameters.AddWithValue("@p_NDCorUPC", product.NDCorUPC);
+                cmdProduct.Parameters.AddWithValue("@p_BrandName", product.BrandName);
+                cmdProduct.Parameters.AddWithValue("@p_PriceName", product.PriceName);
+                cmdProduct.Parameters.AddWithValue("@p_UPNMemberPrice", product.UPNMemberPrice);
+                cmdProduct.Parameters.AddWithValue("@p_AmountInStock", product.AmountInStock);
+                cmdProduct.Parameters.AddWithValue("@p_Taxable", product.Taxable);
+                cmdProduct.Parameters.AddWithValue("@p_SalePrice", product.SalePrice);
+                cmdProduct.Parameters.AddWithValue("@p_SalePriceValidFrom", product.SalePriceValidFrom);
+                cmdProduct.Parameters.AddWithValue("@p_SalePriceValidTo", product.SalePriceValidTo);
+                cmdProduct.Parameters.AddWithValue("@p_Manufacturer", product.Manufacturer);
+                cmdProduct.Parameters.AddWithValue("@p_Strength", product.Strength);
+                cmdProduct.Parameters.AddWithValue("@p_AvailableFromDate", product.AvailableFromDate);
+                cmdProduct.Parameters.AddWithValue("@p_LotNumber", product.LotNumber);
+                cmdProduct.Parameters.AddWithValue("@p_ExpiryDate", product.ExpiryDate);
+                cmdProduct.Parameters.AddWithValue("@p_PackQuantity", product.PackQuantity);
+                cmdProduct.Parameters.AddWithValue("@p_PackType", product.PackType);
+                cmdProduct.Parameters.AddWithValue("@p_PackCondition", product.PackCondition);
+                cmdProduct.Parameters.AddWithValue("@p_ProductDescription", product.ProductDescription);
+                cmdProduct.Parameters.AddWithValue("@p_MetaKeywords", product.MetaKeywords);
+                cmdProduct.Parameters.AddWithValue("@p_MetaTitle", product.MetaTitle);
+                cmdProduct.Parameters.AddWithValue("@p_MetaDescription", product.MetaDescription);
+                cmdProduct.Parameters.AddWithValue("@p_SaltComposition", product.SaltComposition);
+                cmdProduct.Parameters.AddWithValue("@p_UriKey", product.UriKey);
+                cmdProduct.Parameters.AddWithValue("@p_AboutTheProduct", product.AboutTheProduct);
+                cmdProduct.Parameters.AddWithValue("@p_CategorySpecificationId", product.CategorySpecificationId);
+                cmdProduct.Parameters.AddWithValue("@p_ProductTypeId", product.ProductTypeId);
+                cmdProduct.Parameters.AddWithValue("@p_SellerId", product.SellerId);
+                cmdProduct.Parameters.AddWithValue("@p_ImageUrl", product.ImageUrl);
+                cmdProduct.Parameters.AddWithValue("@p_Caption", product.Caption);
+                DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProduct));
 
+                response.StatusCode = 200;
+                response.Message = "Product Added Successfully.";
+                response.Result = MapDataTableToProductList(tblProduct);
+            }
+            catch (Exception ex)
+            {
+                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+        private static List<Product> MapDataTableToProductList(DataTable tblProduct)
+        {
+            List<Product> lstProduct = new List<Product>();
+            foreach (DataRow product in tblProduct.Rows)
+            {
+                Product item = new Product();
+                item.ProductID = product["ProductID"].ToString();
+                item.ProductCategoryId = Convert.ToInt32(product["ProductCategoryId"]);
+                item.ProductGalleryId = Convert.ToInt32(product["ProductGalleryId"]);
+                item.ProductSizeId = Convert.ToInt32(product["ProductSizeId"]);
+                item.ProductName = product["ProductName"].ToString();
+                item.NDCorUPC = product["NDCorUPC"].ToString();
+                item.BrandName = product["BrandName"].ToString();
+                item.PriceName = product["PriceName"].ToString();
+                item.UPNMemberPrice = Convert.ToDecimal(product["UPNMemberPrice"]);
+                item.AmountInStock = Convert.ToInt32(product["AmountInStock"]);
+                item.Taxable = Convert.ToInt32(product["Taxable"]) == 0 ? true : false;
+                item.SalePrice = Convert.ToDecimal(product["SalePrice"]);
+                item.SalePriceValidFrom = product["SalePriceValidFrom"] != DBNull.Value ? Convert.ToDateTime(product["SalePriceValidFrom"]) : DateTime.MinValue;
+                item.SalePriceValidTo = product["SalePriceValidTo"] != DBNull.Value ? Convert.ToDateTime(product["SalePriceValidTo"]) : DateTime.MinValue;
+                item.Manufacturer = product["Manufacturer"].ToString();
+                item.Strength = product["Strength"].ToString();
+                item.AvailableFromDate = product["AvailableFromDate"] != DBNull.Value ? Convert.ToDateTime(product["AvailableFromDate"]) : DateTime.MinValue;
+                item.LotNumber = product["LotNumber"].ToString();
+                item.ExpiryDate = product["ExpiryDate"] != DBNull.Value ? Convert.ToDateTime(product["ExpiryDate"]) : DateTime.MinValue;
+                item.PackQuantity = Convert.ToInt32(product["PackQuantity"]);
+                item.PackType = product["PackType"].ToString();
+                item.PackCondition = product["PackCondition"].ToString();
+                item.ProductDescription = product["ProductDescription"].ToString();
+                item.MetaKeywords = product["MetaKeywords"].ToString();
+                item.MetaTitle = product["MetaTitle"].ToString();
+                item.MetaDescription = product["MetaDescription"].ToString();
+                item.SaltComposition = product["SaltComposition"].ToString();
+                item.UriKey = product["UriKey"].ToString();
+                item.AboutTheProduct = product["AboutTheProduct"].ToString();
+                item.CategorySpecificationId = Convert.ToInt32(product["CategorySpecificationId"]);
+                item.ProductTypeId = Convert.ToInt32(product["ProductTypeId"]);
+                item.SellerId = product["SellerId"].ToString();
+                item.ImageUrl = product["ImageUrl"].ToString();
+                item.Caption = product["Caption"].ToString();
+
+                lstProduct.Add(item);
+            }
+            return lstProduct;
+        }
+
+        public async Task<UploadResponse> UploadImage(IFormFile image)
+        {
+            UploadResponse response = new UploadResponse();
+            string folderName = "PharmaEtrade";
+            try
+            {
+                // Upload files to S3
+                if (image != null)
+                {
+                    response.ImageUrl = await _s3Helper.UploadFileAsync(image, folderName);
+                    response.Status = 200;
+                    response.Message = "Image Uploaded Successfully.";
+                }
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "SaveBusinessInfoData: errormessage:" + ex.Message.ToString()));
+
+                response.Status = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<Product>> GetAllProducts()
+        {
+            Response<Product> response = new Response<Product>();
+            try
+            {
+                MySqlCommand cmdProduct = new MySqlCommand("sp_GetProducts");
+                cmdProduct.CommandType = CommandType.StoredProcedure;
+                
+                DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProduct));
+                response.StatusCode = 200;
+                response.Message = "Successfully Fetched Data.";
+                response.Result = MapDataTableToProductList(tblProduct);
+            }
+            catch (Exception ex)
+            {
+                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+            return response;
+        }
     }
 }

@@ -2,11 +2,16 @@
 using System.Threading.Tasks;
 using BAL.ViewModels;
 using Microsoft.AspNetCore.Http;
+using BAL.Models;
+using BAL.ResponseModels;
 
 namespace BAL.BusinessLogic.Interface
 {
     public interface IProductHelper
     {
+        Task<BAL.ResponseModels.Response<Product>> AddProduct(Product product);
+        Task<UploadResponse> UploadImage(IFormFile image);
+        Task<BAL.ResponseModels.Response<Product>> GetAllProducts();
         Task<string> InsertAddProduct(ProductFilter productviewmodel, Stream imageFileStream, string imageFileName);
         Task<string> InsertProductsFromExcel(Stream excelFileStream);
         Task<Productviewmodel> DummyInterface(Productviewmodel pvm);

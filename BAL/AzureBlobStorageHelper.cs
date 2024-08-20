@@ -85,8 +85,6 @@ public class S3Helper
 
     public async Task<string> UploadFileAsync(IFormFile file, string folderName)
     {
-      
-
         await EnsureBucketExistsAsync(_bucketName);
 
         var key = $"{folderName}/{file.FileName}";
@@ -108,7 +106,7 @@ public class S3Helper
             await transferUtility.UploadAsync(uploadRequest);
         }
 
-        return $"https://{_bucketName}.s3.amazonaws.com/{key}";
+        return $"https://{_bucketName}.s3.{RegionEndpoint.GetBySystemName(_s3Client.Config.RegionEndpoint.SystemName).SystemName}.amazonaws.com/{key}";
     }
 
 

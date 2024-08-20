@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BAL.Models;
+using BAL.RequestModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PharmEtrade_ApiGateway.Repository.Interface;
 
@@ -18,6 +20,14 @@ namespace PharmEtrade_ApiGateway.Controllers
         public async Task<IActionResult> GetCartItems(string? customerId = null, string? productId = null)
         {
             var response = await _cartRepository.GetCartItems(customerId, productId);
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("Add")]
+        public async Task<IActionResult> AddToCart(CartRequest request)
+        {
+            var response = await _cartRepository.AddToCart(request);
             return Ok(response);
         }
     }

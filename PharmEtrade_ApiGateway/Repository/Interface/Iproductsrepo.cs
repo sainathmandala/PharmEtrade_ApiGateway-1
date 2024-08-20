@@ -1,4 +1,6 @@
-﻿using BAL.ViewModel;
+﻿using BAL.Models;
+using BAL.ResponseModels;
+using BAL.ViewModel;
 using BAL.ViewModels;
 using System.Threading.Tasks;
 
@@ -6,6 +8,9 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
 {
     public interface IProductsRepo
     {
+        Task<BAL.ResponseModels.Response<Product>> AddProduct(Product product);
+        Task<UploadResponse> UploadImage(IFormFile image);
+        Task<BAL.ResponseModels.Response<Product>> GetAllProducts();
         Task<Response> InsertAddProduct(ProductFilter productviewmodel, Stream imageFileStream, string imageFileName);
         Task<Response> InsertAddToCartProduct(AddToCartViewModel addToCartModel);
         Task<List<UserProductViewModel>> GetCartByCustomerID(string CustomerID);
