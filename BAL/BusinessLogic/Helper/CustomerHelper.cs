@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace BAL.BusinessLogic.Helper
 {
-    public class CustomerHelper: IcustomerHelper
+    public class CustomerHelper : IcustomerHelper
     {
         private readonly IsqlDataHelper _isqlDataHelper;
         private readonly string _connectionString;
@@ -105,7 +105,7 @@ namespace BAL.BusinessLogic.Helper
                 cmd.Parameters.AddWithValue("p_accounttype", userViewModel.Accounttype);
                 cmd.Parameters.AddWithValue("p_upnmember", userViewModel.UpnMember);
                 cmd.Parameters.AddWithValue("p_otp", null);
-                cmd.Parameters.AddWithValue("p_otp_expiration",null);
+                cmd.Parameters.AddWithValue("p_otp_expiration", null);
 
                 await sqlcon.OpenAsync();
                 await _isqlDataHelper.ExcuteNonQueryasync(cmd);
@@ -148,7 +148,7 @@ namespace BAL.BusinessLogic.Helper
         // Author: [Shiva]
         // Created Date: [03/07/2024]
         // Description: Method for update password
-        public async Task<string> UpdatePassword(int id,  string newPassword)
+        public async Task<string> UpdatePassword(int id, string newPassword)
         {
             MySqlConnection sqlcon = new MySqlConnection(_connectionString);
             MySqlCommand cmd = new MySqlCommand();
@@ -158,7 +158,7 @@ namespace BAL.BusinessLogic.Helper
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("p_UserId", id);
                 cmd.Parameters.AddWithValue("p_NewPassword", newPassword);
-               
+
 
                 await sqlcon.OpenAsync();
                 string result = await cmd.ExecuteScalarAsync() as string;
@@ -420,7 +420,7 @@ namespace BAL.BusinessLogic.Helper
             MySqlCommand cmd = new MySqlCommand();
             string deaLicenseS3Path = null;
             string pharmacyLicenseS3Path = null;
-          string folderName = "User_BusinessInfo";
+            string folderName = "User_BusinessInfo";
             try
             {
                 // Upload files to S3
@@ -512,7 +512,7 @@ namespace BAL.BusinessLogic.Helper
                     cmd.Parameters.AddWithValue("p_IsUPNMember", customer.IsUPNMember);
                     cmd.Parameters.AddWithValue("p_LoginOTP", null);
                     cmd.Parameters.AddWithValue("p_OTPExpiryDate", null);
-                    
+
                     MySqlDataReader reader = cmd.ExecuteReader();
                     if (reader.HasRows)
                     {
@@ -526,7 +526,7 @@ namespace BAL.BusinessLogic.Helper
                     Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "AddUpdate Customer :  errormessage:" + ex.Message.ToString()));
                     return "ERROR : " + ex.Message;
                 }
-            }                
+            }
         }
 
         public async Task<UploadResponse> UploadImage(IFormFile image)
@@ -556,8 +556,8 @@ namespace BAL.BusinessLogic.Helper
         public async Task<string> AddUpdateBusinessInfo(CustomerBusinessInfo businessInfo)
         {
             MySqlConnection sqlcon = new MySqlConnection(_connectionString);
-            MySqlCommand cmd = new MySqlCommand();           
-            
+            MySqlCommand cmd = new MySqlCommand();
+
             try
             {
                 await sqlcon.OpenAsync();
@@ -607,14 +607,9 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
-
-        public async Task<CustomerResponse> GetCustomerByCustomerId(string customerId)
+        public async Task<Response<CustomerResponse>> GetCustomerByCustomerId(string customerId)
         {
-            if (string.IsNullOrEmpty(customerId))
-            {
-                throw new ArgumentException("CustomerId is required.", nameof(customerId));
-            }
-
+            var response = new Response<CustomerResponse>();
             using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
                 using (MySqlCommand cmd = new MySqlCommand("sp_GetCustomerByCustomerId", sqlcon))
@@ -676,11 +671,15 @@ namespace BAL.BusinessLogic.Helper
                             businessInfoResponse.NCPDP = row["NCPDP"] != DBNull.Value ? row["NCPDP"].ToString() : null;
                         }
 
-                        return new CustomerResponse
+                        var customerData = new CustomerResponse()
                         {
                             CustomerDetails = customer,
-                            BusinessInfo = businessInfoResponse // Correct type assignment
+                            BusinessInfo = businessInfoResponse
                         };
+
+                        response.StatusCode = 200;
+                        response.Message = "Successfully fetched data.";
+                        response.Result = new List<CustomerResponse>() { customerData };
                     }
                     catch (MySqlException ex)
                     {
@@ -692,6 +691,7 @@ namespace BAL.BusinessLogic.Helper
                         // Handle general exceptions
                         throw new Exception("An unexpected error occurred.", ex);
                     }
+                    return response;
                 }
             }
         }

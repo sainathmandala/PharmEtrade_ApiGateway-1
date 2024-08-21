@@ -34,6 +34,8 @@ namespace BAL.BusinessLogic.Helper
                     menuItem.MenuId = Convert.ToInt32(menu["MenuId"]);
                     menuItem.MenuName = menu["MenuName"].ToString();
                     menuItem.NavigateUrl = menu["NavigateUrl"].ToString();
+                    menuItem.Title = menu["Title"].ToString();
+                    menuItem.IconPath = menu["IconPath"].ToString();
                     menuItem.Parent = Convert.ToInt32(menu["Parent"]);
                     menuItem.Description = menu["Description"].ToString();
                     menuItem.IsActive = Convert.ToInt32(menu["IsActive"]) == 0 ? true : false;

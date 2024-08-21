@@ -11,6 +11,8 @@ namespace BAL.Models
         public int MenuId { get; set; }
         public string MenuName { get; set; }
         public string? NavigateUrl { get; set; }
+        public string? Title { get; set; }
+        public string? IconPath { get; set; }
         public int Parent { get; set; }
         public string? Description { get; set; }
         public bool IsActive { get; set; }

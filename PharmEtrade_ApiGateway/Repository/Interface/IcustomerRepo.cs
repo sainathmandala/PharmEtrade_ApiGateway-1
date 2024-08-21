@@ -22,6 +22,6 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<UploadResponse> UploadImage(IFormFile image);
         Task<BusinessInfoResponse> AddUpdateBusinessInfo(CustomerBusinessInfo businessInfo);
 
-        Task<CustomerResponse> GetCustomerByCustomerId(string customerId);
+        Task<Response<CustomerResponse>> GetCustomerByCustomerId(string customerId);
     }
 }

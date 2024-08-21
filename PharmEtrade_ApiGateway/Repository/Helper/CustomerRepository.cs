@@ -482,8 +482,15 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return response;
         }
 
-        public async Task<CustomerResponse> GetCustomerByCustomerId(string customerId)
+        public async Task<Response<CustomerResponse>> GetCustomerByCustomerId(string customerId)
         {
+            var response = new Response<CustomerResponse>();
+            if(string.IsNullOrEmpty(customerId))
+            {
+                response.StatusCode = 400;
+                response.Message = "Bad Request : Customer Id is not provided.";
+                response.Result = null;
+            }
             return await _icustomerHelper.GetCustomerByCustomerId(customerId);
         }
     }

@@ -27,6 +27,6 @@ namespace BAL.BusinessLogic.Interface
         Task<string> AddUpdateBusinessInfo(CustomerBusinessInfo businessInfo);
         Task<UploadResponse> UploadImage(IFormFile image);
 
-        Task<CustomerResponse> GetCustomerByCustomerId(string customerId);
+        Task<Response<CustomerResponse>> GetCustomerByCustomerId(string customerId);
     }
 }
