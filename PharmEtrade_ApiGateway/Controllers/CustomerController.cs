@@ -96,5 +96,20 @@ namespace PharmEtrade_ApiGateway.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetCustomers")]
+        public async Task<IActionResult> GetCustomers(string? customerId, string? email, string? mobile)
+        {
+            try
+            {
+                var response = await _icustomerRepo.GetCustomers(customerId, email, mobile);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving customer details.");
+            }
+        }
+
     }
 }

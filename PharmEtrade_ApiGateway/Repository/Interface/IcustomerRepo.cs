@@ -23,5 +23,6 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<BusinessInfoResponse> AddUpdateBusinessInfo(CustomerBusinessInfo businessInfo);
 
         Task<Response<CustomerResponse>> GetCustomerByCustomerId(string customerId);
+        Task<Response<Customer>> GetCustomers(string? customerId, string? email, string? mobile);
     }
 }

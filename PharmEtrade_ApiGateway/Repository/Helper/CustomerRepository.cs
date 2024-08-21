@@ -493,5 +493,10 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             }
             return await _icustomerHelper.GetCustomerByCustomerId(customerId);
         }
+
+        public async Task<Response<Customer>> GetCustomers(string? customerId, string? email, string? mobile)
+        {            
+            return await _icustomerHelper.GetCustomers(customerId, email, mobile);
+        }
     }
 }
