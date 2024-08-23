@@ -112,6 +112,8 @@ builder.Services.AddSingleton<IMenuRepository, MenuRepository>();
 builder.Services.AddSingleton<IMenuHelper, MenuHelper>();
 builder.Services.AddSingleton<ICartRepository, CartRepository>();
 builder.Services.AddSingleton<ICartHelper, CartHelper>();
+builder.Services.AddSingleton<IWishListHelper, WishListHelper>();
+builder.Services.AddSingleton<IWishListRepository, WishListRepository>();
 
 builder.Services.AddCors(options =>
 {
