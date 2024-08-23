@@ -9,7 +9,8 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
     public class CartRepository : ICartRepository
     {
         private ICartHelper _cartHelper;
-        public CartRepository(ICartHelper cartHelper) {
+        public CartRepository(ICartHelper cartHelper) 
+        {
             _cartHelper = cartHelper;
         }
 
