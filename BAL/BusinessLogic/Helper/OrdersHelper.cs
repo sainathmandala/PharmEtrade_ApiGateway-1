@@ -154,8 +154,77 @@ namespace BAL.BusinessLogic.Helper
                 }
             }
         }
+        public async Task<Response<Order>> GetOrdersBySellerId(string VendorId)
+        {
+            var response = new Response<Order>();
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("sp_GetOrdersByVendorId", sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
 
+                    // Handle NULL or empty CustomerId
+                    if (string.IsNullOrEmpty(VendorId))
+                    {
+                        cmd.Parameters.AddWithValue("p_VendorId", DBNull.Value);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("p_VendorId", VendorId);
+                    }
 
+                    try
+                    {
+                        // Execute the stored procedure and fill the DataTable
+                        DataTable tblOrders = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
+                        List<Order> ordersList = new List<Order>();
+                        if (tblOrders.Rows.Count > 0)
+                        {
+                            foreach (DataRow row in tblOrders.Rows)
+                            {
+                                ordersList.Add(new Order
+                                {
+                                    OrderId = row["OrderId"].ToString(),
+                                    CustomerId = row["CustomerId"].ToString(),
+                                    CustomerName = row["CustomerName"].ToString(),
+                                    ProductId = Convert.ToInt32(row["ProductId"]),
+                                    ProductName = row["ProductName"].ToString(),
+                                    TotalAmount = Convert.ToDouble(row["TotalAmount"]),
+                                    ShippingMethodId = Convert.ToInt32(row["ShippingMethodId"]),
+                                    OrderStatusId = Convert.ToInt32(row["OrderStatusId"]),
+                                    TrackingNumber = row["TrackingNumber"].ToString(),
+                                    OrderDetailId = row["OrderDetailId"].ToString(),
+                                    Quantity = Convert.ToInt32(row["Quantity"]),
+                                    PricePerProduct = Convert.ToDouble(row["PricePerProduct"]),
+                                    VendorId = row["VendorId"].ToString(),
+                                    ProductDescription = row["ProductDescription"].ToString(),
+                                    //OrderDate = Convert.ToDateTime(row["OrderDate"])
+                                    OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue
+                                });
+                            }
+                            response.StatusCode = 200;
+                            response.Message = "Successfully Feched data.";
+                            response.Result = ordersList;
+                        }
+                    }
+                    catch (MySqlException ex)
+                    {
+                        response.StatusCode = 500;
+                        response.Message = ex.Message;
+                        response.Result = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        response.StatusCode = 500;
+                        response.Message = ex.Message;
+                        response.Result = null;
+                    }
+
+                    return response;
+                }
+            }
+
+        }
 
     }
 }

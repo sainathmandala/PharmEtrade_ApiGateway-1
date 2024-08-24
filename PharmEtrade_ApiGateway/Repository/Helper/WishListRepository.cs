@@ -25,6 +25,11 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             {
                 return await _wishListHelper.GetWishListItems(customerId);
             }
-        
+           public async Task<Response<WishList>> GetWishListById(string WishListId = null)
+           {
+
+                return await _wishListHelper.GetWishListById(WishListId);
+           }
+
     }
 }

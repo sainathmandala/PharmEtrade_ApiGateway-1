@@ -112,5 +112,27 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
+        public async Task<Response<WishList>> GetWishListById(string WishListId = null)
+        {
+            var response = new Response<WishList>();
+            try
+            {
+                MySqlCommand command = new MySqlCommand("sp_GetWishListById");
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("p_WishListId", WishListId);
+                DataTable tblwishlist = await Task.Run(() => _sqlDataHelper.SqlDataAdapterasync(command));
+
+                response.StatusCode = 200;
+                response.Message = "Successfully Feched data.";
+                response.Result = MapDataTableToWishListList(tblwishlist);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+            return response;
+        }
     }
 }

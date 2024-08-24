@@ -30,5 +30,12 @@ namespace PharmEtrade_ApiGateway.Controllers
             var response = await _wishListRepository.AddToWishList(request);
             return Ok(response);
         }
+        [HttpGet]
+        [Route("GetWishListById")]
+        public async Task<IActionResult> GetWishListById(string? WishListId = null)
+        {
+            var response = await _wishListRepository.GetWishListById(WishListId);
+            return Ok(response);
+        }
     }
 }
