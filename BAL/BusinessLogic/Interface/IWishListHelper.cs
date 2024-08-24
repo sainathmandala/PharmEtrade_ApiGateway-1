@@ -13,5 +13,6 @@ namespace BAL.BusinessLogic.Interface
     {
         Task<Response<WishList>> GetWishListItems(string customerId = null);
         Task<Response<WishList>> AddToWishList(WishListRequest request);
+        Task<Response<WishList>> GetWishListById(string WishListId = null);
     }
 }

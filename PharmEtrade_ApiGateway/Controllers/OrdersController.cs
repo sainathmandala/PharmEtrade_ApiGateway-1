@@ -12,7 +12,8 @@ namespace PharmEtrade_ApiGateway.Controllers
     public class OrdersController : ControllerBase
     {
         private IOrdersRepository _ordersRepository;
-        public OrdersController(IOrdersRepository ordersRepository) { 
+        public OrdersController(IOrdersRepository ordersRepository) 
+        { 
             _ordersRepository = ordersRepository;
         }
 
@@ -29,6 +30,13 @@ namespace PharmEtrade_ApiGateway.Controllers
         public async Task<IActionResult> GetOrdersByCustomerId(string? customerId)
         {
             var response = await _ordersRepository.GetOrdersByCustomerId(customerId);
+            return Ok(response);
+        }
+        [HttpGet]
+        [Route("GetOrdersBySellerId")]
+        public async Task<IActionResult> GetOrdersBySellerId(string? VendorId)
+        {
+            var response = await _ordersRepository.GetOrdersBySellerId(VendorId);
             return Ok(response);
         }
     }
