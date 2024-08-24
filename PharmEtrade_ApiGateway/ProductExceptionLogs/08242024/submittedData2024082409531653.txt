@@ -1,0 +1,1 @@
+240824095316AM:InsertProduct :  errormessage:Procedure or function 'sp_GetProductsBySpecification' cannot be found in database ''. Verify that user 'admin'@'database-1.cvg06seeo4bl.us-east-1.rds.amazonaws.com' has enough privileges to execute.

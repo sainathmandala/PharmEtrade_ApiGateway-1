@@ -1,4 +1,5 @@
 ﻿using BAL.Models;
+using BAL.RequestModels;
 using BAL.ResponseModels;
 using BAL.ViewModel;
 using BAL.ViewModels;
@@ -26,6 +27,17 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
+        [HttpPost("Edit")]
+        public async Task<IActionResult> EditProduct(Product product)
+        {
+            if (string.IsNullOrEmpty(product.ProductID))
+            {
+                return BadRequest("Product Id is required.");
+            }
+            var response = await _productRepo.AddProduct(product);
+            return Ok(response);
+        }
+
         [HttpPost]
         [Route("Image/Upload")]
         public async Task<IActionResult> UploadImage(IFormFile image)
@@ -40,181 +52,52 @@ namespace PharmEtrade_ApiGateway.Controllers
             var response = await _productRepo.GetAllProducts();
             return Ok(response);
         }
-
-        [HttpPost("InsertProduct")]
-        public async Task<IActionResult> InsertProduct(ProductFilter productviewmodel)
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetProductsById(string productId)
         {
-            try
+            if (string.IsNullOrEmpty(productId))
             {
-                using (var memoryStream = new MemoryStream())
-                {
-                    await productviewmodel.ImageUrl.CopyToAsync(memoryStream);
-                    var result = await _productRepo.InsertAddProduct(productviewmodel, memoryStream, productviewmodel.ImageUrl.FileName);
-                    return Ok(result);
-                }
+                return BadRequest("Product Id is required.");
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            var response = await _productRepo.GetAllProducts(productId);
+            return Ok(response);
         }
-
-        // Author: [swathi]
-        // Created Date: [10/07/2024]
-        // Description: Method for BulkInsertProducts
-        [HttpPost("InsertOrUploadProduct")]
-        public async Task<IActionResult> InsertOrUploadProduct(IFormFile file)
-        {
-            try
-            {
-                var result = await _productRepo.ProcessExcelFileAsync(file);
-                return Ok(new { status = 200, message = result });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-        // Author: [Mamatha]
-        // Created Date: [04/07/2024]
-        // Description: Method for EditProductDetails
-        [HttpPost("EditProductDetails")]
-        public async Task<IActionResult> EditProductDetails(int AddproductID, ProductFilter productviewmodel, IFormFile ImageUrl)
-        {
-            if (productviewmodel == null)
-            {
-                return BadRequest("Invalid product data.");
-            }
-
-            try
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    if (ImageUrl != null)
-                    {
-                        await ImageUrl.CopyToAsync(memoryStream);
-                    }
-
-                    var result = await _productRepo.EditProductDetails(AddproductID, productviewmodel, ImageUrl != null ? memoryStream : Stream.Null, ImageUrl?.FileName);
-                    return Ok(result);
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-
-        // Author: [swathi]
-        // Created Date: [02/07/2024]
-        // Description: Method for AddtoCartProducts
-        [HttpPost("AddToCart")]
-        public async Task<IActionResult> AddToCart([FromBody] AddToCartViewModel addToCartModel)
-        {
-            try
-            {
-                var userId = addToCartModel.Userid;
-                var imageId = addToCartModel.Imageid;
-                var productId = addToCartModel.ProductId;
-
-                var result = await _productRepo.InsertAddToCartProduct(addToCartModel);
-
-                return Ok(new { AddToCartId = result });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
         
-        [HttpGet("GetCartByCustomerID/{CustomerID}")]
-        public async Task<ActionResult<List<UserProductViewModel>>> GetCartByCustomerID(string CustomerID)
+        [HttpGet("GetRxProducts")]
+        public async Task<IActionResult> GetRxProducts()
         {
-            var products = await _productRepo.GetCartByCustomerID(CustomerID);
-            return Ok(products);
+            var response = await _productRepo.GetProductsBySpecification(4);
+            return Ok(response);
         }
 
-        // Author: [swathi]
-        // Created Date: [04/07/2024]
-        // Description: Method for  Delete CartProduct
-        [HttpPost("SoftDeleteAddtoCartProduct")]
-        public async Task<IActionResult> SoftDeleteAddtoCartProduct([FromBody] int addToCartId)
+        [HttpGet("GetOTCProducts")]
+        public async Task<IActionResult> GetOTCProducts()
         {
-            try
-            {
-                var result = await _productRepo.SoftDeleteAddtoCartProduct(addToCartId);
-                if (result.status == 200)
-                {
-                    return Ok(result);
-                }
-                else
-                {
-                    return StatusCode(500, result.message);
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            var response = await _productRepo.GetProductsBySpecification(3);
+            return Ok(response);
         }
 
-        // Author: [swathi]
-        // Created Date: [05/07/2024]
-        // Description: Method for  Insert WishlistProduct
-        [HttpPost("AddWishlist")]
-        public async Task<IActionResult> AddWishlist([FromBody] Wishlistviewmodel wishlistviewmodel)
+        [HttpGet("GetRecentSoldProducts")]
+        public async Task<IActionResult> GetRecentSoldProducts(int? numberOfProducts)
         {
-            try
-            {
-                var userId = wishlistviewmodel.Userid;
-                var imageId = wishlistviewmodel.Imageid;
-                var productId = wishlistviewmodel.ProductId;
-
-                var result = await _productRepo.InsertWishlistproduct(wishlistviewmodel);
-
-                return Ok(new { Wishlistid = result });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            if (numberOfProducts == null)
+                numberOfProducts = 10;
+            var response = await _productRepo.GetRecentSoldProducts(numberOfProducts.Value);
+            return Ok(response);
         }
 
-        // Author: [swathi]
-        // Created Date: [05/07/2024]
-        // Description: Method for  GetwishlistProduct by userid
-        [HttpGet("GetwishlistByUserId/{userId}")]
-        public async Task<ActionResult<IEnumerable<UserProductViewModel>>> GetwishlistByUserId(int userId)
+        [HttpPost("Size/Add")]
+        public async Task<IActionResult> AddProductSize(ProductSize productSize)
         {
-            var products = await _productRepo.GetwhislistByUserId(userId);
-            return Ok(products);
+            var response = await _productRepo.AddUpdateProductSize(productSize);
+            return Ok(response);
         }
 
-        // Author: [swathi]
-        // Created Date: [05/07/2024]
-        // Description: Method for  Delete WishListProduct
-        [HttpPost("DeleteWishlistProduct")]
-        public async Task<IActionResult> DeleteWishlistProduct([FromBody] int wishlistid)
+        [HttpPost("Size/Edit")]
+        public async Task<IActionResult> EditProductSize(ProductSize productSize)
         {
-            try
-            {
-                var result = await _productRepo.DeleteWishlistproduct(wishlistid);
-                if (result.status == 200)
-                {
-                    return Ok(result);
-                }
-                else
-                {
-                    return StatusCode(500, result.message);
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            var response = await _productRepo.AddUpdateProductSize(productSize);
+            return Ok(response);
         }
     }
 }

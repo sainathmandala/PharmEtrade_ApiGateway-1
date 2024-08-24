@@ -259,9 +259,24 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return response;
         }
 
-        public async Task<Response<Product>> GetAllProducts()
+        public async Task<Response<Product>> GetAllProducts(string productId = null)
         {
-            return await _productHelper.GetAllProducts();
+            return await _productHelper.GetAllProducts(productId);
+        }
+
+        public async Task<Response<Product>> GetProductsBySpecification(int categorySpecificationId)
+        {
+            return await _productHelper.GetProductsBySpecification(categorySpecificationId);
+        }
+
+        public async Task<Response<Product>> GetRecentSoldProducts(int numberOfProducts)
+        {
+            return await _productHelper.GetRecentSoldProducts(numberOfProducts);
+        }
+
+        public async Task<Response<ProductSize>> AddUpdateProductSize(ProductSize productSize)
+        {
+            return await _productHelper.AddUpdateProductSize(productSize);
         }
     }
 }

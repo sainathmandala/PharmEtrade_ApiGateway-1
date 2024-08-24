@@ -13,6 +13,7 @@ using BAL.ResponseModels;
 using BAL.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Microsoft.AspNetCore.Http;
+using BAL.RequestModels;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -827,13 +828,14 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-        public async Task<Response<Product>> GetAllProducts()
+        public async Task<Response<Product>> GetAllProducts(string productId = null)
         {
             Response<Product> response = new Response<Product>();
             try
             {
                 MySqlCommand cmdProduct = new MySqlCommand("sp_GetProducts");
                 cmdProduct.CommandType = CommandType.StoredProcedure;
+                cmdProduct.Parameters.AddWithValue("@p_ProductId", productId);
                 
                 DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProduct));
                 response.StatusCode = 200;
@@ -847,6 +849,97 @@ namespace BAL.BusinessLogic.Helper
                 response.StatusCode = 500;
                 response.Message = ex.Message;
                 response.Result = null;
+            }
+            return response;
+        }
+
+        public async Task<Response<Product>> GetProductsBySpecification(int categorySpecificationId)
+        {
+            Response<Product> response = new Response<Product>();
+            try
+            {
+                MySqlCommand cmdProduct = new MySqlCommand("sp_GetProductsBySpecification");
+                cmdProduct.CommandType = CommandType.StoredProcedure;
+                cmdProduct.Parameters.AddWithValue("@p_CategorySpecificationId", categorySpecificationId);                
+
+                DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProduct));
+                response.StatusCode = 200;
+                response.Message = "Successfully Fetched Data.";
+                response.Result = MapDataTableToProductList(tblProduct);
+            }
+            catch (Exception ex)
+            {
+                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+            return response;
+        }
+
+        public async Task<Response<Product>> GetRecentSoldProducts(int numberOfProducts)
+        {
+            Response<Product> response = new Response<Product>();
+            try
+            {
+                MySqlCommand cmdProduct = new MySqlCommand("sp_GetRecentSoldProducts");
+                cmdProduct.CommandType = CommandType.StoredProcedure;
+                cmdProduct.Parameters.AddWithValue("@p_NumberOfProducts", numberOfProducts);
+
+                DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProduct));
+                response.StatusCode = 200;
+                response.Message = "Successfully Fetched Data.";
+                response.Result = MapDataTableToProductList(tblProduct);
+            }
+            catch (Exception ex)
+            {
+                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+            return response;
+        }
+
+        public async Task<Response<ProductSize>> AddUpdateProductSize(ProductSize productSize)
+        {
+            Response<ProductSize> response = new Response<ProductSize>();
+            try
+            {
+                MySqlCommand cmdProduct = new MySqlCommand("sp_AddUpdateProductSize");
+                cmdProduct.CommandType = CommandType.StoredProcedure;
+
+                cmdProduct.Parameters.AddWithValue("@p_ProductSizeId", productSize.ProductSizeId);
+                cmdProduct.Parameters.AddWithValue("@p_Height", productSize.Height);
+                cmdProduct.Parameters.AddWithValue("@p_Width", productSize.Width);
+                cmdProduct.Parameters.AddWithValue("@p_Length", productSize.Length);
+                cmdProduct.Parameters.AddWithValue("@p_Weight", productSize.Weight);
+
+                DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProduct));
+
+                var objProductSize = new ProductSize();
+                if (tblProduct?.Rows.Count > 0)
+                {   
+                    objProductSize.ProductSizeId = Convert.ToInt32(tblProduct.Rows[0]["ProductSizeId"]);
+                    objProductSize.Height = Convert.ToDecimal(tblProduct.Rows[0]["Height"]);
+                    objProductSize.Width = Convert.ToDecimal(tblProduct.Rows[0]["Width"]);
+                    objProductSize.Length = Convert.ToDecimal(tblProduct.Rows[0]["Length"]);
+                    objProductSize.Weight = Convert.ToDecimal(tblProduct.Rows[0]["Weight"]);
+                }
+                else objProductSize = null;
+
+                response.StatusCode = 200;
+                response.Message = "ProductSize Updated Successfully.";
+                response.Result = new List<ProductSize>() { objProductSize };
+            }
+            catch (Exception ex)
+            {
+                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
             }
             return response;
         }
