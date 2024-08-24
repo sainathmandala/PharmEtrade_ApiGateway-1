@@ -32,7 +32,7 @@ namespace BAL.BusinessLogic.Helper
             OrderResponse response = new OrderResponse();
             using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
-                using (MySqlCommand cmd = new MySqlCommand("sp_InsertOrder", sqlcon))
+                using (MySqlCommand cmd = new MySqlCommand(StoredProcedures.ADD_UPDATE_ORDER, sqlcon))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
@@ -89,7 +89,7 @@ namespace BAL.BusinessLogic.Helper
 
             using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetOrders", sqlcon))
+                using (MySqlCommand cmd = new MySqlCommand(StoredProcedures.GET_ORDERS, sqlcon))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
@@ -159,7 +159,7 @@ namespace BAL.BusinessLogic.Helper
             var response = new Response<Order>();
             using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
-                using (MySqlCommand cmd = new MySqlCommand("sp_GetOrdersByVendorId", sqlcon))
+                using (MySqlCommand cmd = new MySqlCommand(StoredProcedures.GET_ORDERS_BY_SELLER, sqlcon))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 

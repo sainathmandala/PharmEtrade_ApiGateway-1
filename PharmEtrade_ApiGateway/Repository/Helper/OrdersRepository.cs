@@ -23,9 +23,9 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _orders.GetOrdersByCustomerId(customerId);
         }
-        public async Task<Response<Order>> GetOrdersBySellerId(string VendorId)
+        public async Task<Response<Order>> GetOrdersBySellerId(string vendorId)
         {
-            return await _orders.GetOrdersBySellerId(VendorId);
+            return await _orders.GetOrdersBySellerId(vendorId);
         }
     }
 }
