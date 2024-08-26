@@ -243,17 +243,17 @@ namespace BAL.BusinessLogic.Helper
             {
                 Product item = new Product();
                 item.ProductID = product["ProductID"].ToString();
-                item.ProductCategoryId = Convert.ToInt32(product["ProductCategoryId"]);
-                item.ProductGalleryId = Convert.ToInt32(product["ProductGalleryId"]);
-                item.ProductSizeId = Convert.ToInt32(product["ProductSizeId"]);
+                item.ProductCategoryId = Convert.ToInt32(product["ProductCategoryId"] != DBNull.Value ? product["ProductCategoryId"] : 0);
+                item.ProductGalleryId = Convert.ToInt32(product["ProductGalleryId"] != DBNull.Value ? product["ProductGalleryId"] : 0);
+                item.ProductSizeId = Convert.ToInt32(product["ProductSizeId"] != DBNull.Value ? product["ProductSizeId"] : 0);
                 item.ProductName = product["ProductName"].ToString();
                 item.NDCorUPC = product["NDCorUPC"].ToString();
                 item.BrandName = product["BrandName"].ToString();
                 item.PriceName = product["PriceName"].ToString();
-                item.UPNMemberPrice = Convert.ToDecimal(product["UPNMemberPrice"]);
-                item.AmountInStock = Convert.ToInt32(product["AmountInStock"]);
-                item.Taxable = Convert.ToInt32(product["Taxable"]) == 0 ? true : false;
-                item.SalePrice = Convert.ToDecimal(product["SalePrice"]);
+                item.UPNMemberPrice = Convert.ToDecimal(product["UPNMemberPrice"] != DBNull.Value ? product["UPNMemberPrice"] : 0.0);
+                item.AmountInStock = Convert.ToInt32(product["AmountInStock"] != DBNull.Value ? product["AmountInStock"] : 0);
+                item.Taxable = Convert.ToInt32(product["Taxable"] != DBNull.Value ? product["Taxable"] : 0) == 0 ? true : false;
+                item.SalePrice = Convert.ToDecimal(product["SalePrice"] != DBNull.Value ? product["SalePrice"] : 0.0);
                 item.SalePriceValidFrom = product["SalePriceValidFrom"] != DBNull.Value ? Convert.ToDateTime(product["SalePriceValidFrom"]) : DateTime.MinValue;
                 item.SalePriceValidTo = product["SalePriceValidTo"] != DBNull.Value ? Convert.ToDateTime(product["SalePriceValidTo"]) : DateTime.MinValue;
                 item.Manufacturer = product["Manufacturer"].ToString();
@@ -261,7 +261,7 @@ namespace BAL.BusinessLogic.Helper
                 item.AvailableFromDate = product["AvailableFromDate"] != DBNull.Value ? Convert.ToDateTime(product["AvailableFromDate"]) : DateTime.MinValue;
                 item.LotNumber = product["LotNumber"].ToString();
                 item.ExpiryDate = product["ExpiryDate"] != DBNull.Value ? Convert.ToDateTime(product["ExpiryDate"]) : DateTime.MinValue;
-                item.PackQuantity = Convert.ToInt32(product["PackQuantity"]);
+                item.PackQuantity = Convert.ToInt32(product["PackQuantity"] != DBNull.Value ? product["PackQuantity"] : 0);
                 item.PackType = product["PackType"].ToString();
                 item.PackCondition = product["PackCondition"].ToString();
                 item.ProductDescription = product["ProductDescription"].ToString();
@@ -271,8 +271,8 @@ namespace BAL.BusinessLogic.Helper
                 item.SaltComposition = product["SaltComposition"].ToString();
                 item.UriKey = product["UriKey"].ToString();
                 item.AboutTheProduct = product["AboutTheProduct"].ToString();
-                item.CategorySpecificationId = Convert.ToInt32(product["CategorySpecificationId"]);
-                item.ProductTypeId = Convert.ToInt32(product["ProductTypeId"]);
+                item.CategorySpecificationId = Convert.ToInt32(product["CategorySpecificationId"] != DBNull.Value ? product["CategorySpecificationId"] : 0);
+                item.ProductTypeId = Convert.ToInt32(product["ProductTypeId"] != DBNull.Value ? product["ProductTypeId"] : 0);
                 item.SellerId = product["SellerId"].ToString();
                 item.ImageUrl = product["ImageUrl"].ToString();
                 item.Caption = product["Caption"].ToString();
