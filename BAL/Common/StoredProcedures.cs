@@ -27,5 +27,8 @@ namespace BAL.Common
         // MENU
 
         // BANNER
+        public const string ADD_UPDATE_BANNER = "sp_AddUpdateBanner";
+        public const string GET_BANNERS = "sp_GetBanners";
+        public const string DELETE_BANNER = "sp_DeleteBanner";
     }
 }
