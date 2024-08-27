@@ -8,11 +8,11 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
 {
     public interface IProductsRepo
     {
-        Task<BAL.ResponseModels.Response<Product>> AddProduct(Product product);
-        Task<UploadResponse> UploadImage(IFormFile image);
-        Task<BAL.ResponseModels.Response<Product>> GetAllProducts(string productId = null);
-        Task<BAL.ResponseModels.Response<Product>> GetProductsBySpecification(int categorySpecificationId);
-        Task<BAL.ResponseModels.Response<Product>> GetRecentSoldProducts(int numberOfProducts);
+        Task<BAL.ResponseModels.Response<ProductResponse>> AddProduct(Product product);
+        Task<UploadResponse> UploadImage(IFormFile image, string sellerId);
+        Task<BAL.ResponseModels.Response<ProductResponse>> GetAllProducts(string productId = null);
+        Task<BAL.ResponseModels.Response<ProductResponse>> GetProductsBySpecification(int categorySpecificationId);
+        Task<BAL.ResponseModels.Response<ProductResponse>> GetRecentSoldProducts(int numberOfProducts);
         Task<BAL.ResponseModels.Response<ProductSize>> AddUpdateProductSize(ProductSize productSize);        
         Task<Response> ProcessExcelFileAsync(IFormFile file);
 

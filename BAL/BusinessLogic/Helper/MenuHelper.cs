@@ -38,7 +38,7 @@ namespace BAL.BusinessLogic.Helper
                     menuItem.IconPath = menu["IconPath"].ToString();
                     menuItem.Parent = Convert.ToInt32(menu["Parent"]);
                     menuItem.Description = menu["Description"].ToString();
-                    menuItem.IsActive = Convert.ToInt32(menu["IsActive"]) == 0 ? true : false;
+                    menuItem.IsActive = Convert.ToInt32(menu["IsActive"]) == 1 ? true : false;
                     menuItem.AccountTypeId = Convert.ToInt32(menu["AccountTypeId"]);
                     menuItem.CreatedOn = menu["CreatedOn"] != DBNull.Value ? Convert.ToDateTime(menu["CreatedOn"]) : DateTime.MinValue;
                     menuItem.ModifiedOn = menu["ModifiedOn"] != DBNull.Value ? Convert.ToDateTime(menu["ModifiedOn"]) : DateTime.MinValue;

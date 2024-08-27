@@ -1,4 +1,5 @@
 ﻿using BAL.RequestModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PharmEtrade_ApiGateway.Repository.Interface;
@@ -7,6 +8,7 @@ namespace PharmEtrade_ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class WishListController : ControllerBase
     {
         private IWishListRepository _wishListRepository;

@@ -42,5 +42,6 @@ namespace BAL.Models
         public string SellerId { get; set;}
         public string ImageUrl { get; set; }
         public string? Caption { get; set; }
+        public string? States { get; set; }
     }
 }

@@ -179,9 +179,9 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
-        public async Task<Response<Product>> AddProduct(Product product)
+        public async Task<Response<ProductResponse>> AddProduct(Product product)
         {
-            Response<Product> response = new Response<Product>();
+            Response<ProductResponse> response = new Response<ProductResponse>();
             try
             {
                 MySqlCommand cmdProduct = new MySqlCommand("sp_AddUpdateProduct");
@@ -221,6 +221,7 @@ namespace BAL.BusinessLogic.Helper
                 cmdProduct.Parameters.AddWithValue("@p_SellerId", product.SellerId);
                 cmdProduct.Parameters.AddWithValue("@p_ImageUrl", product.ImageUrl);
                 cmdProduct.Parameters.AddWithValue("@p_Caption", product.Caption);
+                cmdProduct.Parameters.AddWithValue("@p_States", product.States);
                 DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProduct));
 
                 response.StatusCode = 200;
@@ -236,16 +237,13 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
-        private static List<Product> MapDataTableToProductList(DataTable tblProduct)
+        private static List<ProductResponse> MapDataTableToProductList(DataTable tblProduct)
         {
-            List<Product> lstProduct = new List<Product>();
+            List<ProductResponse> lstProduct = new List<ProductResponse>();
             foreach (DataRow product in tblProduct.Rows)
             {
-                Product item = new Product();
-                item.ProductID = product["ProductID"].ToString();
-                item.ProductCategoryId = Convert.ToInt32(product["ProductCategoryId"] != DBNull.Value ? product["ProductCategoryId"] : 0);
-                item.ProductGalleryId = Convert.ToInt32(product["ProductGalleryId"] != DBNull.Value ? product["ProductGalleryId"] : 0);
-                item.ProductSizeId = Convert.ToInt32(product["ProductSizeId"] != DBNull.Value ? product["ProductSizeId"] : 0);
+                ProductResponse item = new ProductResponse();
+                item.ProductID = product["ProductID"].ToString();                
                 item.ProductName = product["ProductName"].ToString();
                 item.NDCorUPC = product["NDCorUPC"].ToString();
                 item.BrandName = product["BrandName"].ToString();
@@ -270,22 +268,45 @@ namespace BAL.BusinessLogic.Helper
                 item.MetaDescription = product["MetaDescription"].ToString();
                 item.SaltComposition = product["SaltComposition"].ToString();
                 item.UriKey = product["UriKey"].ToString();
-                item.AboutTheProduct = product["AboutTheProduct"].ToString();
-                item.CategorySpecificationId = Convert.ToInt32(product["CategorySpecificationId"] != DBNull.Value ? product["CategorySpecificationId"] : 0);
-                item.ProductTypeId = Convert.ToInt32(product["ProductTypeId"] != DBNull.Value ? product["ProductTypeId"] : 0);
-                item.SellerId = product["SellerId"].ToString();
-                item.ImageUrl = product["ImageUrl"].ToString();
-                item.Caption = product["Caption"].ToString();
+                item.AboutTheProduct = product["AboutTheProduct"].ToString();                
+                item.SellerId = product["SellerId"].ToString();                
+                item.States = product["States"].ToString();
+
+                item.ProductCategory.ProductCategoryId = Convert.ToInt32(product["ProductCategoryId"] != DBNull.Value ? product["ProductCategoryId"] : 0);
+                item.ProductCategory.CategoryName = product["CategoryName"].ToString();
+
+                item.ProductGallery.ProductGalleryId = Convert.ToInt32(product["ProductGalleryId"] != DBNull.Value ? product["ProductGalleryId"] : 0);
+                item.ProductGallery.ImageUrl = product["ImageUrl"].ToString();
+                item.ProductGallery.Caption = product["Caption"].ToString();
+                item.ProductGallery.Thumbnail1 = product["Thumbnail1"].ToString();
+                item.ProductGallery.Thumbnail2 = product["Thumbnail2"].ToString();
+                item.ProductGallery.Thumbnail3 = product["Thumbnail3"].ToString();
+                item.ProductGallery.Thumbnail4 = product["Thumbnail4"].ToString();
+                item.ProductGallery.Thumbnail5 = product["Thumbnail5"].ToString();
+                item.ProductGallery.Thumbnail6 = product["Thumbnail6"].ToString();
+                item.ProductGallery.VideoUrl = product["VideoUrl"].ToString();
+
+                item.ProductSize.ProductSizeId = Convert.ToInt32(product["ProductSizeId"] != DBNull.Value ? product["ProductSizeId"] : 0);
+                item.ProductSize.Width = Convert.ToDecimal(product["Width"] != DBNull.Value ? product["Width"] : 0.0);
+                item.ProductSize.Height = Convert.ToDecimal(product["Height"] != DBNull.Value ? product["Height"] : 0.0);
+                item.ProductSize.Length = Convert.ToDecimal(product["Length"] != DBNull.Value ? product["Length"] : 0.0);
+                item.ProductSize.Weight = Convert.ToDecimal(product["Weight"] != DBNull.Value ? product["Weight"] : 0.0);
+
+                item.CategorySpecification.CategorySpecificationId = Convert.ToInt32(product["CategorySpecificationId"] != DBNull.Value ? product["CategorySpecificationId"] : 0);
+                item.CategorySpecification.SpecificationName = product["SpecificationName"].ToString();
+
+                item.ProductType.ProductTypeId = Convert.ToInt32(product["ProductTypeId"] != DBNull.Value ? product["ProductTypeId"] : 0);
+                item.ProductType.Description = product["ProductType"].ToString();
 
                 lstProduct.Add(item);
             }
             return lstProduct;
         }
 
-        public async Task<UploadResponse> UploadImage(IFormFile image)
+        public async Task<UploadResponse> UploadImage(IFormFile image, string sellerId)
         {
             UploadResponse response = new UploadResponse();
-            string folderName = "PharmaEtrade";
+            string folderName = string.Format("PharmaEtrade/Products/{0}",sellerId);
             try
             {
                 // Upload files to S3
@@ -306,9 +327,9 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-        public async Task<Response<Product>> GetAllProducts(string productId = null)
+        public async Task<Response<ProductResponse>> GetAllProducts(string productId = null)
         {
-            Response<Product> response = new Response<Product>();
+            Response<ProductResponse> response = new Response<ProductResponse>();
             try
             {
                 MySqlCommand cmdProduct = new MySqlCommand("sp_GetProducts");
@@ -331,9 +352,9 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-        public async Task<Response<Product>> GetProductsBySpecification(int categorySpecificationId)
+        public async Task<Response<ProductResponse>> GetProductsBySpecification(int categorySpecificationId)
         {
-            Response<Product> response = new Response<Product>();
+            Response<ProductResponse> response = new Response<ProductResponse>();
             try
             {
                 MySqlCommand cmdProduct = new MySqlCommand("sp_GetProductsBySpecification");
@@ -356,9 +377,9 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-        public async Task<Response<Product>> GetRecentSoldProducts(int numberOfProducts)
+        public async Task<Response<ProductResponse>> GetRecentSoldProducts(int numberOfProducts)
         {
-            Response<Product> response = new Response<Product>();
+            Response<ProductResponse> response = new Response<ProductResponse>();
             try
             {
                 MySqlCommand cmdProduct = new MySqlCommand("sp_GetRecentSoldProducts");
