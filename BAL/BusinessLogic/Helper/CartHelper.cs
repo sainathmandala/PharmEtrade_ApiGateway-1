@@ -90,7 +90,7 @@ namespace BAL.BusinessLogic.Helper
                 Cart item = new Cart();
                 item.CartId = cartItem["CartId"].ToString();
                 item.Quantity = Convert.ToInt32(cartItem["Quantity"]);
-                item.IsActive = Convert.ToInt32(cartItem["IsActive"]) == 0 ? true : false;
+                item.IsActive = Convert.ToInt32(cartItem["IsActive"]) == 1 ? true : false;
                 item.AddedOn = cartItem["AddedOn"] != DBNull.Value ? Convert.ToDateTime(cartItem["AddedOn"]) : DateTime.MinValue;
 
                 //Add Basic Customer Details

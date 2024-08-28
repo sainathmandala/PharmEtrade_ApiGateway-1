@@ -76,7 +76,7 @@ namespace BAL.BusinessLogic.Helper
             {
                 WishList item = new WishList();
                 item.WishListId = wishlistItem["WishListId"].ToString();
-                item.IsActive = Convert.ToInt32(wishlistItem["IsActive"]) == 0 ? true : false;
+                item.IsActive = Convert.ToInt32(wishlistItem["IsActive"]) == 1 ? true : false;
                 item.DeletedOn = wishlistItem["DeletedOn"] != DBNull.Value ? Convert.ToDateTime(wishlistItem["DeletedOn"]) : DateTime.MinValue;
 
                 //Add Basic Customer Details

@@ -59,17 +59,17 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return response;
         }
 
-        public async Task<BAL.ResponseModels.Response<Product>> AddProduct(Product product)
+        public async Task<BAL.ResponseModels.Response<ProductResponse>> AddProduct(Product product)
         {
             return await _productHelper.AddProduct(product);
         }
 
-        public async Task<UploadResponse> UploadImage(IFormFile image)
+        public async Task<UploadResponse> UploadImage(IFormFile image, string sellerId)
         {
             UploadResponse response = new UploadResponse();
             try
             {
-                response = await _productHelper.UploadImage(image);
+                response = await _productHelper.UploadImage(image, sellerId);
             }
             catch (Exception ex)
             {
@@ -79,17 +79,17 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return response;
         }
 
-        public async Task<Response<Product>> GetAllProducts(string productId = null)
+        public async Task<Response<ProductResponse>> GetAllProducts(string productId = null)
         {
             return await _productHelper.GetAllProducts(productId);
         }
 
-        public async Task<Response<Product>> GetProductsBySpecification(int categorySpecificationId)
+        public async Task<Response<ProductResponse>> GetProductsBySpecification(int categorySpecificationId)
         {
             return await _productHelper.GetProductsBySpecification(categorySpecificationId);
         }
 
-        public async Task<Response<Product>> GetRecentSoldProducts(int numberOfProducts)
+        public async Task<Response<ProductResponse>> GetRecentSoldProducts(int numberOfProducts)
         {
             return await _productHelper.GetRecentSoldProducts(numberOfProducts);
         }

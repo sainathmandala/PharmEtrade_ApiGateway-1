@@ -40,9 +40,13 @@ namespace PharmEtrade_ApiGateway.Controllers
 
         [HttpPost]
         [Route("Image/Upload")]
-        public async Task<IActionResult> UploadImage(IFormFile image)
+        public async Task<IActionResult> UploadImage(IFormFile image, string sellerId)
         {
-            UploadResponse response = await _productRepo.UploadImage(image);
+            if(string.IsNullOrEmpty(sellerId) || image == null)
+            {
+                return BadRequest("Image and Seller Id are required.");
+            }
+            UploadResponse response = await _productRepo.UploadImage(image, sellerId);
             return Ok(response);
         }
 
