@@ -49,5 +49,6 @@ namespace BAL.ResponseModels
         public ProductType ProductType { get; set; }
         public string SellerId { get; set; }
         public string? States { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

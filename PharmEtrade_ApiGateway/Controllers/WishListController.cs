@@ -8,7 +8,6 @@ namespace PharmEtrade_ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class WishListController : ControllerBase
     {
         private IWishListRepository _wishListRepository;

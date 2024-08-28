@@ -271,6 +271,7 @@ namespace BAL.BusinessLogic.Helper
                 item.AboutTheProduct = product["AboutTheProduct"].ToString();                
                 item.SellerId = product["SellerId"].ToString();                
                 item.States = product["States"].ToString();
+                item.ImageUrl = product["ImageUrl"].ToString();
 
                 item.ProductCategory.ProductCategoryId = Convert.ToInt32(product["ProductCategoryId"] != DBNull.Value ? product["ProductCategoryId"] : 0);
                 item.ProductCategory.CategoryName = product["CategoryName"].ToString();
