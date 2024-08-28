@@ -20,9 +20,15 @@ namespace BAL.Common
         public const string ADD_UPDATE_ORDER = "sp_InsertOrder";
         public const string GET_ORDERS_BY_SELLER = "sp_GetOrdersByVendorId";
 
+        //Cart
+        public const string DELETE_CART = "sp_DeleteCart";
+
+
         // CUSTOMERS
 
         // WISHLIST
+        public const string DELETE_WishList = "sp_RemoveWishlist";
+
 
         // MENU
 

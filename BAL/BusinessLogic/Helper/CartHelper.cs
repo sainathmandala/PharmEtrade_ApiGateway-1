@@ -1,4 +1,5 @@
 ﻿using BAL.BusinessLogic.Interface;
+using BAL.Common;
 using BAL.Models;
 using BAL.RequestModels;
 using BAL.ResponseModels;
@@ -6,15 +7,28 @@ using BAL.ViewModels;
 using DAL;
 using MySql.Data.MySqlClient;
 using System.Data;
+using System.Configuration;
+using Microsoft.Extensions.Configuration;
+
+
 
 namespace BAL.BusinessLogic.Helper
 {
     public class CartHelper : ICartHelper
     {
+        private IConfiguration _configuration;
+
         private IsqlDataHelper _sqlDataHelper;
         public CartHelper(IsqlDataHelper isqlDataHelper)
         {
             _sqlDataHelper = isqlDataHelper;
+        }
+        private string ConnectionString
+        {
+            get
+            {
+                return _configuration.GetConnectionString("APIDBConnectionString") ?? "";
+            }
         }
 
         public async Task<Response<Cart>> AddToCart(CartRequest request)
@@ -104,6 +118,55 @@ namespace BAL.BusinessLogic.Helper
                 lstCart.Add(item);
             }
             return lstCart;
+        }
+
+        public async Task<Response<Cart>> DeleteCart(string CartId)
+        {
+            var response = new Response<Cart>();
+            using(MySqlConnection sqlcon=new MySqlConnection(ConnectionString))
+            {
+                using (MySqlCommand cmd=new MySqlCommand(StoredProcedures.DELETE_CART,sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@p_CartId", CartId);
+                    MySqlParameter paramMessage = new MySqlParameter("@o_Message", MySqlDbType.String)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmd.Parameters.Add(paramMessage);
+                    try
+                    {
+                        DataTable tblcart = await Task.Run(() => _sqlDataHelper.SqlDataAdapterasync(cmd));
+                        if (tblcart.Rows.Count > 0)
+                        {
+                            response.StatusCode = 200;
+                            response.Message= string.IsNullOrEmpty(paramMessage.Value.ToString()) ? "Success" : paramMessage.Value.ToString();
+                            response.Result = MapDataTableToCartList(tblcart);
+                        }
+                        else
+                        {
+                            response.StatusCode = 400;
+                            response.Message = "Failed to Delete Cart";
+                            response.Result = null;
+                        }
+                    }
+                    catch(MySqlException ex) when (ex.Number == 500)
+                    {
+                        response.StatusCode = 500;
+                        response.Message= "ERROR : " + ex.Message;
+                    }
+                    catch (Exception ex)
+                    {
+                        //Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertAddToCartProduct : errormessage:" + ex.Message.ToString()));
+                        response.StatusCode = 500;
+                        response.Message = "ERROR : " + ex.Message;
+                    }
+                    return response;
+                }
+            }
+
+
+
         }
     }
 }

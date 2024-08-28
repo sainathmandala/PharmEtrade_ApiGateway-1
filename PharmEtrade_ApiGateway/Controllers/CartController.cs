@@ -30,5 +30,17 @@ namespace PharmEtrade_ApiGateway.Controllers
             var response = await _cartRepository.AddToCart(request);
             return Ok(response);
         }
+        [HttpPost]
+        [Route("Delete")]
+        public async Task<IActionResult> DeleteCart(string CartId)
+        {
+            if (string.IsNullOrEmpty(CartId))
+            {
+                return BadRequest("CartId should not be null or empty.");
+            }
+            var response = await _cartRepository.DeleteCart(CartId);
+            return Ok(response);
+
+        }
     }
 }

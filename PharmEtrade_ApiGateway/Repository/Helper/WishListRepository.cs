@@ -30,6 +30,11 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
 
                 return await _wishListHelper.GetWishListById(WishListId);
            }
+           public async Task<Response<WishList>> RemoveWishList(string wishlistid)
+           {
+            return await _wishListHelper.RemoveWishList(wishlistid);
+           }
+            
 
     }
 }

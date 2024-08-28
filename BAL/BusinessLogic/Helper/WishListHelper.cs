@@ -12,6 +12,8 @@ using System.Text;
 using System.Threading.Tasks;
 using BAL.ResponseModels;
 using BAL.ViewModels;
+using BAL.Common;
+using Microsoft.Extensions.Configuration;
 
 
 namespace BAL.BusinessLogic.Helper
@@ -19,9 +21,18 @@ namespace BAL.BusinessLogic.Helper
     public  class WishListHelper: IWishListHelper
     {
         private IsqlDataHelper _sqlDataHelper;
+        private IConfiguration _configuration;
+
         public WishListHelper(IsqlDataHelper isqlDataHelper)
         {
             _sqlDataHelper = isqlDataHelper;
+        }
+        private string ConnectionString
+        {
+            get
+            {
+                return _configuration.GetConnectionString("APIDBConnectionString") ?? "";
+            }
         }
 
         public async Task<Response<WishList>> AddToWishList(WishListRequest request)
@@ -36,10 +47,18 @@ namespace BAL.BusinessLogic.Helper
                 command.Parameters.AddWithValue("p_ProductId", request.ProductId);
                 command.Parameters.AddWithValue("p_IsActive", 1);
                 DataTable tblwishlist = await Task.Run(() => _sqlDataHelper.SqlDataAdapterasync(command));
+                if (tblwishlist.Rows.Count > 0)
+                {
+                    response.Result = MapDataTableToWishListList(tblwishlist);
+                }
+                else
+                {
+                    response.Result = new List<WishList>(); // Return an empty list if no rows are returned
+                }
 
                 response.StatusCode = 200;
                 response.Message = "Successfully Feched data.";
-                response.Result = MapDataTableToWishListList(tblwishlist); 
+                response.Result = MapDataTableToWishListList(tblwishlist); ;
             }
             catch (Exception ex)
             {
@@ -134,5 +153,56 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
+
+        public async Task<Response<WishList>>RemoveWishList(string wishlistId)
+        {
+            var response = new Response<WishList>();
+            using (MySqlConnection sqlcon = new MySqlConnection(ConnectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(StoredProcedures.DELETE_WishList, sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@p_WishListId", wishlistId);
+                    MySqlParameter paramMessage = new MySqlParameter("@o_Message", MySqlDbType.String)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmd.Parameters.Add(paramMessage);
+
+                    try
+                    {
+                        DataTable tblwishlist = await Task.Run(() => _sqlDataHelper.SqlDataAdapterasync(cmd));
+
+                        if (tblwishlist.Rows.Count > 0)
+                        {
+                            response.StatusCode = 200;
+                            response.Message = string.IsNullOrEmpty(paramMessage.Value.ToString()) ? "Success" : paramMessage.Value.ToString();
+                            response.Result = MapDataTableToWishListList(tblwishlist);
+                        }
+                        else
+                        {
+                            response.StatusCode = 400;
+                            response.Message = "Failed to delete banner.";
+                            response.Result = null;
+                        }
+                    }
+                    catch (MySqlException ex) when (ex.Number == 500)
+                    {
+                        //Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertAddToCartProduct : errormessage:" + ex.Message.ToString()));
+                        response.StatusCode = 500;
+                        response.Message = "ERROR : " + ex.Message;
+                    }
+                    catch (Exception ex)
+                    {
+                        //Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertAddToCartProduct : errormessage:" + ex.Message.ToString()));
+                        response.StatusCode = 500;
+                        response.Message = "ERROR : " + ex.Message;
+                    }
+                    return response;
+                }
+            }
+        }
     }
+    
 }

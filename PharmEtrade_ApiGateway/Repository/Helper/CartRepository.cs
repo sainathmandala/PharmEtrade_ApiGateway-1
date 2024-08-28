@@ -23,5 +23,9 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _cartHelper.GetCartItems(customerId, productId);
         }
+        public async Task<Response<Cart>>DeleteCart(string CartId)
+        {
+            return await _cartHelper.DeleteCart(CartId);
+        }
     }
 }
