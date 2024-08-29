@@ -15,9 +15,9 @@ namespace PharmEtrade_ApiGateway.Controllers
 
         [HttpGet]
         [Route("GetByAccountType")]
-        public async Task<IActionResult> GetMenuByAccountType(int accountTypeId)
+        public async Task<IActionResult> GetMenuByAccountType(string CustomerTypeId)
         {
-            return Ok(await _menuRepository.GetMenuByAccountType(accountTypeId));
+            return Ok(await _menuRepository.GetMenuByAccountType(CustomerTypeId));
         }
     }
 }

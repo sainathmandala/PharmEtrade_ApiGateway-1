@@ -18,14 +18,14 @@ namespace BAL.BusinessLogic.Helper
         public MenuHelper(IsqlDataHelper isqlDataHelper) { 
             _sqlDataHelper = isqlDataHelper;
         }
-        public async Task<Response<Menu>> GetMenuByAccountType(int accountTypeId = 0)
+        public async Task<Response<Menu>> GetMenuByAccountType(string CustomerTypeId)
         {
             var response = new Response<Menu>();
             try
             {
-                MySqlCommand command = new MySqlCommand("sp_GetMenuByAccountType");
+                MySqlCommand command = new MySqlCommand("sp_GetMenuByCustomerType");
                 command.CommandType = System.Data.CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("p_AccountTypeId", accountTypeId);
+                command.Parameters.AddWithValue("p_CustomerTypeId", CustomerTypeId);
                 DataTable tblMenu = await Task.Run(() => _sqlDataHelper.SqlDataAdapterasync(command));                
                 List<Menu> lstMenu = new List<Menu>();
                 foreach (DataRow menu in tblMenu.Rows)
@@ -42,6 +42,8 @@ namespace BAL.BusinessLogic.Helper
                     menuItem.AccountTypeId = Convert.ToInt32(menu["AccountTypeId"]);
                     menuItem.CreatedOn = menu["CreatedOn"] != DBNull.Value ? Convert.ToDateTime(menu["CreatedOn"]) : DateTime.MinValue;
                     menuItem.ModifiedOn = menu["ModifiedOn"] != DBNull.Value ? Convert.ToDateTime(menu["ModifiedOn"]) : DateTime.MinValue;
+                    menuItem.CustomerTypeId = menu["CustomerTypeId"].ToString();
+                    
                     lstMenu.Add(menuItem);
                 }
                 response.StatusCode = 200;

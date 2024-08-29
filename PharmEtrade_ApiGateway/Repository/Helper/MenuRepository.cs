@@ -12,9 +12,9 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             _menuHelper = menuHelper;
         }
 
-        public async Task<Response<Menu>> GetMenuByAccountType(int accountTypeId = 0)
+        public async Task<Response<Menu>> GetMenuByAccountType(string CustomerTypeId)
         {
-            return await _menuHelper.GetMenuByAccountType(accountTypeId);
+            return await _menuHelper.GetMenuByAccountType(CustomerTypeId);
         }
     }
 }

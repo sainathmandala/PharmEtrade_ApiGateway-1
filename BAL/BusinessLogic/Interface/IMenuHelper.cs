@@ -5,6 +5,6 @@ namespace BAL.BusinessLogic.Interface
 {
     public interface IMenuHelper
     {
-        Task<Response<Menu>> GetMenuByAccountType(int accountTypeId = 0);
+        Task<Response<Menu>> GetMenuByAccountType(string CustomerTypeId);
     }
 }

@@ -5,6 +5,6 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
 {
     public interface IMenuRepository
     {
-        Task<Response<Menu>> GetMenuByAccountType(int accountTypeId = 0);
+        Task<Response<Menu>> GetMenuByAccountType(string CustomerTypeId);
     }
 }

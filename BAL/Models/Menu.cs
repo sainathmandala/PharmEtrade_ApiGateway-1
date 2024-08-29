@@ -19,5 +19,6 @@ namespace BAL.Models
         public int AccountTypeId { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime ModifiedOn { get; set; }
+        public string CustomerTypeId { get; set; }
     }
 }
