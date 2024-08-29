@@ -28,13 +28,14 @@ namespace BAL.ResponseModels
         public int AmountInStock { get; set; }
         public bool Taxable { get; set; }
         public decimal SalePrice { get; set; }
-        public DateTime SalePriceValidFrom { get; set; }
-        public DateTime SalePriceValidTo { get; set; }
+        public string SalePriceValidFrom { get; set; }
+        public string SalePriceValidTo { get; set; }
         public string Manufacturer { get; set; }
         public string Strength { get; set; }
-        public DateTime AvailableFromDate { get; set; }
+        public string AvailableFromDate { get; set; }
         public string LotNumber { get; set; }
-        public DateTime ExpiryDate { get; set; }
+        public string ExpiryDate { get; set; }
+       // public string ExpDate { get; set; }
         public int PackQuantity { get; set; }
         public string PackType { get; set; }
         public string PackCondition { get; set; }
