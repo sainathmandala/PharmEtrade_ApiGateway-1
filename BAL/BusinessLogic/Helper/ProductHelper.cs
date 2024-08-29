@@ -258,7 +258,7 @@ namespace BAL.BusinessLogic.Helper
                 item.Strength = product["Strength"].ToString();
                 item.AvailableFromDate = product["AvailableFromDate"] != DBNull.Value ? Convert.ToDateTime(product["AvailableFromDate"]).ToString("MM/yyyy") : DateTime.MinValue.ToString("MM/yyyy");
                 item.LotNumber = product["LotNumber"].ToString();
-               // item.ExpDate = product["ExpiryDate"] != DBNull.Value ? Convert.ToDateTime(product["ExpiryDate"]).ToString("MM/yyyy") : DateTime.MinValue.ToString("MM/yyyy");
+                item.ExpiryDate = product["ExpiryDate"] != DBNull.Value ? Convert.ToDateTime(product["ExpiryDate"]).ToString("MM/yyyy") : DateTime.MinValue.ToString("MM/yyyy");
                
                 item.PackQuantity = Convert.ToInt32(product["PackQuantity"] != DBNull.Value ? product["PackQuantity"] : 0);
                 item.PackType = product["PackType"].ToString();
