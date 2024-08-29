@@ -222,6 +222,14 @@ namespace BAL.BusinessLogic.Helper
                 cmdProduct.Parameters.AddWithValue("@p_ImageUrl", product.ImageUrl);
                 cmdProduct.Parameters.AddWithValue("@p_Caption", product.Caption);
                 cmdProduct.Parameters.AddWithValue("@p_States", product.States);
+                cmdProduct.Parameters.AddWithValue("@p_Thumbnail1", product.Thumbnail1);
+                cmdProduct.Parameters.AddWithValue("@p_Thumbnail2", product.Thumbnail2);
+                cmdProduct.Parameters.AddWithValue("@p_Thumbnail3", product.Thumbnail3);
+                cmdProduct.Parameters.AddWithValue("@p_Thumbnail4", product.Thumbnail4);
+                cmdProduct.Parameters.AddWithValue("@p_Thumbnail5", product.Thumbnail5);
+                cmdProduct.Parameters.AddWithValue("@p_Thumbnail6", product.Thumbnail6);
+                cmdProduct.Parameters.AddWithValue("@p_VideoUrl", product.VideoUrl);
+
                 DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProduct));
 
                 response.StatusCode = 200;
