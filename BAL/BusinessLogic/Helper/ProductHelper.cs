@@ -252,13 +252,14 @@ namespace BAL.BusinessLogic.Helper
                 item.AmountInStock = Convert.ToInt32(product["AmountInStock"] != DBNull.Value ? product["AmountInStock"] : 0);
                 item.Taxable = Convert.ToInt32(product["Taxable"] != DBNull.Value ? product["Taxable"] : 0) == 0 ? true : false;
                 item.SalePrice = Convert.ToDecimal(product["SalePrice"] != DBNull.Value ? product["SalePrice"] : 0.0);
-                item.SalePriceValidFrom = product["SalePriceValidFrom"] != DBNull.Value ? Convert.ToDateTime(product["SalePriceValidFrom"]) : DateTime.MinValue;
-                item.SalePriceValidTo = product["SalePriceValidTo"] != DBNull.Value ? Convert.ToDateTime(product["SalePriceValidTo"]) : DateTime.MinValue;
+                item.SalePriceValidFrom = product["SalePriceValidFrom"] != DBNull.Value ? Convert.ToDateTime(product["SalePriceValidFrom"]).ToString("MM/yyyy"): DateTime.MinValue.ToString("MM/yyyy"); 
+                item.SalePriceValidTo = product["SalePriceValidTo"] != DBNull.Value ? Convert.ToDateTime(product["SalePriceValidTo"]).ToString("MM/yyyy"): DateTime.MinValue.ToString("MM/yyyy");
                 item.Manufacturer = product["Manufacturer"].ToString();
                 item.Strength = product["Strength"].ToString();
-                item.AvailableFromDate = product["AvailableFromDate"] != DBNull.Value ? Convert.ToDateTime(product["AvailableFromDate"]) : DateTime.MinValue;
+                item.AvailableFromDate = product["AvailableFromDate"] != DBNull.Value ? Convert.ToDateTime(product["AvailableFromDate"]).ToString("MM/yyyy") : DateTime.MinValue.ToString("MM/yyyy");
                 item.LotNumber = product["LotNumber"].ToString();
-                item.ExpiryDate = product["ExpiryDate"] != DBNull.Value ? Convert.ToDateTime(product["ExpiryDate"]) : DateTime.MinValue;
+               // item.ExpDate = product["ExpiryDate"] != DBNull.Value ? Convert.ToDateTime(product["ExpiryDate"]).ToString("MM/yyyy") : DateTime.MinValue.ToString("MM/yyyy");
+               
                 item.PackQuantity = Convert.ToInt32(product["PackQuantity"] != DBNull.Value ? product["PackQuantity"] : 0);
                 item.PackType = product["PackType"].ToString();
                 item.PackCondition = product["PackCondition"].ToString();
