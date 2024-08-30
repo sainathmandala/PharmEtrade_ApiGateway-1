@@ -90,6 +90,17 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
+        [HttpGet("GeBySeller")]
+        public async Task<IActionResult> GetProductsBySeller(string sellerId)
+        {   
+            if(string.IsNullOrEmpty(sellerId))
+            {
+                return BadRequest("Seller Id is required.");
+            }
+            var response = await _productRepo.GetProductsBySeller(sellerId);
+            return Ok(response);
+        }
+
         [HttpPost("Size/Add")]
         public async Task<IActionResult> AddProductSize(ProductSize productSize)
         {

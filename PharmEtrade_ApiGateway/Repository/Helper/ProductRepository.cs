@@ -98,5 +98,10 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _productHelper.AddUpdateProductSize(productSize);
         }
+
+        public async Task<Response<ProductResponse>> GetProductsBySeller(string sellerId)
+        {
+            return await _productHelper.GetProductsBySeller(sellerId); 
+        }
     }
 }

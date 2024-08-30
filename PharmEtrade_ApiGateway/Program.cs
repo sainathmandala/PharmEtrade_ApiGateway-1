@@ -116,6 +116,9 @@ builder.Services.AddSingleton<IWishListHelper, WishListHelper>();
 builder.Services.AddSingleton<IWishListRepository, WishListRepository>();
 builder.Services.AddSingleton<IBannerRepository, BannerRepository>();
 builder.Services.AddSingleton<IBannerHelper, BannerHelper>();
+builder.Services.AddSingleton<IMastersRepository, MastersRepository>();
+builder.Services.AddSingleton<IMastersHelper, MastersHelper>();
+
 
 builder.Services.AddCors(options =>
 {

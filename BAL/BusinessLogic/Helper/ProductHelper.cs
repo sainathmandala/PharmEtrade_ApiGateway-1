@@ -412,6 +412,31 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
+        public async Task<Response<ProductResponse>> GetProductsBySeller(string sellerId)
+        {
+            Response<ProductResponse> response = new Response<ProductResponse>();
+            try
+            {
+                MySqlCommand cmdProduct = new MySqlCommand(StoredProcedures.GET_PRODUCTS_BY_SELLER);
+                cmdProduct.CommandType = CommandType.StoredProcedure;
+                cmdProduct.Parameters.AddWithValue("@p_SellerId", sellerId);
+
+                DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProduct));
+                response.StatusCode = 200;
+                response.Message = "Successfully Fetched Data.";
+                response.Result = MapDataTableToProductList(tblProduct);
+            }
+            catch (Exception ex)
+            {
+                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+            return response;
+        }
+
         public async Task<Response<ProductSize>> AddUpdateProductSize(ProductSize productSize)
         {
             Response<ProductSize> response = new Response<ProductSize>();

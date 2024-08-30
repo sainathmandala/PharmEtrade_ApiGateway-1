@@ -14,6 +14,7 @@ namespace BAL.Common
         public const string GET_PRODUCTS = "sp_GetProducts";
         public const string GET_PRODUCTS_BY_SPECIFICATION = "sp_GetProductsBySpecification";
         public const string GET_RECENT_SOLD_PRODUCTS = "sp_GetRecentSoldProducts";
+        public const string GET_PRODUCTS_BY_SELLER = "sp_GetProductsBySeller";
 
         // ORDERS
         public const string GET_ORDERS = "sp_GetOrders";
@@ -36,5 +37,8 @@ namespace BAL.Common
         public const string ADD_UPDATE_BANNER = "sp_AddUpdateBanner";
         public const string GET_BANNERS = "sp_GetBanners";
         public const string DELETE_BANNER = "sp_DeleteBanner";
+
+        // MASTERS
+        public const string GET_NDCUPC_DETAILS = "sp_GetNDCUPCDetails";
     }
 }
