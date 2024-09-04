@@ -10,7 +10,11 @@ namespace BAL.Common
     {
         // PRODUCTS
         public const string ADD_UPDATE_PRODUCT = "sp_AddUpdateProduct";
+        public const string ADD_UPDATE_PRODUCT_INFO = "sp_AddUpdateProductInfo";
+        public const string ADD_UPDATE_PRODUCT_PRICE = "sp_AddUpdateProductPrice";
+        public const string ADD_UPDATE_PRODUCT_GALLERY = "sp_AddUpdateProductGallery";        
         public const string ADD_UPDATE_PRODUCTSIZE = "sp_AddUpdateProductSize";
+
         public const string GET_PRODUCTS = "sp_GetProducts";
         public const string GET_PRODUCTS_BY_SPECIFICATION = "sp_GetProductsBySpecification";
         public const string GET_RECENT_SOLD_PRODUCTS = "sp_GetRecentSoldProducts";
@@ -18,19 +22,18 @@ namespace BAL.Common
         public const string GET_PRODUCTS_BY_CRITERIA = "sp_GetProductsByCriteria";
 
         // ORDERS
-        public const string GET_ORDERS = "sp_GetOrders";
         public const string ADD_UPDATE_ORDER = "sp_InsertOrder";
+
+        public const string GET_ORDERS = "sp_GetOrders";        
         public const string GET_ORDERS_BY_SELLER = "sp_GetOrdersByVendorId";
 
         //Cart
         public const string DELETE_CART = "sp_DeleteCart";
 
-
         // CUSTOMERS
 
         // WISHLIST
         public const string DELETE_WishList = "sp_RemoveWishlist";
-
 
         // MENU
 

@@ -1,9 +1,6 @@
-﻿using BAL.ViewModel;
-using BAL.BusinessLogic.Interface;
+﻿using BAL.BusinessLogic.Interface;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Data;
-using System.Data.SqlClient;
 using DAL;
 using BAL.Common;
 using BAL.ViewModels;
@@ -11,7 +8,6 @@ using OfficeOpenXml;
 using MySql.Data.MySqlClient;
 using BAL.ResponseModels;
 using BAL.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Microsoft.AspNetCore.Http;
 using BAL.RequestModels;
 
@@ -506,6 +502,148 @@ namespace BAL.BusinessLogic.Helper
                 response.StatusCode = 500;
                 response.Message = ex.Message;
                 response.Result = null;
+            }
+            return response;
+        }
+
+        public async Task<Response<ProductInfo>> AddUpdateProductInfo(ProductInfo productInfo)
+        {
+            Response<ProductInfo> response = new Response<ProductInfo>();
+            try
+            {
+                MySqlCommand cmdProductInfo = new MySqlCommand(StoredProcedures.ADD_UPDATE_PRODUCT_INFO);
+                cmdProductInfo.CommandType = CommandType.StoredProcedure;
+
+                cmdProductInfo.Parameters.AddWithValue("@p_ProductId", productInfo.ProductID);
+                cmdProductInfo.Parameters.AddWithValue("@p_ProductCategoryId", productInfo.ProductCategoryId);
+                cmdProductInfo.Parameters.AddWithValue("@p_ProductName", productInfo.ProductName);
+                cmdProductInfo.Parameters.AddWithValue("@p_NDCorUPC", productInfo.NDCorUPC);
+                cmdProductInfo.Parameters.AddWithValue("@p_BrandName", productInfo.BrandName);
+                cmdProductInfo.Parameters.AddWithValue("@p_Manufacturer", productInfo.Manufacturer);
+                cmdProductInfo.Parameters.AddWithValue("@p_Strength", productInfo.Strength);
+                cmdProductInfo.Parameters.AddWithValue("@p_AvailableFromDate", productInfo.AvailableFromDate);
+                cmdProductInfo.Parameters.AddWithValue("@p_LotNumber", productInfo.LotNumber);
+                cmdProductInfo.Parameters.AddWithValue("@p_ExpiryDate", productInfo.ExpiryDate);
+                cmdProductInfo.Parameters.AddWithValue("@p_PackQuantity", productInfo.PackQuantity);
+                cmdProductInfo.Parameters.AddWithValue("@p_PackType", productInfo.PackType);
+                cmdProductInfo.Parameters.AddWithValue("@p_PackCondition", productInfo.PackCondition);
+                cmdProductInfo.Parameters.AddWithValue("@p_ProductDescription", productInfo.ProductDescription);
+                cmdProductInfo.Parameters.AddWithValue("@p_AboutTheProduct", productInfo.AboutTheProduct);
+                cmdProductInfo.Parameters.AddWithValue("@p_CategorySpecificationId", productInfo.CategorySpecificationId);
+                cmdProductInfo.Parameters.AddWithValue("@p_ProductTypeId", productInfo.ProductTypeId);
+                cmdProductInfo.Parameters.AddWithValue("@p_SellerId", productInfo.SellerId);
+                cmdProductInfo.Parameters.AddWithValue("@p_States", productInfo.States);
+
+                DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProductInfo));
+
+                var objProductInfo = new ProductInfo();
+                if (tblProduct?.Rows.Count > 0)
+                {
+                    //objProductInfo.ProductSizeId = Convert.ToInt32(tblProduct.Rows[0]["ProductSizeId"]);
+                    //objProductInfo.Height = Convert.ToDecimal(tblProduct.Rows[0]["Height"]);
+                    //objProductInfo.Width = Convert.ToDecimal(tblProduct.Rows[0]["Width"]);
+                    //objProductInfo.Length = Convert.ToDecimal(tblProduct.Rows[0]["Length"]);
+                    //objProductInfo.Weight = Convert.ToDecimal(tblProduct.Rows[0]["Weight"]);
+                }
+                else objProductInfo = null;
+
+                response.StatusCode = 200;
+                response.Message = "ProductInfo Updated Successfully.";
+                response.Result = new List<ProductInfo>() { objProductInfo };
+            }
+            catch (Exception ex)
+            {
+                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<ProductPrice>> AddUpdateProductPrice(ProductPrice productPrice)
+        {
+            Response<ProductPrice> response = new Response<ProductPrice>();
+            try
+            {
+                MySqlCommand cmdProductPrice = new MySqlCommand(StoredProcedures.ADD_UPDATE_PRODUCT_PRICE);
+                cmdProductPrice.CommandType = CommandType.StoredProcedure;
+
+                cmdProductPrice.Parameters.AddWithValue("@p_ProductPriceId", productPrice.ProductPriceId);
+                cmdProductPrice.Parameters.AddWithValue("@p_ProductId", productPrice.ProductId);
+                cmdProductPrice.Parameters.AddWithValue("@p_UnitPrice", productPrice.UnitPrice);
+                cmdProductPrice.Parameters.AddWithValue("@p_UPNMemberPrice", productPrice.UPNMemberPrice);
+                cmdProductPrice.Parameters.AddWithValue("@p_Discount", productPrice.Discount);
+                cmdProductPrice.Parameters.AddWithValue("@p_SalePrice", productPrice.SalePrice);
+                cmdProductPrice.Parameters.AddWithValue("@p_SalePriceValidFrom", productPrice.SalePriceValidFrom);
+                cmdProductPrice.Parameters.AddWithValue("@p_SalePriceValidTo", productPrice.SalePriceValidTo);
+                cmdProductPrice.Parameters.AddWithValue("@p_Taxable", productPrice.Taxable);
+                cmdProductPrice.Parameters.AddWithValue("@p_ShippingCostApplicable", productPrice.ShippingCostApplicable);
+                cmdProductPrice.Parameters.AddWithValue("@p_ShippingCost", productPrice.ShippingCost);
+                cmdProductPrice.Parameters.AddWithValue("@p_AmountInStock", productPrice.AmountInStock);
+
+                DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProductPrice));
+
+                var objProductPrice = new ProductPrice();
+                if (tblProduct?.Rows.Count > 0)
+                {
+                    
+                }
+                else objProductPrice = null;
+
+                response.StatusCode = 200;
+                response.Message = "Product Price Details Updated Successfully.";
+                response.Result = new List<ProductPrice>() { objProductPrice };
+            }
+            catch (Exception ex)
+            {
+                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<ProductGallery>> AddUpdateProductGallery(ProductGallery productGallery)
+        {
+            Response<ProductGallery> response = new Response<ProductGallery>();
+            try
+            {
+                MySqlCommand cmdProductGallery = new MySqlCommand(StoredProcedures.ADD_UPDATE_PRODUCT_GALLERY);
+                cmdProductGallery.CommandType = CommandType.StoredProcedure;
+                
+                cmdProductGallery.Parameters.AddWithValue("@p_ProductGalleryId", productGallery.ProductGalleryId);
+                cmdProductGallery.Parameters.AddWithValue("@p_ProductId", productGallery.ProductId);
+                cmdProductGallery.Parameters.AddWithValue("@p_ImageUrl", productGallery.ImageUrl);
+                cmdProductGallery.Parameters.AddWithValue("@p_Caption", productGallery.Caption);
+                cmdProductGallery.Parameters.AddWithValue("@p_Thumbnail1", productGallery.Thumbnail1);
+                cmdProductGallery.Parameters.AddWithValue("@p_Thumbnail2", productGallery.Thumbnail2);
+                cmdProductGallery.Parameters.AddWithValue("@p_Thumbnail3", productGallery.Thumbnail3);
+                cmdProductGallery.Parameters.AddWithValue("@p_Thumbnail4", productGallery.Thumbnail4);
+                cmdProductGallery.Parameters.AddWithValue("@p_Thumbnail5", productGallery.Thumbnail5);
+                cmdProductGallery.Parameters.AddWithValue("@p_Thumbnail6", productGallery.Thumbnail6);
+                cmdProductGallery.Parameters.AddWithValue("@p_VideoUrl", productGallery.VideoUrl);
+
+                DataTable tblProductGallery = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProductGallery));
+
+                var objProductGallery = new ProductGallery();
+                if (tblProductGallery?.Rows.Count > 0)
+                {
+
+                }
+                else objProductGallery = null;
+
+                response.StatusCode = 200;
+                response.Message = "Product Gallery Updated Successfully.";
+                response.Result = new List<ProductGallery>() { objProductGallery };
+            }
+            catch (Exception ex)
+            {
+                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
             }
             return response;
         }

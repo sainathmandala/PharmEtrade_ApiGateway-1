@@ -109,5 +109,20 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _productHelper.GetProductsByCriteria(criteria);
         }
+
+        public async Task<Response<ProductInfo>> AddUpdateProductInfo(ProductInfo productInfo)
+        {
+            return await _productHelper.AddUpdateProductInfo(productInfo);
+        }
+
+        public async Task<Response<ProductPrice>> AddUpdateProductPrice(ProductPrice productPrice)
+        {
+            return await _productHelper.AddUpdateProductPrice(productPrice);
+        }
+
+        public async Task<Response<ProductGallery>> AddUpdateProductGallery(ProductGallery productGallery)
+        {
+            return await _productHelper.AddUpdateProductGallery(productGallery);
+        }
     }
 }

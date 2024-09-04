@@ -38,6 +38,48 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
+        [HttpPost("ProductInfo/Add")]
+        public async Task<IActionResult> AddProductInfo(ProductInfo productInfo)
+        {
+            var response = await _productRepo.AddUpdateProductInfo(productInfo);
+            return Ok(response);
+        }
+
+        [HttpPost("ProductInfo/Edit")]
+        public async Task<IActionResult> EditProductInfo(ProductInfo productInfo)
+        {
+            var response = await _productRepo.AddUpdateProductInfo(productInfo);
+            return Ok(response);
+        }
+
+        [HttpPost("Price/Add")]
+        public async Task<IActionResult> AddProductPriceDetails(ProductPrice productPrice)
+        {
+            var response = await _productRepo.AddUpdateProductPrice(productPrice);
+            return Ok(response);
+        }
+
+        [HttpPost("Price/Edit")]
+        public async Task<IActionResult> EditProductPriceDetails(ProductPrice productPrice)
+        {
+            var response = await _productRepo.AddUpdateProductPrice(productPrice);
+            return Ok(response);
+        }
+
+        [HttpPost("Gallery/Add")]
+        public async Task<IActionResult> AddProductGallery(ProductGallery productgallery)
+        {
+            var response = await _productRepo.AddUpdateProductGallery(productgallery);
+            return Ok(response);
+        }
+
+        [HttpPost("Gallery/Edit")]
+        public async Task<IActionResult> EditProductGallery(ProductGallery productgallery)
+        {
+            var response = await _productRepo.AddUpdateProductGallery(productgallery);
+            return Ok(response);
+        }
+
         [HttpPost]
         [Route("Image/Upload")]
         public async Task<IActionResult> UploadImage(IFormFile image, string sellerId)
