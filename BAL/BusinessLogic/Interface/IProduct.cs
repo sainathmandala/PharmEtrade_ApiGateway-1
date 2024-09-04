@@ -4,6 +4,7 @@ using BAL.ViewModels;
 using Microsoft.AspNetCore.Http;
 using BAL.Models;
 using BAL.ResponseModels;
+using BAL.RequestModels;
 
 namespace BAL.BusinessLogic.Interface
 {
@@ -15,6 +16,7 @@ namespace BAL.BusinessLogic.Interface
         Task<BAL.ResponseModels.Response<ProductResponse>> GetProductsBySpecification(int categorySpecificationId);
         Task<BAL.ResponseModels.Response<ProductResponse>> GetRecentSoldProducts(int numberOfProducts);
         Task<Response<ProductResponse>> GetProductsBySeller(string sellerId);
+        Task<Response<ProductResponse>> GetProductsByCriteria(ProductCriteria criteria);
         Task<BAL.ResponseModels.Response<ProductSize>> AddUpdateProductSize(ProductSize productSize);
         Task<string> InsertProductsFromExcel(Stream excelFileStream);
     }

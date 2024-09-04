@@ -101,6 +101,13 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
+        [HttpPost("GeByCriteria")]
+        public async Task<IActionResult> GetProductsByCriteria(ProductCriteria criteria)
+        {            
+            var response = await _productRepo.GetProductsByCriteria(criteria);
+            return Ok(response);
+        }
+
         [HttpPost("Size/Add")]
         public async Task<IActionResult> AddProductSize(ProductSize productSize)
         {

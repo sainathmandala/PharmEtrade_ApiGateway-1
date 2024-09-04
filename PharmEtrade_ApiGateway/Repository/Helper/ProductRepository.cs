@@ -8,6 +8,7 @@ using System.IO;
 using BAL.Models;
 using BAL.BusinessLogic.Helper;
 using BAL.ResponseModels;
+using BAL.RequestModels;
 
 namespace PharmEtrade_ApiGateway.Repository.Helper
 {
@@ -102,6 +103,11 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         public async Task<Response<ProductResponse>> GetProductsBySeller(string sellerId)
         {
             return await _productHelper.GetProductsBySeller(sellerId); 
+        }
+
+        public async Task<Response<ProductResponse>> GetProductsByCriteria(ProductCriteria criteria)
+        {
+            return await _productHelper.GetProductsByCriteria(criteria);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BAL.Models;
+using BAL.RequestModels;
 using BAL.ResponseModels;
 using BAL.ViewModel;
 using BAL.ViewModels;
@@ -14,6 +15,7 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<BAL.ResponseModels.Response<ProductResponse>> GetProductsBySpecification(int categorySpecificationId);
         Task<BAL.ResponseModels.Response<ProductResponse>> GetRecentSoldProducts(int numberOfProducts);
         Task<Response<ProductResponse>> GetProductsBySeller(string sellerId);
+        Task<Response<ProductResponse>> GetProductsByCriteria(ProductCriteria criteria);
         Task<BAL.ResponseModels.Response<ProductSize>> AddUpdateProductSize(ProductSize productSize);        
         Task<Response> ProcessExcelFileAsync(IFormFile file);
 

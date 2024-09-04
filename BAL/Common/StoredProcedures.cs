@@ -15,6 +15,7 @@ namespace BAL.Common
         public const string GET_PRODUCTS_BY_SPECIFICATION = "sp_GetProductsBySpecification";
         public const string GET_RECENT_SOLD_PRODUCTS = "sp_GetRecentSoldProducts";
         public const string GET_PRODUCTS_BY_SELLER = "sp_GetProductsBySeller";
+        public const string GET_PRODUCTS_BY_CRITERIA = "sp_GetProductsByCriteria";
 
         // ORDERS
         public const string GET_ORDERS = "sp_GetOrders";

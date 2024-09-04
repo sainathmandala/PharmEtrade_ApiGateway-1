@@ -477,5 +477,37 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
+
+        public async Task<Response<ProductResponse>> GetProductsByCriteria(ProductCriteria criteria)
+        {
+            Response<ProductResponse> response = new Response<ProductResponse>();
+            try
+            {
+                MySqlCommand cmdProduct = new MySqlCommand(StoredProcedures.GET_PRODUCTS_BY_CRITERIA);
+                cmdProduct.CommandType = CommandType.StoredProcedure;
+                cmdProduct.Parameters.AddWithValue("@p_Manufacturer", criteria.Brands);
+                cmdProduct.Parameters.AddWithValue("@p_Discount", criteria.Discount);
+                cmdProduct.Parameters.AddWithValue("@p_ExpiringMonths", criteria.Expiring);
+                cmdProduct.Parameters.AddWithValue("@p_OTCProducts", string.Compare(criteria.OTCProducts,"otc",true));
+                cmdProduct.Parameters.AddWithValue("@p_RxProducts", string.Compare(criteria.PrescriptionDrugs, "rx", true));
+                cmdProduct.Parameters.AddWithValue("@p_VAWDSeller", criteria.VAWDSeller);
+                cmdProduct.Parameters.AddWithValue("@p_TopSelling", string.Compare(criteria.TopSellingProducts, "topselling", true));
+                cmdProduct.Parameters.AddWithValue("@p_BuyAgain", string.Compare(criteria.BuyAgain, "buyagain", true));
+
+                DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProduct));
+                response.StatusCode = 200;
+                response.Message = "Successfully Fetched Data.";
+                response.Result = MapDataTableToProductList(tblProduct);
+            }
+            catch (Exception ex)
+            {
+                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+            return response;
+        }
     }
 }
