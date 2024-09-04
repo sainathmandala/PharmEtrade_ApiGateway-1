@@ -39,5 +39,12 @@ namespace PharmEtrade_ApiGateway.Controllers
             var response = await _ordersRepository.GetOrdersBySellerId(vendorId);
             return Ok(response);
         }
+        [HttpPost]
+        [Route("Payment")]
+        public async Task<IActionResult> AddPayMent(PaymentRequest request)
+        {
+            PaymentResponse response = await _ordersRepository.AddPayment(request);
+            return Ok(response);
+        }
     }
 }

@@ -14,5 +14,6 @@ namespace BAL.BusinessLogic.Interface
         Task<OrderResponse> AddOrder(OrderRequest orderRequest);
         Task<Response<Order>> GetOrdersByCustomerId(string customerId);
         Task<Response<Order>> GetOrdersBySellerId(string VendorId);
+        Task<PaymentResponse> AddPayment(PaymentRequest paymentRequest);
     }
 }

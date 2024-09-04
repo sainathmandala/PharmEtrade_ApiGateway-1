@@ -18,14 +18,14 @@ namespace BAL.BusinessLogic.Helper
     public class OrdersHelper : IOrders
     {
         private readonly IsqlDataHelper _isqlDataHelper;
-        private readonly string _connectionString;        
+        private readonly string _connectionString;
         private readonly IConfiguration _configuration;
-        
+
         public OrdersHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper)
-        {            
+        {
             _configuration = configuration;
             _isqlDataHelper = isqlDataHelper;
-            _connectionString = configuration.GetConnectionString("APIDBConnectionString");            
+            _connectionString = configuration.GetConnectionString("APIDBConnectionString");
         }
         public async Task<OrderResponse> AddOrder(OrderRequest orderRequest)
         {
@@ -47,7 +47,7 @@ namespace BAL.BusinessLogic.Helper
                     cmd.Parameters.AddWithValue("@p_TrackingNumber", orderRequest.TrackingNumber);
 
                     try
-                    {   
+                    {
                         DataTable tblOrders = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
 
                         if (tblOrders.Rows.Count > 0)
@@ -58,7 +58,7 @@ namespace BAL.BusinessLogic.Helper
                             response.OrderId = tblOrders.Rows[0]["OrderId"].ToString();
 
                             //response.VendorName = tblOrders.Rows[0][""].ToString();
-                            response.Message = "Success";                           
+                            response.Message = "Success";
                         }
                         else
                         {
@@ -85,7 +85,7 @@ namespace BAL.BusinessLogic.Helper
 
         public async Task<Response<Order>> GetOrdersByCustomerId(string customerId)
         {
-            var response = new Response<Order>();            
+            var response = new Response<Order>();
 
             using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
@@ -226,5 +226,55 @@ namespace BAL.BusinessLogic.Helper
 
         }
 
+        public async Task<PaymentResponse> AddPayment(PaymentRequest paymentRequest)
+        {
+            PaymentResponse response = new PaymentResponse();
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(StoredProcedures.ADD_PAYMENT, sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@p_OrderId", paymentRequest.OrderId);
+                    cmd.Parameters.AddWithValue("@p_PaymentMethodId", paymentRequest.PaymentMethodId);
+                    cmd.Parameters.AddWithValue("@p_PaymentStatusId", paymentRequest.PaymentStatusId);
+                    cmd.Parameters.AddWithValue("@p_Amount", paymentRequest.Amount);
+                    cmd.Parameters.AddWithValue("@p_PaymentId", paymentRequest.PaymentId);
+                    cmd.Parameters.AddWithValue("@p_PaymentDate", paymentRequest.PaymentDate);
+
+
+                    try
+                    {
+                        DataTable tblPayment = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
+
+                        if (tblPayment.Rows.Count > 0)
+                        {
+                            response.Status = 200;
+                            response.PaymentId = tblPayment.Rows[0]["PaymentId"].ToString();
+                            response.Message = "Success";
+                        }
+                        else
+                        {
+                            response.Status = 400;
+                            response.Message = "Failed to add PayMent.";
+                        }
+                    }
+                    catch (MySqlException ex) when (ex.Number == 500)
+                    {
+                        //Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertAddToCartProduct : errormessage:" + ex.Message.ToString()));
+                        response.Status = 500;
+                        response.Message = "ERROR : " + ex.Message;
+                    }
+                    catch (Exception ex)
+                    {
+                        //Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertAddToCartProduct : errormessage:" + ex.Message.ToString()));
+                        response.Status = 500;
+                        response.Message = "ERROR : " + ex.Message;
+                    }
+                    return response;
+                }
+            }
+
+        }
     }
 }
