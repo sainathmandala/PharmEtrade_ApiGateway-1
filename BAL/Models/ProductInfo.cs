@@ -28,5 +28,6 @@ namespace BAL.Models
         public int ProductTypeId { get; set; }
         public string SellerId { get; set; }        
         public string? States { get; set; }
+        public string UnitOfMeasure { get; set; }
     }
 }
