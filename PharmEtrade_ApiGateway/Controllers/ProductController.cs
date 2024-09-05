@@ -132,7 +132,7 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
-        [HttpGet("GeBySeller")]
+        [HttpGet("GetBySeller")]
         public async Task<IActionResult> GetProductsBySeller(string sellerId)
         {   
             if(string.IsNullOrEmpty(sellerId))
@@ -143,7 +143,7 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
-        [HttpPost("GeByCriteria")]
+        [HttpPost("GetByCriteria")]
         public async Task<IActionResult> GetProductsByCriteria(ProductCriteria criteria)
         {            
             var response = await _productRepo.GetProductsByCriteria(criteria);
