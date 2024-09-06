@@ -8,8 +8,8 @@ namespace BAL.Models
 {
     public class ProductGallery
     {
-        public int ProductGalleryId { get; set; }
-        public int ProductId { get; set; }
+        public string ProductGalleryId { get; set; }
+        public string ProductId { get; set; }
         public string Caption { get; set; }
         public string ImageUrl { get; set; }
         public string Thumbnail1 { get; set; }

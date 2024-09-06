@@ -247,11 +247,11 @@ namespace BAL.BusinessLogic.Helper
             foreach (DataRow product in tblProduct.Rows)
             {
                 ProductResponse item = new ProductResponse();
-                item.ProductID = product["ProductID"].ToString();                
-                item.ProductName = product["ProductName"].ToString();
-                item.NDCorUPC = product["NDCorUPC"].ToString();
-                item.BrandName = product["BrandName"].ToString();
-                item.PriceName = product["PriceName"].ToString();
+                item.ProductID = product["ProductID"].ToString() ?? "";                
+                item.ProductName = product["ProductName"].ToString() ?? "";
+                item.NDCorUPC = product["NDCorUPC"].ToString() ?? "";
+                item.BrandName = product["BrandName"].ToString() ?? "";
+                item.PriceName = product["PriceName"].ToString() ?? "";
                 item.UPNMemberPrice = Convert.ToDecimal(product["UPNMemberPrice"] != DBNull.Value ? product["UPNMemberPrice"] : 0.0);
                 item.AmountInStock = Convert.ToInt32(product["AmountInStock"] != DBNull.Value ? product["AmountInStock"] : 0);
                 item.Taxable = Convert.ToInt32(product["Taxable"] != DBNull.Value ? product["Taxable"] : 0) == 0 ? true : false;
@@ -281,7 +281,7 @@ namespace BAL.BusinessLogic.Helper
                 item.ProductCategory.ProductCategoryId = Convert.ToInt32(product["ProductCategoryId"] != DBNull.Value ? product["ProductCategoryId"] : 0);
                 item.ProductCategory.CategoryName = product["CategoryName"].ToString();
 
-                item.ProductGallery.ProductGalleryId = Convert.ToInt32(product["ProductGalleryId"] != DBNull.Value ? product["ProductGalleryId"] : 0);
+                item.ProductGallery.ProductGalleryId = product["ProductGalleryId"].ToString() ?? "";
                 item.ProductGallery.ImageUrl = product["ImageUrl"].ToString();
                 item.ProductGallery.Caption = product["Caption"].ToString();
                 item.ProductGallery.Thumbnail1 = product["Thumbnail1"].ToString();
@@ -520,6 +520,8 @@ namespace BAL.BusinessLogic.Helper
                 cmdProductInfo.Parameters.AddWithValue("@p_NDCorUPC", productInfo.NDCorUPC);
                 cmdProductInfo.Parameters.AddWithValue("@p_BrandName", productInfo.BrandName);
                 cmdProductInfo.Parameters.AddWithValue("@p_Manufacturer", productInfo.Manufacturer);
+                cmdProductInfo.Parameters.AddWithValue("@p_Size", productInfo.Size);
+                cmdProductInfo.Parameters.AddWithValue("@p_UnitOfMeasure", productInfo.UnitOfMeasure);
                 cmdProductInfo.Parameters.AddWithValue("@p_Strength", productInfo.Strength);
                 cmdProductInfo.Parameters.AddWithValue("@p_AvailableFromDate", productInfo.AvailableFromDate);
                 cmdProductInfo.Parameters.AddWithValue("@p_LotNumber", productInfo.LotNumber);
@@ -539,13 +541,28 @@ namespace BAL.BusinessLogic.Helper
                 var objProductInfo = new ProductInfo();
                 if (tblProduct?.Rows.Count > 0)
                 {
-                    //objProductInfo.ProductSizeId = Convert.ToInt32(tblProduct.Rows[0]["ProductSizeId"]);
-                    //objProductInfo.Height = Convert.ToDecimal(tblProduct.Rows[0]["Height"]);
-                    //objProductInfo.Width = Convert.ToDecimal(tblProduct.Rows[0]["Width"]);
-                    //objProductInfo.Length = Convert.ToDecimal(tblProduct.Rows[0]["Length"]);
-                    //objProductInfo.Weight = Convert.ToDecimal(tblProduct.Rows[0]["Weight"]);
-                }
-                else objProductInfo = null;
+                    objProductInfo.ProductID = tblProduct.Rows[0]["ProductId"].ToString() ?? "";
+                    objProductInfo.ProductCategoryId = Convert.ToInt32(tblProduct.Rows[0]["ProductCategoryId"] ?? 0);
+                    objProductInfo.ProductName = tblProduct.Rows[0]["ProductName"].ToString() ?? "";
+                    objProductInfo.NDCorUPC = tblProduct.Rows[0]["NDCorUPC"].ToString() ?? "";
+                    objProductInfo.BrandName = tblProduct.Rows[0]["BrandName"].ToString() ?? "";
+                    objProductInfo.Manufacturer = tblProduct.Rows[0]["Manufacturer"].ToString() ?? "";
+                    objProductInfo.Size = tblProduct.Rows[0]["Size"].ToString() ?? "";
+                    objProductInfo.UnitOfMeasure = tblProduct.Rows[0]["UnitOfMeasure"].ToString() ?? "";
+                    objProductInfo.Strength = tblProduct.Rows[0]["Strength"].ToString() ?? "";
+                    objProductInfo.AvailableFromDate = Convert.ToDateTime(tblProduct.Rows[0]["AvailableFromDate"] ?? DateTime.MinValue);
+                    objProductInfo.LotNumber = tblProduct.Rows[0]["LotNumber"].ToString() ?? "";
+                    objProductInfo.ExpiryDate = Convert.ToDateTime(tblProduct.Rows[0]["ExpiryDate"] ?? DateTime.MinValue);
+                    objProductInfo.PackQuantity = Convert.ToInt32(tblProduct.Rows[0]["PackQuantity"] ?? 0);
+                    objProductInfo.PackCondition = tblProduct.Rows[0]["PackCondition"].ToString() ?? "";
+                    objProductInfo.PackType = tblProduct.Rows[0]["PackType"].ToString() ?? "";
+                    objProductInfo.ProductDescription = tblProduct.Rows[0]["ProductDescription"].ToString() ?? "";
+                    objProductInfo.AboutTheProduct = tblProduct.Rows[0]["AboutTheProduct"].ToString() ?? "";
+                    objProductInfo.CategorySpecificationId = Convert.ToInt32(tblProduct.Rows[0]["CategorySpecificationId"] ?? 0);
+                    objProductInfo.ProductTypeId = Convert.ToInt32(tblProduct.Rows[0]["ProductTypeId"] ?? 0);
+                    objProductInfo.SellerId = tblProduct.Rows[0]["SellerId"].ToString() ?? "";
+                    objProductInfo.States = tblProduct.Rows[0]["States"].ToString() ?? "";
+                }                
 
                 response.StatusCode = 200;
                 response.Message = "ProductInfo Updated Successfully.";
@@ -585,11 +602,21 @@ namespace BAL.BusinessLogic.Helper
                 DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProductPrice));
 
                 var objProductPrice = new ProductPrice();
-                if (tblProduct?.Rows.Count > 0)
+                if (tblProduct != null && tblProduct.Rows.Count > 0 && tblProduct.Rows[0] != null)
                 {
-                    
+                    objProductPrice.ProductPriceId = tblProduct.Rows[0]["ProductPriceId"].ToString() ?? "";
+                    objProductPrice.ProductId = tblProduct.Rows[0]["ProductId"].ToString() ?? "";
+                    objProductPrice.UnitPrice = Convert.ToDecimal(tblProduct.Rows[0]["UnitPrice"] ?? 0.0);
+                    objProductPrice.UPNMemberPrice = Convert.ToDecimal(tblProduct.Rows[0]["UPNMemberPrice"] ?? 0.0);
+                    objProductPrice.Discount = Convert.ToInt32(tblProduct.Rows[0]["Discount"] ?? 0);
+                    objProductPrice.SalePrice = Convert.ToDecimal(tblProduct.Rows[0]["SalePrice"] ?? 0.0);
+                    objProductPrice.SalePriceValidFrom = Convert.ToDateTime(tblProduct.Rows[0]["SalePriceValidFrom"] ?? DateTime.MinValue);
+                    objProductPrice.SalePriceValidTo = Convert.ToDateTime(tblProduct.Rows[0]["SalePriceValidTo"] ?? DateTime.MinValue);
+                    objProductPrice.Taxable = Convert.ToInt32(tblProduct.Rows[0]["Taxable"] ?? 0) == 1 ? true : false;
+                    objProductPrice.ShippingCostApplicable = Convert.ToInt32(tblProduct.Rows[0]["ShippingCostApplicable"] ?? 0) == 1 ? true : false;
+                    objProductPrice.ShippingCost = Convert.ToDecimal(tblProduct.Rows[0]["ShippingCost"] ?? 0.0);
+                    objProductPrice.AmountInStock = Convert.ToInt32(tblProduct.Rows[0]["AmountInStock"] ?? 0); 
                 }
-                else objProductPrice = null;
 
                 response.StatusCode = 200;
                 response.Message = "Product Price Details Updated Successfully.";
@@ -630,9 +657,18 @@ namespace BAL.BusinessLogic.Helper
                 var objProductGallery = new ProductGallery();
                 if (tblProductGallery?.Rows.Count > 0)
                 {
-
+                    objProductGallery.ProductGalleryId = tblProductGallery.Rows[0]["ProductGalleryId"].ToString() ?? "";
+                    objProductGallery.ProductId = tblProductGallery.Rows[0]["ProductId"].ToString() ?? "";
+                    objProductGallery.ImageUrl = tblProductGallery.Rows[0]["ImageUrl"].ToString() ?? "";
+                    objProductGallery.Caption = tblProductGallery.Rows[0]["Caption"].ToString() ?? "";
+                    objProductGallery.Thumbnail1 = tblProductGallery.Rows[0]["Thumbnail1"].ToString() ?? "";
+                    objProductGallery.Thumbnail1 = tblProductGallery.Rows[0]["Thumbnail2"].ToString() ?? "";
+                    objProductGallery.Thumbnail1 = tblProductGallery.Rows[0]["Thumbnail3"].ToString() ?? "";
+                    objProductGallery.Thumbnail1 = tblProductGallery.Rows[0]["Thumbnail4"].ToString() ?? "";
+                    objProductGallery.Thumbnail1 = tblProductGallery.Rows[0]["Thumbnail5"].ToString() ?? "";
+                    objProductGallery.Thumbnail1 = tblProductGallery.Rows[0]["Thumbnail6"].ToString() ?? "";
+                    objProductGallery.VideoUrl = tblProductGallery.Rows[0]["VideoUrl"].ToString() ?? "";
                 }
-                else objProductGallery = null;
 
                 response.StatusCode = 200;
                 response.Message = "Product Gallery Updated Successfully.";
