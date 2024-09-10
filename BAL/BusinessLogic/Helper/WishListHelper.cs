@@ -18,7 +18,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BAL.BusinessLogic.Helper
 {
-    public  class WishListHelper: IWishListHelper
+    public class WishListHelper : IWishListHelper
     {
         private IsqlDataHelper _sqlDataHelper;
         private IConfiguration _configuration;
@@ -91,14 +91,14 @@ namespace BAL.BusinessLogic.Helper
                 item.Customer.LastName = wishlistItem["LastName"].ToString() ?? "";
                 item.Customer.Email = wishlistItem["Email"].ToString() ?? "";
                 item.Customer.Mobile = wishlistItem["Mobile"].ToString() ?? "";
-                item.Customer.CustomerTypeId = Convert.ToInt32(wishlistItem["CustomerTypeId"] != DBNull.Value ? wishlistItem["CustomerTypeId"]:0);
+                item.Customer.CustomerTypeId = Convert.ToInt32(wishlistItem["CustomerTypeId"] != DBNull.Value ? wishlistItem["CustomerTypeId"] : 0);
                 item.Customer.AccountTypeId = Convert.ToInt32(wishlistItem["AccountTypeId"] != DBNull.Value ? wishlistItem["AccountTypeId"] : 0);
                 item.Customer.IsUPNMember = Convert.ToInt32(wishlistItem["IsUPNMember"] != DBNull.Value ? wishlistItem["IsUPNMember"] : 0);
 
                 //Add Basic Product Details
                 item.Product.ProductID = wishlistItem["ProductID"].ToString() ?? "";
                 item.Product.ProductCategoryId = Convert.ToInt32(wishlistItem["ProductCategoryId"] != DBNull.Value ? wishlistItem["ProductCategoryId"] : 0);
-                item.Product.ProductGalleryId = Convert.ToInt32(wishlistItem["ProductGalleryId"] != DBNull.Value ? wishlistItem["ProductGalleryId"] : 0);
+                item.Product.ProductGalleryId = wishlistItem["ProductGalleryId"].ToString() ?? "";
                 item.Product.ProductName = wishlistItem["ProductName"].ToString() ?? "";
                 item.Product.SalePrice = Convert.ToDecimal(wishlistItem["SalePrice"] != DBNull.Value ? wishlistItem["SalePrice"] : 0.0);
                 item.Product.BrandName = wishlistItem["BrandName"].ToString() ?? "";
@@ -112,7 +112,7 @@ namespace BAL.BusinessLogic.Helper
             return lstwishlist;
         }
 
-        public async  Task<Response<WishList>> GetWishListItems(string customerId = null)
+        public async Task<Response<WishList>> GetWishListItems(string customerId = null)
         {
             var response = new Response<WishList>();
             try
@@ -157,7 +157,7 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-        public async Task<Response<WishList>>RemoveWishList(string wishlistId)
+        public async Task<Response<WishList>> RemoveWishList(string wishlistId)
         {
             var response = new Response<WishList>();
             using (MySqlConnection sqlcon = new MySqlConnection(ConnectionString))
@@ -207,5 +207,5 @@ namespace BAL.BusinessLogic.Helper
             }
         }
     }
-    
+
 }

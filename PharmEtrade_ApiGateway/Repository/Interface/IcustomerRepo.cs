@@ -1,4 +1,5 @@
-﻿using BAL.ResponseModels;
+﻿using BAL.Models;
+using BAL.ResponseModels;
 using BAL.ViewModels;
 
 namespace PharmEtrade_ApiGateway.Repository.Interface
@@ -6,9 +7,9 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
     public interface IcustomerRepo
     {
         Task<loginViewModel> CustomerLogin(string username, string password);
-        Task<int> AddToCart(int userId, int imageId, int productId);        
-        Task<Response> UpdatePassword(int id,string newPassword);
-        Task<UserEmailResponse> GetUserDetailsByEmail(string email);        
+        Task<int> AddToCart(int userId, int imageId, int productId);
+        Task<Response> UpdatePassword(int id, string newPassword);
+        Task<UserEmailResponse> GetUserDetailsByEmail(string email);
         Task<UserEmailViewModel> ForgotPassword(string email);
         Task SendEmailAsync(string toEmail, string subject, string message);
         Task<Response> UpdatePasswordByEmail(string email, string newPassword);
@@ -21,5 +22,9 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
 
         Task<Response<CustomerResponse>> GetCustomerByCustomerId(string customerId);
         Task<Response<Customer>> GetCustomers(string? customerId, string? email, string? mobile);
+        Task<Response<Address>> GetByCustomerId(string customerId);
+        Task<Response<Address>> GetAddressById(string addressId);
+        Task<Response<Address>> AddUpdateAddress(Address customerAddress);
+        Task<Response<Address>> DeleteAddress(string addressId);
     }
 }

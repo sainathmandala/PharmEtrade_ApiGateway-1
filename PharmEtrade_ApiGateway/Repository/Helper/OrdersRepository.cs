@@ -28,7 +28,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _orders.GetOrdersBySellerId(vendorId);
         }
-        public async Task<PaymentResponse>AddPayment(PaymentRequest paymentRequest)
+        public async Task<PaymentResponse> AddPayment(PaymentRequest paymentRequest)
         {
             PaymentResponse response = await _orders.AddPayment(paymentRequest);
             return response;

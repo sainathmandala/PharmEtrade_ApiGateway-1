@@ -68,7 +68,7 @@ namespace BAL.BusinessLogic.Helper
                 command.Parameters.AddWithValue("p_CustomerId", customerId);
                 command.Parameters.AddWithValue("P_ProductId", productId);
                 DataTable tblCart = await Task.Run(() => _sqlDataHelper.SqlDataAdapterasync(command));
-                
+
                 response.StatusCode = 200;
                 response.Message = "Successfully Feched data.";
                 response.Result = MapDataTableToCartList(tblCart);
@@ -89,7 +89,7 @@ namespace BAL.BusinessLogic.Helper
             {
                 Cart item = new Cart();
                 item.CartId = cartItem["CartId"].ToString();
-                item.Quantity = Convert.ToInt32(cartItem["Quantity"]);
+                item.Quantity = Convert.ToInt32(cartItem["Quantity"] != DBNull.Value ? cartItem["Quantity"] : 0);
                 item.IsActive = Convert.ToInt32(cartItem["IsActive"]) == 1 ? true : false;
                 item.AddedOn = cartItem["AddedOn"] != DBNull.Value ? Convert.ToDateTime(cartItem["AddedOn"]) : DateTime.MinValue;
 
@@ -101,19 +101,19 @@ namespace BAL.BusinessLogic.Helper
                 item.Customer.Mobile = cartItem["Mobile"].ToString();
                 item.Customer.CustomerTypeId = Convert.ToInt32(cartItem["CustomerTypeId"]);
                 item.Customer.AccountTypeId = Convert.ToInt32(cartItem["AccountTypeId"]);
-                item.Customer.IsUPNMember = Convert.ToInt32(cartItem["IsUPNMember"]);
+                item.Customer.IsUPNMember = Convert.ToInt32(cartItem["IsUPNMember"] != DBNull.Value ? cartItem["IsUPNMember"] : 0);
 
                 //Add Basic Product Details
                 item.Product.ProductID = cartItem["ProductID"].ToString();
                 item.Product.ProductCategoryId = Convert.ToInt32(cartItem["ProductCategoryId"]);
-                item.Product.ProductGalleryId = Convert.ToInt32(cartItem["ProductGalleryId"]);
+                item.Product.ProductGalleryId = cartItem["ProductGalleryId"].ToString() ?? "";
                 item.Product.ProductName = cartItem["ProductName"].ToString();
-                item.Product.SalePrice = Convert.ToDecimal(cartItem["SalePrice"]);
-                item.Product.BrandName = cartItem["BrandName"].ToString();
-                item.Product.Manufacturer = cartItem["Manufacturer"].ToString();
+                item.Product.SalePrice = Convert.ToDecimal(cartItem["SalePrice"] != DBNull.Value ? cartItem["SalePrice"] : 0.0);
+                item.Product.BrandName = cartItem["BrandName"].ToString() ?? "";
+                item.Product.Manufacturer = cartItem["Manufacturer"].ToString() ?? "";
                 item.Product.UriKey = cartItem["UriKey"].ToString();
-                item.Product.ImageUrl = cartItem["ImageUrl"].ToString();
-                item.Product.Caption = cartItem["Caption"].ToString();
+                item.Product.ImageUrl = cartItem["ImageUrl"].ToString() ?? "";
+                item.Product.Caption = cartItem["Caption"].ToString() ?? "";
 
                 lstCart.Add(item);
             }
@@ -123,9 +123,9 @@ namespace BAL.BusinessLogic.Helper
         public async Task<Response<Cart>> DeleteCart(string CartId)
         {
             var response = new Response<Cart>();
-            using(MySqlConnection sqlcon=new MySqlConnection(ConnectionString))
+            using (MySqlConnection sqlcon = new MySqlConnection(ConnectionString))
             {
-                using (MySqlCommand cmd=new MySqlCommand(StoredProcedures.DELETE_CART,sqlcon))
+                using (MySqlCommand cmd = new MySqlCommand(StoredProcedures.DELETE_CART, sqlcon))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@p_CartId", CartId);
@@ -140,7 +140,7 @@ namespace BAL.BusinessLogic.Helper
                         if (tblcart.Rows.Count > 0)
                         {
                             response.StatusCode = 200;
-                            response.Message= string.IsNullOrEmpty(paramMessage.Value.ToString()) ? "Success" : paramMessage.Value.ToString();
+                            response.Message = string.IsNullOrEmpty(paramMessage.Value.ToString()) ? "Success" : paramMessage.Value.ToString();
                             response.Result = MapDataTableToCartList(tblcart);
                         }
                         else
@@ -150,10 +150,10 @@ namespace BAL.BusinessLogic.Helper
                             response.Result = null;
                         }
                     }
-                    catch(MySqlException ex) when (ex.Number == 500)
+                    catch (MySqlException ex) when (ex.Number == 500)
                     {
                         response.StatusCode = 500;
-                        response.Message= "ERROR : " + ex.Message;
+                        response.Message = "ERROR : " + ex.Message;
                     }
                     catch (Exception ex)
                     {

@@ -19,8 +19,8 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         public ProductRepository(IProductHelper productHelper)
         {
             _productHelper = productHelper;
-        }        
-        
+        }
+
         public async Task<Response> ProcessExcelFileAsync(IFormFile file)
         {
             Response response = new Response();
@@ -65,12 +65,12 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return await _productHelper.AddProduct(product);
         }
 
-        public async Task<UploadResponse> UploadImage(IFormFile image, string sellerId)
+        public async Task<UploadResponse> UploadImage(IFormFile image, string sellerId, string productId)
         {
             UploadResponse response = new UploadResponse();
             try
             {
-                response = await _productHelper.UploadImage(image, sellerId);
+                response = await _productHelper.UploadImage(image, sellerId, productId);
             }
             catch (Exception ex)
             {
@@ -102,7 +102,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
 
         public async Task<Response<ProductResponse>> GetProductsBySeller(string sellerId)
         {
-            return await _productHelper.GetProductsBySeller(sellerId); 
+            return await _productHelper.GetProductsBySeller(sellerId);
         }
 
         public async Task<Response<ProductResponse>> GetProductsByCriteria(ProductCriteria criteria)

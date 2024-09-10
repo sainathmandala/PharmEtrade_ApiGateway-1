@@ -12,7 +12,7 @@ namespace BAL.Models
     {
         public string? ProductID {get;set;}
         public int? ProductCategoryId { get;set;}
-        public int? ProductGalleryId { get; set;}
+        public string? ProductGalleryId { get; set;}
         public string? ProductName { get; set;}
         public decimal SalePrice { get; set;}
         public string? BrandName { get; set;}

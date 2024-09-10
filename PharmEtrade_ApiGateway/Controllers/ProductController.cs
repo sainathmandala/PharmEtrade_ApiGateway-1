@@ -83,13 +83,13 @@ namespace PharmEtrade_ApiGateway.Controllers
 
         [HttpPost]
         [Route("Image/Upload")]
-        public async Task<IActionResult> UploadImage(IFormFile image, string sellerId)
+        public async Task<IActionResult> UploadImage(IFormFile image, string sellerId, string productId)
         {
-            if(string.IsNullOrEmpty(sellerId) || image == null)
+            if (string.IsNullOrEmpty(sellerId) || image == null)
             {
                 return BadRequest("Image and Seller Id are required.");
             }
-            UploadResponse response = await _productRepo.UploadImage(image, sellerId);
+            UploadResponse response = await _productRepo.UploadImage(image, sellerId, productId);
             return Ok(response);
         }
 
@@ -109,7 +109,7 @@ namespace PharmEtrade_ApiGateway.Controllers
             var response = await _productRepo.GetAllProducts(productId);
             return Ok(response);
         }
-        
+
         [HttpGet("GetRxProducts")]
         public async Task<IActionResult> GetRxProducts()
         {
@@ -135,8 +135,8 @@ namespace PharmEtrade_ApiGateway.Controllers
 
         [HttpGet("GetBySeller")]
         public async Task<IActionResult> GetProductsBySeller(string sellerId)
-        {   
-            if(string.IsNullOrEmpty(sellerId))
+        {
+            if (string.IsNullOrEmpty(sellerId))
             {
                 return BadRequest("Seller Id is required.");
             }
@@ -146,7 +146,7 @@ namespace PharmEtrade_ApiGateway.Controllers
 
         [HttpPost("GetByCriteria")]
         public async Task<IActionResult> GetProductsByCriteria(ProductCriteria criteria)
-        {            
+        {
             var response = await _productRepo.GetProductsByCriteria(criteria);
             return Ok(response);
         }

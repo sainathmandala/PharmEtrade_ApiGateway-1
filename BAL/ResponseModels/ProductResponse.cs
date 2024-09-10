@@ -9,47 +9,60 @@ namespace BAL.ResponseModels
 {
     public class ProductResponse
     {
-        public ProductResponse() { 
+        public ProductResponse()
+        {
             this.CategorySpecification = new CategorySpecification();
             this.ProductCategory = new ProductCategory();
             this.ProductGallery = new ProductGallery();
             this.ProductType = new ProductType();
-            this.ProductSize = new ProductSize();
+            //this.Price = new ProductPrice();
+            //this.ProductInfo = new ProductInfo();            
         }
-        public string ProductID { get; set; }
+        //public ProductInfo ProductInfo { get; set; }
         public ProductCategory ProductCategory { get; set; }
         public ProductGallery ProductGallery { get; set; }
-        public ProductSize ProductSize { get; set; }
+        //public ProductPrice Price { get; set; }        
+        public CategorySpecification CategorySpecification { get; set; }
+        public ProductType ProductType { get; set; }
+
+        // Product Info
+        public string ProductID { get; set; }
+        public int ProductCategoryId { get; set; }
         public string ProductName { get; set; }
         public string NDCorUPC { get; set; }
         public string BrandName { get; set; }
-        public string PriceName { get; set; }
-        public decimal UPNMemberPrice { get; set; }
-        public int AmountInStock { get; set; }
-        public bool Taxable { get; set; }
-        public decimal SalePrice { get; set; }
-        public string SalePriceValidFrom { get; set; }
-        public string SalePriceValidTo { get; set; }
+        public string Size { get; set; }
         public string Manufacturer { get; set; }
         public string Strength { get; set; }
-        public string AvailableFromDate { get; set; }
         public string LotNumber { get; set; }
-        public string ExpiryDate { get; set; }
-       // public string ExpDate { get; set; }
+        public DateTime AvailableFromDate { get; set; }
+        public string FormattedAvailableFromDate { get; set; }
+        public DateTime ExpiryDate { get; set; }
+        public string FormattedExpiryDate { get; set; }
         public int PackQuantity { get; set; }
         public string PackType { get; set; }
         public string PackCondition { get; set; }
         public string ProductDescription { get; set; }
-        public string MetaKeywords { get; set; }
-        public string MetaTitle { get; set; }
-        public string MetaDescription { get; set; }
-        public string SaltComposition { get; set; }
-        public string UriKey { get; set; }
         public string AboutTheProduct { get; set; }
-        public CategorySpecification CategorySpecification { get; set; }
-        public ProductType ProductType { get; set; }
+        public int CategorySpecificationId { get; set; }
+        public int ProductTypeId { get; set; }
         public string SellerId { get; set; }
         public string? States { get; set; }
-        public string ImageUrl { get; set; }
+        public string UnitOfMeasure { get; set; }
+
+
+        // Price
+        public string ProductPriceId { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal UPNMemberPrice { get; set; }
+        public int Discount { get; set; }
+        public decimal SalePrice { get; set; }
+        public DateTime SalePriceValidFrom { get; set; }
+        public DateTime SalePriceValidTo { get; set; }
+        public bool Taxable { get; set; }
+        public bool ShippingCostApplicable { get; set; }
+        public decimal ShippingCost { get; set; }
+        public int AmountInStock { get; set; }
+
     }
 }

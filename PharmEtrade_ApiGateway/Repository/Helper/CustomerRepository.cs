@@ -14,14 +14,15 @@ using System.Net.Mail;
 using System.Net;
 using Microsoft.Extensions.Options;
 using BAL.ResponseModels;
+using BAL.Models;
 
 namespace PharmEtrade_ApiGateway.Repository.Helper
 {
-    public class CustomerRepository:IcustomerRepo
+    public class CustomerRepository : IcustomerRepo
     {
         private readonly IcustomerHelper _icustomerHelper;
         private readonly JwtAuthenticationExtensions _jwtTokenService;
-      
+
         private readonly IConfiguration _configuration;
         private readonly SmtpSettings _smtpSettings;
 
@@ -151,7 +152,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                     user.lastname = row["last_name"].ToString();
                     user.Email = row["email"].ToString();
                     user.Password = row["password"].ToString();
-                    user.PhoneNumber =row["phone_number"].ToString();
+                    user.PhoneNumber = row["phone_number"].ToString();
                     userlst.Add(user);
                 }
                 return userlst;
@@ -163,7 +164,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         // Author: [shiva]
         // Created Date: [03/07/2024]
         // Description: Method for Update  Password
-        public async Task<Response> UpdatePassword(int id,string newPassword)
+        public async Task<Response> UpdatePassword(int id, string newPassword)
         {
             Response response = new Response();
             try
@@ -248,7 +249,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                 if (dtResult != null && dtResult.Rows.Count > 0)
                 {
                     DataRow row = dtResult.Rows[0];
-                  
+
                     response.UserId = Convert.ToInt32(row["user_id"]);
                     response.Firstname = row["first_name"].ToString();
                     response.lastname = row["last_name"].ToString();
@@ -450,7 +451,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             UploadResponse response = new UploadResponse();
             try
             {
-                response = await _icustomerHelper.UploadImage(image);                
+                response = await _icustomerHelper.UploadImage(image);
             }
             catch (Exception ex)
             {
@@ -461,7 +462,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         }
 
         public async Task<BusinessInfoResponse> AddUpdateBusinessInfo(CustomerBusinessInfo businessInfo)
-        {            
+        {
             BusinessInfoResponse response = new BusinessInfoResponse();
             response.CustomerId = businessInfo.CustomerId ?? "";
             try
@@ -469,7 +470,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                 string result = await _icustomerHelper.AddUpdateBusinessInfo(businessInfo);
                 if (!result.StartsWith("ERROR"))
                 {
-                    response.Status = 200;                    
+                    response.Status = 200;
                     response.Message = Constant.BusinessInfoSuccessMsg;
                 }
             }
@@ -485,7 +486,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         public async Task<Response<CustomerResponse>> GetCustomerByCustomerId(string customerId)
         {
             var response = new Response<CustomerResponse>();
-            if(string.IsNullOrEmpty(customerId))
+            if (string.IsNullOrEmpty(customerId))
             {
                 response.StatusCode = 400;
                 response.Message = "Bad Request : Customer Id is not provided.";
@@ -495,8 +496,28 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         }
 
         public async Task<Response<Customer>> GetCustomers(string? customerId, string? email, string? mobile)
-        {            
+        {
             return await _icustomerHelper.GetCustomers(customerId, email, mobile);
+        }
+
+        public async Task<Response<Address>> GetByCustomerId(string customerId)
+        {
+            return await _icustomerHelper.GetByCustomerId(customerId);
+        }
+
+        public async Task<Response<Address>> GetAddressById(string addressId)
+        {
+            return await _icustomerHelper.GetAddressById(addressId);
+        }
+
+        public async Task<Response<Address>> AddUpdateAddress(Address customerAddress)
+        {
+            return await _icustomerHelper.AddUpdateAddress(customerAddress);
+        }
+
+        public async Task<Response<Address>> DeleteAddress(string addressId)
+        {
+            return await _icustomerHelper.DeleteAddress(addressId);
         }
     }
 }

@@ -3,19 +3,14 @@ using BAL.Common;
 using BAL.ViewModels;
 using DAL;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
 using System.Net.Mail;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
-using System.Data.Common;
 using BAL.ResponseModels;
 using Microsoft.AspNetCore.Http;
+using BAL.Models;
+using BAL.RequestModels;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -31,7 +26,7 @@ namespace BAL.BusinessLogic.Helper
         public CustomerHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper, SmtpSettings smtpSettings)
         {
             _isqlDataHelper = isqlDataHelper;
-            _connectionString = configuration.GetConnectionString("APIDBConnectionString");
+            _connectionString = configuration.GetConnectionString("APIDBConnectionString") ?? "";
             exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), exFolder);
             _smtpSettings = smtpSettings;
             _s3Helper = new S3Helper(configuration);
@@ -492,7 +487,7 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
-        public async Task<string> AddUpdateCustomer(Customer customer)
+        public async Task<string> AddUpdateCustomer(ViewModels.Customer customer)
         {
             using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
@@ -553,7 +548,7 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-        public async Task<string> AddUpdateBusinessInfo(CustomerBusinessInfo businessInfo)
+        public async Task<string> AddUpdateBusinessInfo(ViewModels.CustomerBusinessInfo businessInfo)
         {
             MySqlConnection sqlcon = new MySqlConnection(_connectionString);
             MySqlCommand cmd = new MySqlCommand();
@@ -627,8 +622,8 @@ namespace BAL.BusinessLogic.Helper
                             throw new Exception("Customer not found.");
                         }
 
-                        var customer = new Customer();
-                        var businessInfoResponse = new CustomerBusinessInfo(); // Use correct type
+                        var customer = new ViewModels.Customer();
+                        var businessInfoResponse = new ViewModels.CustomerBusinessInfo(); // Use correct type
 
                         foreach (DataRow row in tblCustomer.Rows)
                         {
@@ -696,9 +691,9 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
-        public async Task<Response<Customer>> GetCustomers(string? customerId, string? email, string? mobile)
+        public async Task<Response<ViewModels.Customer>> GetCustomers(string? customerId, string? email, string? mobile)
         {
-            var response = new Response<Customer>();
+            var response = new Response<ViewModels.Customer>();
             using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
                 using (MySqlCommand cmd = new MySqlCommand("sp_GetCustomers", sqlcon))
@@ -718,10 +713,10 @@ namespace BAL.BusinessLogic.Helper
                             throw new Exception("Customer not found.");
                         }
 
-                        var lstCustomers = new List<Customer>();
+                        var lstCustomers = new List<ViewModels.Customer>();
                         foreach (DataRow row in tblCustomer.Rows)
                         {
-                            var customer = new Customer();
+                            var customer = new ViewModels.Customer();
                             customer.CustomerId = row["CustomerId"] != DBNull.Value ? row["CustomerId"].ToString() : null;
                             customer.FirstName = row["FirstName"] != DBNull.Value ? row["FirstName"].ToString() : null;
                             customer.LastName = row["LastName"] != DBNull.Value ? row["LastName"].ToString() : null;
@@ -755,6 +750,152 @@ namespace BAL.BusinessLogic.Helper
                     return response;
                 }
             }
+        }
+
+        public async Task<Response<Address>> GetByCustomerId(string customerId)
+        {
+            Response<Address> response = new Response<Address>();
+            try
+            {
+                MySqlCommand cmdAddress = new MySqlCommand(StoredProcedures.CUSTOMER_GET_ALL_ADDRESSES);
+                cmdAddress.CommandType = CommandType.StoredProcedure;
+
+                cmdAddress.Parameters.AddWithValue("@p_CustomerId", customerId);
+
+                DataTable tblAddress = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdAddress));
+
+                response.StatusCode = 200;
+                response.Message = "Address(es) fetched Successfully.";
+                response.Result = MapDataTableToAddressList(tblAddress);
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<Address>> GetAddressById(string addressId)
+        {
+            Response<Address> response = new Response<Address>();
+            try
+            {
+                MySqlCommand cmdAddress = new MySqlCommand(StoredProcedures.CUSTOMER_GET_ADDRESS);
+                cmdAddress.CommandType = CommandType.StoredProcedure;
+
+                cmdAddress.Parameters.AddWithValue("@p_AddressId", addressId);
+
+                DataTable tblAddress = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdAddress));
+
+                response.StatusCode = 200;
+                response.Message = "Address(es) fetched Successfully.";
+                response.Result = MapDataTableToAddressList(tblAddress);
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        private List<Address> MapDataTableToAddressList(DataTable tblAddress)
+        {
+            List<Address> lstAddress = new List<Address>();
+            foreach (DataRow aItem in tblAddress.Rows)
+            {
+                Address address = new Address();
+                address.AddressId = aItem["AddressId"].ToString() ?? "";
+                address.CustomerId = aItem["CustomerId"].ToString() ?? "";
+                address.FirstName = aItem["FirstName"].ToString() ?? "";
+                address.MiddleName = aItem["MiddleName"].ToString() ?? "";
+                address.LastName = aItem["LastName"].ToString() ?? "";
+                address.Address1 = aItem["Address1"].ToString() ?? "";
+                address.Address2 = aItem["Address2"].ToString() ?? "";
+                address.PhoneNumber = aItem["PhoneNumber"].ToString() ?? "";
+                address.Pincode = aItem["Pincode"].ToString() ?? "";
+                address.City = aItem["City"].ToString() ?? "";
+                address.State = aItem["State"].ToString() ?? "";
+                address.Country = aItem["Country"].ToString() ?? "";
+                address.Landmark = aItem["Landmark"].ToString() ?? "";
+                address.DeliveryInstructions = aItem["DeliveryInstructions"].ToString() ?? "";
+                address.AddressTypeId = Convert.ToInt32(Convert.IsDBNull(aItem["AddressTypeId"]) ? 0 : aItem["AddressTypeId"]);
+                address.IsDefault = Convert.ToInt32(Convert.IsDBNull(aItem["IsDefault"]) ? 0 : aItem["IsDefault"]) == 0 ? false : true;
+                lstAddress.Add(address);
+            }
+            return lstAddress;
+        }
+
+        public async Task<Response<Address>> AddUpdateAddress(Address customerAddress)
+        {
+            Response<Address> response = new Response<Address>();
+            try
+            {
+                MySqlCommand cmdAddress = new MySqlCommand(StoredProcedures.CUSTOMER_ADD_UPDATE_ADDRESS);
+                cmdAddress.CommandType = CommandType.StoredProcedure;
+
+                cmdAddress.Parameters.AddWithValue("@p_AddressId", customerAddress.AddressId);
+                cmdAddress.Parameters.AddWithValue("@p_CustomerId", customerAddress.CustomerId);
+                cmdAddress.Parameters.AddWithValue("@p_FirstName", customerAddress.FirstName);
+                cmdAddress.Parameters.AddWithValue("@p_MiddleName", customerAddress.MiddleName);
+                cmdAddress.Parameters.AddWithValue("@p_LastName", customerAddress.LastName);
+                cmdAddress.Parameters.AddWithValue("@p_Address1", customerAddress.Address1);
+                cmdAddress.Parameters.AddWithValue("@p_Address2", customerAddress.Address2);
+                cmdAddress.Parameters.AddWithValue("@p_PhoneNumber", customerAddress.PhoneNumber);
+                cmdAddress.Parameters.AddWithValue("@p_City", customerAddress.City);
+                cmdAddress.Parameters.AddWithValue("@p_State", customerAddress.State);
+                cmdAddress.Parameters.AddWithValue("@p_Country", customerAddress.Country);
+                cmdAddress.Parameters.AddWithValue("@p_Pincode", customerAddress.Pincode);
+                cmdAddress.Parameters.AddWithValue("@p_IsDefault", customerAddress.IsDefault ? 1 : 0);
+                cmdAddress.Parameters.AddWithValue("@p_DeliveryInstructions", customerAddress.DeliveryInstructions);
+                cmdAddress.Parameters.AddWithValue("@p_Landmark", customerAddress.Landmark);
+                cmdAddress.Parameters.AddWithValue("@p_AddressTypeId", customerAddress.AddressTypeId);
+
+                DataTable tblAddress = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdAddress));
+
+                response.StatusCode = 200;
+                response.Message = "Address Added/Updated Successfully.";
+                response.Result = MapDataTableToAddressList(tblAddress);
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<Address>> DeleteAddress(string addressId)
+        {
+            Response<Address> response = new Response<Address>();
+            try
+            {
+                MySqlCommand cmdAddress = new MySqlCommand(StoredProcedures.CUSTOMER_ADD_UPDATE_ADDRESS);
+                cmdAddress.CommandType = CommandType.StoredProcedure;
+
+                cmdAddress.Parameters.AddWithValue("@p_AddressId", addressId);
+
+                DataTable tblAddress = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdAddress));
+
+                response.StatusCode = 200;
+                response.Message = "Address Deleted Successfully.";
+                response.Result = MapDataTableToAddressList(tblAddress);
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
         }
     }
 }

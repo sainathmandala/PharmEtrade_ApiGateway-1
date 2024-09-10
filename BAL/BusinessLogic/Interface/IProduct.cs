@@ -14,7 +14,7 @@ namespace BAL.BusinessLogic.Interface
         Task<BAL.ResponseModels.Response<ProductInfo>> AddUpdateProductInfo(ProductInfo productInfo);
         Task<BAL.ResponseModels.Response<ProductPrice>> AddUpdateProductPrice(ProductPrice productPrice);
         Task<BAL.ResponseModels.Response<ProductGallery>> AddUpdateProductGallery(ProductGallery productGallery);
-        Task<UploadResponse> UploadImage(IFormFile image, string sellerId);
+        Task<UploadResponse> UploadImage(IFormFile image, string sellerId, string productId);
         Task<BAL.ResponseModels.Response<ProductResponse>> GetAllProducts(string productId = null);
         Task<BAL.ResponseModels.Response<ProductResponse>> GetProductsBySpecification(int categorySpecificationId);
         Task<BAL.ResponseModels.Response<ProductResponse>> GetRecentSoldProducts(int numberOfProducts);
