@@ -103,7 +103,6 @@ namespace BAL.BusinessLogic.Helper
                 item.Product.SalePrice = Convert.ToDecimal(wishlistItem["SalePrice"] != DBNull.Value ? wishlistItem["SalePrice"] : 0.0);
                 item.Product.BrandName = wishlistItem["BrandName"].ToString() ?? "";
                 item.Product.Manufacturer = wishlistItem["Manufacturer"].ToString() ?? "";
-                item.Product.UriKey = wishlistItem["UriKey"].ToString() ?? "";
                 item.Product.ImageUrl = wishlistItem["ImageUrl"].ToString() ?? "";
                 item.Product.Caption = wishlistItem["Caption"].ToString() ?? "";
 

@@ -14,11 +14,13 @@ namespace BAL.Models
         public int? ProductCategoryId { get;set;}
         public string? ProductGalleryId { get; set;}
         public string? ProductName { get; set;}
-        public decimal SalePrice { get; set;}
         public string? BrandName { get; set;}
         public string? Manufacturer { get; set;}
-        public string? UriKey { get; set;}
         public string? ImageUrl { get; set;}
         public string? Caption { get; set;}
+        public string? UriKey { get; set; }
+        public decimal SalePrice { get; set; }
+
+
     }
 }

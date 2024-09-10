@@ -16,6 +16,7 @@ namespace BAL.Models
         public decimal SalePrice { get; set; }
         public DateTime SalePriceValidFrom { get; set; }
         public DateTime SalePriceValidTo { get; set; }
+
         public bool Taxable { get; set; }
         public bool ShippingCostApplicable { get; set; }
         public decimal ShippingCost { get; set; }
