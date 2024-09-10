@@ -1,4 +1,5 @@
-﻿using BAL.ResponseModels;
+﻿using BAL.Models;
+using BAL.ResponseModels;
 using BAL.ViewModels;
 using DAL.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -84,14 +85,14 @@ namespace PharmEtrade_ApiGateway.Controllers
         [HttpGet]
         [Route("GetByCustomerId")]
         public async Task<IActionResult> GetCustomersByCustomerId(string customerId)
-        {  
+        {
             try
-            {               
+            {
                 var response = await _icustomerRepo.GetCustomerByCustomerId(customerId);
                 return Ok(response);
             }
             catch (Exception ex)
-            {               
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving customer details.");
             }
         }
@@ -111,5 +112,51 @@ namespace PharmEtrade_ApiGateway.Controllers
             }
         }
 
+        [HttpGet("Address/GetByCustomerId")]
+        public async Task<IActionResult> GetByCustomerId(string customerId)
+        {
+            if (string.IsNullOrEmpty(customerId))
+                return BadRequest("Customer Id is required.");
+            Response<Address> response = await _icustomerRepo.GetByCustomerId(customerId);
+            return Ok(response);
+        }
+
+        [HttpGet("Address/GetById")]
+        public async Task<IActionResult> GetAddressById(string addressId)
+        {
+            if (string.IsNullOrEmpty(addressId))
+                return BadRequest("Address Id is required.");
+            Response<Address> response = await _icustomerRepo.GetAddressById(addressId);
+            return Ok(response);
+        }
+
+        [HttpPost("Address/Add")]
+        public async Task<IActionResult> AddAddress(Address customerAddress)
+        {
+            if (string.IsNullOrEmpty(customerAddress.CustomerId))
+                return BadRequest("Customer Id is required.");
+            Response<Address> response = await _icustomerRepo.AddUpdateAddress(customerAddress);
+            return Ok(response);
+        }
+
+        [HttpPost("Address/Edit")]
+        public async Task<IActionResult> EditAddress(Address customerAddress)
+        {
+            if (string.IsNullOrEmpty(customerAddress.CustomerId))
+                return BadRequest("Customer Id is required.");
+            if (string.IsNullOrEmpty(customerAddress.AddressId))
+                return BadRequest("Address Id is required.");
+            Response<Address> response = await _icustomerRepo.AddUpdateAddress(customerAddress);
+            return Ok(response);
+        }
+
+        [HttpPost("Address/Delete")]
+        public async Task<IActionResult> DeleteAddress(string addressId)
+        {
+            if (string.IsNullOrEmpty(addressId))
+                return BadRequest("Address Id is required.");
+            Response<Address> response = await _icustomerRepo.DeleteAddress(addressId);
+            return Ok(response);
+        }
     }
 }

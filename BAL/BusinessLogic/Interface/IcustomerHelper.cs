@@ -1,4 +1,5 @@
-﻿using BAL.ResponseModels;
+﻿using BAL.Models;
+using BAL.ResponseModels;
 using BAL.ViewModels;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -17,7 +18,7 @@ namespace BAL.BusinessLogic.Interface
         Task<int> dummy(int userId, int imageId, int productId);
         Task<string> SaveCustomerData(UserViewModel userView);
         Task<DataTable> GetUserDetailsById(int userId);
-        Task<string> UpdatePassword(int userId,string password);
+        Task<string> UpdatePassword(int userId, string password);
         Task<DataTable> GetUserDetailsByEmail(string email);
         Task<string> UpdatePasswordByEmail(string email, string password);
         Task<string> SendOTPEmail(string email);
@@ -29,5 +30,10 @@ namespace BAL.BusinessLogic.Interface
 
         Task<Response<CustomerResponse>> GetCustomerByCustomerId(string customerId);
         Task<Response<Customer>> GetCustomers(string? customerId, string? email, string? mobile);
+
+        Task<Response<Address>> GetByCustomerId(string customerId);
+        Task<Response<Address>> GetAddressById(string addressId);
+        Task<Response<Address>> AddUpdateAddress(Address customerAddress);
+        Task<Response<Address>> DeleteAddress(string addressId);
     }
 }
