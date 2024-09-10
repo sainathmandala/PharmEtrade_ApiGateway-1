@@ -3,6 +3,7 @@ using BAL.RequestModels;
 using BAL.ResponseModels;
 using PharmEtrade_ApiGateway.Repository.Interface;
 using BAL.Models;
+using BAL.BusinessLogic.Helper;
 
 namespace PharmEtrade_ApiGateway.Repository.Helper
 {
@@ -32,5 +33,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             PaymentResponse response = await _orders.AddPayment(paymentRequest);
             return response;
         }
+       
+
     }
 }

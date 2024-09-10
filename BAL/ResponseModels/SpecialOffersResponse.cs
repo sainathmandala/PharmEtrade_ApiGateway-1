@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BAL.Models
+namespace BAL.ResponseModels
 {
-    public class SpecialOffer
+    public  class SpecialOffersResponse
     {
-        //public string DiscountText { get; set; }
-        //public string ProductCategoryName { get; set; }
-        //public string OfferImageUrl { get; set; }
 
         public int Discount { get; set; }
         public string SpecificationName { get; set; }

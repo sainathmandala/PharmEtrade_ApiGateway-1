@@ -12,6 +12,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BAL.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using DAL.Models;
+
+
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -276,5 +280,43 @@ namespace BAL.BusinessLogic.Helper
             }
 
         }
+        private static List<SpecialOffersResponse> MapDataTableToSpecialOffers(DataTable tbloffers)
+        {
+            List<SpecialOffersResponse> listspecialoffers = new List<SpecialOffersResponse>();
+            foreach (DataRow offers in tbloffers.Rows)
+            {
+                SpecialOffersResponse item = new SpecialOffersResponse();
+                item.Discount = Convert.ToInt32(offers["Discount"]!=DBNull.Value ? offers["Discount"]:0);
+                item.SpecificationName = offers["SpecificationName"].ToString() ?? "";
+                item.CategorySpecificationId = Convert.ToInt32(offers["CategorySpecificationId"] != DBNull.Value ? offers["CategorySpecificationId"] : 0);
+
+                listspecialoffers.Add(item);
+            }
+            return listspecialoffers;
+        }
+
+
+
+        public async Task<Response<SpecialOffersResponse>> GetSpecialOffers()
+        {
+            Response<SpecialOffersResponse> response = new Response<SpecialOffersResponse>();
+            try
+            {
+                MySqlCommand command = new MySqlCommand("sp_GetSpecialOffers");
+                command.CommandType = CommandType.StoredProcedure;
+                DataTable tbloffers = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(command));
+                response.StatusCode = 200;
+                response.Message = "Successfully Fetched Data.";
+                response.Result = MapDataTableToSpecialOffers(tbloffers);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+            return response ;
+        }
+
     }
 }

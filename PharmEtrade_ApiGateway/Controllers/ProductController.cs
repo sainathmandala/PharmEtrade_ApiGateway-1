@@ -5,6 +5,7 @@ using BAL.ViewModel;
 using BAL.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PharmEtrade_ApiGateway.Repository.Helper;
 using PharmEtrade_ApiGateway.Repository.Interface;
 
 namespace PharmEtrade_ApiGateway.Controllers
@@ -163,5 +164,12 @@ namespace PharmEtrade_ApiGateway.Controllers
             var response = await _productRepo.AddUpdateProductSize(productSize);
             return Ok(response);
         }
+        [HttpGet("SpecialOffers")]
+        public async Task<IActionResult> GetSpecialOffers()
+        {
+            var response = await _productRepo.GetSpecialOffers();
+            return Ok(response);
+        }
+
     }
 }

@@ -21,6 +21,8 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<Response<ProductResponse>> GetProductsByCriteria(ProductCriteria criteria);
         Task<BAL.ResponseModels.Response<ProductSize>> AddUpdateProductSize(ProductSize productSize);        
         Task<Response> ProcessExcelFileAsync(IFormFile file);
+        Task<BAL.ResponseModels.Response<SpecialOffersResponse>> GetSpecialOffers();
+
 
     }
 }

@@ -22,5 +22,8 @@ namespace BAL.BusinessLogic.Interface
         Task<Response<ProductResponse>> GetProductsByCriteria(ProductCriteria criteria);
         Task<BAL.ResponseModels.Response<ProductSize>> AddUpdateProductSize(ProductSize productSize);
         Task<string> InsertProductsFromExcel(Stream excelFileStream);
+
+        Task<BAL.ResponseModels.Response<SpecialOffersResponse>> GetSpecialOffers();
+
     }
 }

@@ -83,26 +83,29 @@ namespace BAL.BusinessLogic.Helper
                 item.Customer = new CustomerBasicDetails();
                 item.Product = new ProductBasicDetails();
                 //string str = wishlistItem["CustomerId"].ToString();
-                item.Customer.CustomerId = wishlistItem["CustomerId"].ToString();
-                item.Customer.FirstName = wishlistItem["FirstName"].ToString();
-                item.Customer.LastName = wishlistItem["LastName"].ToString();
-                item.Customer.Email = wishlistItem["Email"].ToString();
-                item.Customer.Mobile = wishlistItem["Mobile"].ToString();
-                item.Customer.CustomerTypeId = Convert.ToInt32(wishlistItem["CustomerTypeId"]);
-                item.Customer.AccountTypeId = Convert.ToInt32(wishlistItem["AccountTypeId"]);
-                item.Customer.IsUPNMember = Convert.ToInt32(wishlistItem["IsUPNMember"]);
+
+
+
+                item.Customer.CustomerId = wishlistItem["CustomerId"].ToString() ?? "";
+                item.Customer.FirstName = wishlistItem["FirstName"].ToString() ?? "";
+                item.Customer.LastName = wishlistItem["LastName"].ToString() ?? "";
+                item.Customer.Email = wishlistItem["Email"].ToString() ?? "";
+                item.Customer.Mobile = wishlistItem["Mobile"].ToString() ?? "";
+                item.Customer.CustomerTypeId = Convert.ToInt32(wishlistItem["CustomerTypeId"] != DBNull.Value ? wishlistItem["CustomerTypeId"]:0);
+                item.Customer.AccountTypeId = Convert.ToInt32(wishlistItem["AccountTypeId"] != DBNull.Value ? wishlistItem["AccountTypeId"] : 0);
+                item.Customer.IsUPNMember = Convert.ToInt32(wishlistItem["IsUPNMember"] != DBNull.Value ? wishlistItem["IsUPNMember"] : 0);
 
                 //Add Basic Product Details
-                item.Product.ProductID = wishlistItem["ProductID"].ToString();
-                item.Product.ProductCategoryId = Convert.ToInt32(wishlistItem["ProductCategoryId"]);
-                item.Product.ProductGalleryId = Convert.ToInt32(wishlistItem["ProductGalleryId"]);
-                item.Product.ProductName = wishlistItem["ProductName"].ToString();
-                item.Product.SalePrice = Convert.ToDecimal(wishlistItem["SalePrice"]);
-                item.Product.BrandName = wishlistItem["BrandName"].ToString();
-                item.Product.Manufacturer = wishlistItem["Manufacturer"].ToString();
-                item.Product.UriKey = wishlistItem["UriKey"].ToString();
-                item.Product.ImageUrl = wishlistItem["ImageUrl"].ToString();
-                item.Product.Caption = wishlistItem["Caption"].ToString();
+                item.Product.ProductID = wishlistItem["ProductID"].ToString() ?? "";
+                item.Product.ProductCategoryId = Convert.ToInt32(wishlistItem["ProductCategoryId"] != DBNull.Value ? wishlistItem["ProductCategoryId"] : 0);
+                item.Product.ProductGalleryId = Convert.ToInt32(wishlistItem["ProductGalleryId"] != DBNull.Value ? wishlistItem["ProductGalleryId"] : 0);
+                item.Product.ProductName = wishlistItem["ProductName"].ToString() ?? "";
+                item.Product.SalePrice = Convert.ToDecimal(wishlistItem["SalePrice"] != DBNull.Value ? wishlistItem["SalePrice"] : 0.0);
+                item.Product.BrandName = wishlistItem["BrandName"].ToString() ?? "";
+                item.Product.Manufacturer = wishlistItem["Manufacturer"].ToString() ?? "";
+                item.Product.UriKey = wishlistItem["UriKey"].ToString() ?? "";
+                item.Product.ImageUrl = wishlistItem["ImageUrl"].ToString() ?? "";
+                item.Product.Caption = wishlistItem["Caption"].ToString() ?? "";
 
                 lstwishlist.Add(item);
             }

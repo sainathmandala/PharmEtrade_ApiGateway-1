@@ -46,5 +46,7 @@ namespace PharmEtrade_ApiGateway.Controllers
             PaymentResponse response = await _ordersRepository.AddPayment(request);
             return Ok(response);
         }
+
+       
     }
 }

@@ -124,5 +124,9 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _productHelper.AddUpdateProductGallery(productGallery);
         }
+        public async Task<Response<SpecialOffersResponse>> GetSpecialOffers()
+        {
+            return await _productHelper.GetSpecialOffers();
+        }
     }
 }
