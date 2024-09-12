@@ -22,7 +22,14 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<BAL.ResponseModels.Response<ProductSize>> AddUpdateProductSize(ProductSize productSize);
         Task<Response> ProcessExcelFileAsync(IFormFile file);
         Task<BAL.ResponseModels.Response<SpecialOffersResponse>> GetSpecialOffers();
-
-
+        Task<Response<ProductResponse>> GetRelatedProducts(string productId);
+        Task<Response<ProductResponse>> GetUpsellProducts(string productId);
+        Task<Response<ProductResponse>> GetCrossSellProducts(string productId);
+        Task<Response<string>> AddRelatedProduct(string productId, string relatedProductId);
+        Task<Response<string>> AddUpsellProduct(string productId, string upsellProductId);
+        Task<Response<string>> AddCrossSellProduct(string productId, string crossSellProductId);
+        Task<Response<string>> RemoveRelatedProduct(string productId, string relatedProductId);
+        Task<Response<string>> RemoveUpsellProduct(string productId, string upsellProductId);
+        Task<Response<string>> RemoveCrossSellProduct(string productId, string crossSellProductId);
     }
 }

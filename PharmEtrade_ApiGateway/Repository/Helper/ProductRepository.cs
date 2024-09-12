@@ -128,5 +128,50 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _productHelper.GetSpecialOffers();
         }
+
+        public async Task<Response<ProductResponse>> GetRelatedProducts(string productId)
+        {
+            return await _productHelper.GetRelatedProducts(productId);
+        }
+
+        public async Task<Response<ProductResponse>> GetUpsellProducts(string productId)
+        {
+            return await _productHelper.GetUpsellProducts(productId);
+        }
+
+        public async Task<Response<ProductResponse>> GetCrossSellProducts(string productId)
+        {
+            return await _productHelper.GetCrossSellProducts(productId);
+        }
+
+        public async Task<Response<string>> AddRelatedProduct(string productId, string relatedProductId)
+        {
+            return await _productHelper.AddRelatedProduct(productId, relatedProductId);
+        }
+
+        public async Task<Response<string>> AddUpsellProduct(string productId, string upsellProductId)
+        {
+            return await _productHelper.AddUpsellProduct(productId, upsellProductId);
+        }
+
+        public async Task<Response<string>> AddCrossSellProduct(string productId, string crossSellProductId)
+        {
+            return await _productHelper.AddCrossSellProduct(productId, crossSellProductId);
+        }
+
+        public async Task<Response<string>> RemoveRelatedProduct(string productId, string relatedProductId)
+        {
+            return await _productHelper.RemoveRelatedProduct(productId, relatedProductId);
+        }
+
+        public async Task<Response<string>> RemoveUpsellProduct(string productId, string upsellProductId)
+        {
+            return await _productHelper.RemoveUpsellProduct(productId, upsellProductId);
+        }
+
+        public async Task<Response<string>> RemoveCrossSellProduct(string productId, string crossSellProductId)
+        {
+            return await _productHelper.RemoveCrossSellProduct(productId, crossSellProductId);
+        }
     }
 }

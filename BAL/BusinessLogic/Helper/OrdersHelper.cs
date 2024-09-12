@@ -118,20 +118,20 @@ namespace BAL.BusinessLogic.Helper
                             {
                                 ordersList.Add(new Order
                                 {
-                                    OrderId = row["OrderId"].ToString(),
+                                    OrderId = row["OrderId"].ToString() ?? "",
                                     CustomerId = row["CustomerId"].ToString(),
-                                    CustomerName = row["CustomerName"].ToString(),
-                                    ProductId = (row["ProductId"].ToString()),
-                                    ProductName = row["ProductName"].ToString(),
+                                    CustomerName = row["CustomerName"].ToString()??"",
+                                    ProductId = row["ProductId"].ToString(),
+                                    ProductName = row["ProductName"].ToString() ?? "",
                                     TotalAmount = Convert.ToDouble(row["TotalAmount"]),
                                     ShippingMethodId = Convert.ToInt32(row["ShippingMethodId"]),
                                     OrderStatusId = Convert.ToInt32(row["OrderStatusId"]),
-                                    TrackingNumber = row["TrackingNumber"].ToString(),
-                                    OrderDetailId = row["OrderDetailId"].ToString(),
+                                    TrackingNumber = row["TrackingNumber"].ToString() ?? "",
+                                    OrderDetailId = row["OrderDetailId"].ToString() ?? "",
                                     Quantity = Convert.ToInt32(row["Quantity"]),
                                     PricePerProduct = Convert.ToDouble(row["PricePerProduct"]),
-                                    VendorId = row["VendorId"].ToString(),
-                                    ProductDescription = row["ProductDescription"].ToString(),
+                                    VendorId = row["VendorId"].ToString() ?? "",
+                                    ProductDescription = row["ProductDescription"].ToString() ?? "",
                                     //OrderDate = Convert.ToDateTime(row["OrderDate"])
                                     OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue
                                 });

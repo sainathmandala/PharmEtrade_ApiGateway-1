@@ -171,5 +171,67 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
+        [HttpGet("GetRelatedProducts")]
+        public async Task<IActionResult> GetRelatedProducts(string productId)
+        {
+            var response = await _productRepo.GetRelatedProducts(productId);
+            return Ok(response);
+        }
+
+        [HttpGet("GetUpsellProducts")]
+        public async Task<IActionResult> GetUpsellProducts(string productId)
+        {
+            var response = await _productRepo.GetUpsellProducts(productId);
+            return Ok(response);
+        }
+
+        [HttpGet("GetCrossSellProducts")]
+        public async Task<IActionResult> GetCrossSellProducts(string productId)
+        {
+            var response = await _productRepo.GetCrossSellProducts(productId);
+            return Ok(response);
+        }
+
+        [HttpPost("AddRelatedProduct")]
+        public async Task<IActionResult> AddRelatedProduct(string productId, string relatedProductId)
+        {
+            var response = await _productRepo.AddRelatedProduct(productId, relatedProductId);
+            return Ok(response);
+        }
+
+        [HttpPost("AddUpsellProduct")]
+        public async Task<IActionResult> AddUpsellProduct(string productId, string upsellProductId)
+        {
+            var response = await _productRepo.AddUpsellProduct(productId, upsellProductId);
+            return Ok(response);
+        }
+
+        [HttpPost("AddCrossSellProduct")]
+        public async Task<IActionResult> AddCrossSellProduct(string productId, string crossSellProductId)
+        {
+            var response = await _productRepo.AddCrossSellProduct(productId, crossSellProductId);
+            return Ok(response);
+        }
+
+        [HttpPost("RemoveRelatedProduct")]
+        public async Task<IActionResult> RemoveRelatedProduct(string productId, string relatedProductId)
+        {
+            var response = await _productRepo.RemoveRelatedProduct(productId, relatedProductId);
+            return Ok(response);
+        }
+
+        [HttpPost("RemoveUpsellProduct")]
+        public async Task<IActionResult> RemoveUpsellProduct(string productId, string upsellProductId)
+        {
+            var response = await _productRepo.RemoveUpsellProduct(productId, upsellProductId);
+            return Ok(response);
+        }
+
+        [HttpPost("RemoveCrossSellProduct")]
+        public async Task<IActionResult> RemoveCrossSellProduct(string productId, string crossSellProductId)
+        {
+            var response = await _productRepo.RemoveCrossSellProduct(productId, crossSellProductId);
+            return Ok(response);
+        }
     }
 }

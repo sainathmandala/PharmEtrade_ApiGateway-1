@@ -10,13 +10,13 @@ using BAL.ResponseModels;
 using BAL.Models;
 using Microsoft.AspNetCore.Http;
 using BAL.RequestModels;
+using System.Configuration;
 
 namespace BAL.BusinessLogic.Helper
 {
     public class ProductHelper : IProductHelper
     {
         private readonly IsqlDataHelper _isqlDataHelper;
-        private readonly string _connectionString;
         private readonly string _exPathToSave;
         private readonly IConfiguration _configuration;
         private readonly S3Helper _s3Helper;
@@ -24,8 +24,7 @@ namespace BAL.BusinessLogic.Helper
         {
             _s3Helper = new S3Helper(configuration);
             _configuration = configuration;
-            _isqlDataHelper = isqlDataHelper;
-            _connectionString = configuration.GetConnectionString("APIDBConnectionString");
+            _isqlDataHelper = isqlDataHelper;            
             _exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), "ProductExceptionLogs");
         }
 
@@ -37,7 +36,7 @@ namespace BAL.BusinessLogic.Helper
                 var worksheet = package.Workbook.Worksheets[0]; // Assuming the first worksheet
                 var rowCount = worksheet.Dimension.Rows;
 
-                using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+                using (MySqlConnection sqlcon = new MySqlConnection(_configuration.GetConnectionString("APIDBConnectionString")))
                 {
                     MySqlTransaction transaction = null;
                     try
@@ -168,7 +167,7 @@ namespace BAL.BusinessLogic.Helper
                         {
                             await transaction.RollbackAsync();
                         }
-                        Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProductsFromExcel :  errormessage:" + ex.Message));
+                        // Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProductsFromExcel :  errormessage:" + ex.Message));
                         throw;
                     }
                 }
@@ -234,7 +233,7 @@ namespace BAL.BusinessLogic.Helper
             }
             catch (Exception ex)
             {
-                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
                 // Handle the exception as needed
                 response.StatusCode = 500;
                 response.Message = ex.Message;
@@ -345,7 +344,7 @@ namespace BAL.BusinessLogic.Helper
             }
             catch (Exception ex)
             {
-                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
                 // Handle the exception as needed
                 response.StatusCode = 500;
                 response.Message = ex.Message;
@@ -370,7 +369,7 @@ namespace BAL.BusinessLogic.Helper
             }
             catch (Exception ex)
             {
-                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
                 // Handle the exception as needed
                 response.StatusCode = 500;
                 response.Message = ex.Message;
@@ -395,7 +394,7 @@ namespace BAL.BusinessLogic.Helper
             }
             catch (Exception ex)
             {
-                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
                 // Handle the exception as needed
                 response.StatusCode = 500;
                 response.Message = ex.Message;
@@ -420,7 +419,7 @@ namespace BAL.BusinessLogic.Helper
             }
             catch (Exception ex)
             {
-                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
                 // Handle the exception as needed
                 response.StatusCode = 500;
                 response.Message = ex.Message;
@@ -454,15 +453,14 @@ namespace BAL.BusinessLogic.Helper
                     objProductSize.Length = Convert.ToDecimal(tblProduct.Rows[0]["Length"]);
                     objProductSize.Weight = Convert.ToDecimal(tblProduct.Rows[0]["Weight"]);
                 }
-                else objProductSize = null;
 
                 response.StatusCode = 200;
-                response.Message = "ProductSize Updated Successfully.";
+                response.Message = "ProductSize Added/Updated Successfully.";
                 response.Result = new List<ProductSize>() { objProductSize };
             }
             catch (Exception ex)
             {
-                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
                 // Handle the exception as needed
                 response.StatusCode = 500;
                 response.Message = ex.Message;
@@ -493,7 +491,7 @@ namespace BAL.BusinessLogic.Helper
             }
             catch (Exception ex)
             {
-                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
                 // Handle the exception as needed
                 response.StatusCode = 500;
                 response.Message = ex.Message;
@@ -561,12 +559,12 @@ namespace BAL.BusinessLogic.Helper
                 }
 
                 response.StatusCode = 200;
-                response.Message = "ProductInfo Updated Successfully.";
+                response.Message = "ProductInfo Added/Updated Successfully.";
                 response.Result = new List<ProductInfo>() { objProductInfo };
             }
             catch (Exception ex)
             {
-                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
                 // Handle the exception as needed
                 response.StatusCode = 500;
                 response.Message = ex.Message;
@@ -615,12 +613,12 @@ namespace BAL.BusinessLogic.Helper
                 }
 
                 response.StatusCode = 200;
-                response.Message = "Product Price Details Updated Successfully.";
+                response.Message = "Product Price Details Added/Updated Successfully.";
                 response.Result = new List<ProductPrice>() { objProductPrice };
             }
             catch (Exception ex)
             {
-                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
                 // Handle the exception as needed
                 response.StatusCode = 500;
                 response.Message = ex.Message;
@@ -667,12 +665,12 @@ namespace BAL.BusinessLogic.Helper
                 }
 
                 response.StatusCode = 200;
-                response.Message = "Product Gallery Updated Successfully.";
+                response.Message = "Product Gallery Added/Updated Successfully.";
                 response.Result = new List<ProductGallery>() { objProductGallery };
             }
             catch (Exception ex)
             {
-                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
                 // Handle the exception as needed
                 response.StatusCode = 500;
                 response.Message = ex.Message;
@@ -718,6 +716,275 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
+        public async Task<Response<ProductResponse>> GetRelatedProducts(string productId)
+        {
+            Response<ProductResponse> response = new Response<ProductResponse>();
+            try
+            {
+                MySqlCommand cmdProductGallery = new MySqlCommand(StoredProcedures.GET_RELATED_PRODUCTS);
+                cmdProductGallery.CommandType = CommandType.StoredProcedure;
+                
+                cmdProductGallery.Parameters.AddWithValue("@p_ProductId", productId);                
+
+                DataTable tblRelatedProducts = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProductGallery));                
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Fetch Data";
+                response.Result = MapDataTableToProductList(tblRelatedProducts);
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<ProductResponse>> GetUpsellProducts(string productId)
+        {
+            Response<ProductResponse> response = new Response<ProductResponse>();
+            try
+            {
+                MySqlCommand cmdUpsellProducts = new MySqlCommand(StoredProcedures.GET_UPSELL_PRODUCTS);
+                cmdUpsellProducts.CommandType = CommandType.StoredProcedure;
+
+                cmdUpsellProducts.Parameters.AddWithValue("@p_ProductId", productId);
+
+                DataTable tblUpsellProducts = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdUpsellProducts));
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Fetch Data";
+                response.Result = MapDataTableToProductList(tblUpsellProducts);
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<ProductResponse>> GetCrossSellProducts(string productId)
+        {
+            Response<ProductResponse> response = new Response<ProductResponse>();
+            try
+            {
+                MySqlCommand cmdCrossSellProduct = new MySqlCommand(StoredProcedures.GET_CROSS_SELL_PRODUCTS);
+                cmdCrossSellProduct.CommandType = CommandType.StoredProcedure;
+
+                cmdCrossSellProduct.Parameters.AddWithValue("@p_ProductId", productId);
+
+                DataTable tblCrossSellProducts = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdCrossSellProduct));
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Fetch Data";
+                response.Result = MapDataTableToProductList(tblCrossSellProducts);
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<string>> AddRelatedProduct(string productId, string relatedProductId)
+        {
+            Response<string> response = new Response<string>();
+            try
+            {
+                MySqlCommand cmdRelatedProduct = new MySqlCommand(StoredProcedures.ADD_RELATED_PRODUCT);
+                cmdRelatedProduct.CommandType = CommandType.StoredProcedure;
+                
+                cmdRelatedProduct.Parameters.AddWithValue("@p_ProductId", productId);
+                cmdRelatedProduct.Parameters.AddWithValue("@p_RelatedProductId", relatedProductId);
+                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmdRelatedProduct.Parameters.Add(outMessageParam);
+
+                await _isqlDataHelper.ExecuteReaderAsync(cmdRelatedProduct);
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Command Execution";
+                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<string>> AddUpsellProduct(string productId, string upsellProductId)
+        {
+            Response<string> response = new Response<string>();
+            try
+            {
+                MySqlCommand cmdUpsellProduct = new MySqlCommand(StoredProcedures.ADD_UPSELL_PRODUCT);
+                cmdUpsellProduct.CommandType = CommandType.StoredProcedure;
+
+                cmdUpsellProduct.Parameters.AddWithValue("@p_ProductId", productId);
+                cmdUpsellProduct.Parameters.AddWithValue("@p_RelatedProductId", upsellProductId);
+                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmdUpsellProduct.Parameters.Add(outMessageParam);
+
+                await _isqlDataHelper.ExecuteReaderAsync(cmdUpsellProduct);
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Command Execution";
+                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<string>> AddCrossSellProduct(string productId, string crossSellProductId)
+        {
+            Response<string> response = new Response<string>();
+            try
+            {
+                MySqlCommand cmdCrossSellProduct = new MySqlCommand(StoredProcedures.ADD_CROSS_SELL_PRODUCT);
+                cmdCrossSellProduct.CommandType = CommandType.StoredProcedure;
+
+                cmdCrossSellProduct.Parameters.AddWithValue("@p_ProductId", productId);
+                cmdCrossSellProduct.Parameters.AddWithValue("@p_RelatedProductId", crossSellProductId);
+                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmdCrossSellProduct.Parameters.Add(outMessageParam);
+
+                await _isqlDataHelper.ExecuteReaderAsync(cmdCrossSellProduct);
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Command Execution";
+                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<string>> RemoveRelatedProduct(string productId, string relatedProductId)
+        {
+            Response<string> response = new Response<string>();
+            try
+            {
+                MySqlCommand cmdRelatedProduct = new MySqlCommand(StoredProcedures.REMOVE_RELATED_PRODUCT);
+                cmdRelatedProduct.CommandType = CommandType.StoredProcedure;
+
+                cmdRelatedProduct.Parameters.AddWithValue("@p_ProductId", productId);
+                cmdRelatedProduct.Parameters.AddWithValue("@p_RelatedProductId", relatedProductId);
+                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmdRelatedProduct.Parameters.Add(outMessageParam);
+
+                await _isqlDataHelper.ExecuteReaderAsync(cmdRelatedProduct);
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Command Execution";
+                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<string>> RemoveUpsellProduct(string productId, string upsellProductId)
+        {
+            Response<string> response = new Response<string>();
+            try
+            {
+                MySqlCommand cmdUpsellProduct = new MySqlCommand(StoredProcedures.REMOVE_UPSELL_PRODUCT);
+                cmdUpsellProduct.CommandType = CommandType.StoredProcedure;
+
+                cmdUpsellProduct.Parameters.AddWithValue("@p_ProductId", productId);
+                cmdUpsellProduct.Parameters.AddWithValue("@p_RelatedProductId", upsellProductId);
+                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmdUpsellProduct.Parameters.Add(outMessageParam);
+
+                await _isqlDataHelper.ExecuteReaderAsync(cmdUpsellProduct);
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Command Execution";
+                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<string>> RemoveCrossSellProduct(string productId, string crossSellProductId)
+        {
+            Response<string> response = new Response<string>();
+            try
+            {
+                MySqlCommand cmdCrossSellProduct = new MySqlCommand(StoredProcedures.REMOVE_CROSS_SELL_PRODUCT);
+                cmdCrossSellProduct.CommandType = CommandType.StoredProcedure;
+
+                cmdCrossSellProduct.Parameters.AddWithValue("@p_ProductId", productId);
+                cmdCrossSellProduct.Parameters.AddWithValue("@p_RelatedProductId", crossSellProductId);
+                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmdCrossSellProduct.Parameters.Add(outMessageParam);
+
+                await _isqlDataHelper.ExecuteReaderAsync(cmdCrossSellProduct);
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Command Execution";
+                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
     }
 }
 
