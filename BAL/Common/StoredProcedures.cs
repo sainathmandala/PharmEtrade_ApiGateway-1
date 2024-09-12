@@ -60,5 +60,15 @@ namespace BAL.Common
 
         // MASTERS
         public const string GET_NDCUPC_DETAILS = "sp_GetNDCUPCDetails";
+
+        // BIDS
+        public const string GET_BIDS_BY_BUYER = "sp_GetBidsByBuyer";
+        public const string GET_BIDS_BY_SELLER = "sp_GetBidsBySeller";
+        public const string GET_BIDS_BY_PRODUCT = "sp_GetBidsByProduct";
+        public const string GET_PRODUCTS_QUOTED_BY_BUYER = "sp_GetProductsQuotedByBuyer";
+        public const string GET_PRODUCTS_QUOTED_BY_SELLER = "sp_GetProductsQuotedBySeller";
+
+        public const string ADD_UPDATE_BID = "sp_AddUpdateBid";        
+        public const string REMOVE_BID = "sp_RemoveBid";
     }
 }

@@ -232,6 +232,6 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             var response = await _productRepo.RemoveCrossSellProduct(productId, crossSellProductId);
             return Ok(response);
-        }
+        }        
     }
 }
