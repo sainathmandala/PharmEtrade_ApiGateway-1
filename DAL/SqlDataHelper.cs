@@ -27,7 +27,8 @@ namespace DAL
             int i = 0;
             try
             {
-
+                await sqlcon.OpenAsync();
+                cmd.Connection = sqlcon;
                 i = await cmd.ExecuteNonQueryAsync();
                 await sqlcon.CloseAsync();
                 cmd.Dispose();

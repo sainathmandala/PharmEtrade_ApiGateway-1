@@ -810,7 +810,7 @@ namespace BAL.BusinessLogic.Helper
                 };
                 cmdRelatedProduct.Parameters.Add(outMessageParam);
 
-                await _isqlDataHelper.ExecuteReaderAsync(cmdRelatedProduct);
+                await _isqlDataHelper.ExcuteNonQueryasync(cmdRelatedProduct);
 
                 response.StatusCode = 200;
                 response.Message = "SUCCESS : Command Execution";
@@ -842,7 +842,7 @@ namespace BAL.BusinessLogic.Helper
                 };
                 cmdUpsellProduct.Parameters.Add(outMessageParam);
 
-                await _isqlDataHelper.ExecuteReaderAsync(cmdUpsellProduct);
+                await _isqlDataHelper.ExcuteNonQueryasync(cmdUpsellProduct);
 
                 response.StatusCode = 200;
                 response.Message = "SUCCESS : Command Execution";
@@ -874,7 +874,7 @@ namespace BAL.BusinessLogic.Helper
                 };
                 cmdCrossSellProduct.Parameters.Add(outMessageParam);
 
-                await _isqlDataHelper.ExecuteReaderAsync(cmdCrossSellProduct);
+                await _isqlDataHelper.ExcuteNonQueryasync(cmdCrossSellProduct);
 
                 response.StatusCode = 200;
                 response.Message = "SUCCESS : Command Execution";
@@ -906,7 +906,7 @@ namespace BAL.BusinessLogic.Helper
                 };
                 cmdRelatedProduct.Parameters.Add(outMessageParam);
 
-                await _isqlDataHelper.ExecuteReaderAsync(cmdRelatedProduct);
+                await _isqlDataHelper.ExcuteNonQueryasync(cmdRelatedProduct);
 
                 response.StatusCode = 200;
                 response.Message = "SUCCESS : Command Execution";
@@ -938,7 +938,7 @@ namespace BAL.BusinessLogic.Helper
                 };
                 cmdUpsellProduct.Parameters.Add(outMessageParam);
 
-                await _isqlDataHelper.ExecuteReaderAsync(cmdUpsellProduct);
+                await _isqlDataHelper.ExcuteNonQueryasync(cmdUpsellProduct);
 
                 response.StatusCode = 200;
                 response.Message = "SUCCESS : Command Execution";
@@ -970,7 +970,7 @@ namespace BAL.BusinessLogic.Helper
                 };
                 cmdCrossSellProduct.Parameters.Add(outMessageParam);
 
-                await _isqlDataHelper.ExecuteReaderAsync(cmdCrossSellProduct);
+                await _isqlDataHelper.ExcuteNonQueryasync(cmdCrossSellProduct);
 
                 response.StatusCode = 200;
                 response.Message = "SUCCESS : Command Execution";
