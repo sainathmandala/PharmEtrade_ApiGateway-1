@@ -14,12 +14,18 @@ namespace BAL.RequestModels
         public int Discount { get; set; }
         public int Expiring { get; set; }
         public string? WholeSeller { get; set; }
-        public string? PharmacyItems { get; set; }
-        public string? PrescriptionDrugs { get; set; }
-        public string? OTCProducts { get; set; }
+        public bool PharmacyItems { get; set; }
+        public bool PrescriptionDrugs { get; set; }
+        public bool OTCProducts { get; set; }
         public string? VAWDSeller { get; set; }
-        public string? TopSellingProducts { get; set; }
-        public string? BuyAgain { get; set; }
-
+        public bool TopSellingProducts { get; set; }
+        public bool BuyAgain { get; set; }
+        public int ProductCategoryId { get; set; }
+        public int CategorySpecificationId { get; set; }
+        public DateTime? ExpiryDate { get; set; }
+        public string? NDCUPC { get; set; }
+        public DateTime? SalePriceValidFrom { get; set; }
+        public DateTime? SalePriceValidTo { get; set; }
+        public string? ProductName { get; set; }
     }
 }
