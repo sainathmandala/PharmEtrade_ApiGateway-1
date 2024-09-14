@@ -118,6 +118,8 @@ builder.Services.AddSingleton<IBannerRepository, BannerRepository>();
 builder.Services.AddSingleton<IBannerHelper, BannerHelper>();
 builder.Services.AddSingleton<IMastersRepository, MastersRepository>();
 builder.Services.AddSingleton<IMastersHelper, MastersHelper>();
+builder.Services.AddSingleton<IBidHealper, BidHealper>();
+builder.Services.AddSingleton<IBidRepository, BidRepository>();
 
 
 builder.Services.AddCors(options =>
