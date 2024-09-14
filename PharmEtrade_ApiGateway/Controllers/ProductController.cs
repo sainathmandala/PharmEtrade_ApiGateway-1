@@ -149,27 +149,14 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             var response = await _productRepo.GetProductsByCriteria(criteria);
             return Ok(response);
-        }
+        }      
 
-        [HttpPost("Size/Add")]
-        public async Task<IActionResult> AddProductSize(ProductSize productSize)
-        {
-            var response = await _productRepo.AddUpdateProductSize(productSize);
-            return Ok(response);
-        }
-
-        [HttpPost("Size/Edit")]
-        public async Task<IActionResult> EditProductSize(ProductSize productSize)
-        {
-            var response = await _productRepo.AddUpdateProductSize(productSize);
-            return Ok(response);
-        }
         [HttpGet("SpecialOffers")]
         public async Task<IActionResult> GetSpecialOffers()
         {
             var response = await _productRepo.GetSpecialOffers();
             return Ok(response);
-        }
+        }        
 
         [HttpGet("GetRelatedProducts")]
         public async Task<IActionResult> GetRelatedProducts(string productId)

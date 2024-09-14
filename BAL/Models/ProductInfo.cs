@@ -29,5 +29,11 @@ namespace BAL.Models
         public string SellerId { get; set; }        
         public string? States { get; set; }
         public string UnitOfMeasure { get; set; }
+        public string? Form {get;set;}
+        public decimal Width { get;set;}
+        public decimal Height { get;set;}
+        public decimal Length { get;set;}
+        public decimal Weight { get;set;}
+        public string? MainImageUrl { get;set;}
     }
 }

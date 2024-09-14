@@ -473,16 +473,26 @@ namespace BAL.BusinessLogic.Helper
             Response<ProductResponse> response = new Response<ProductResponse>();
             try
             {
+
                 MySqlCommand cmdProduct = new MySqlCommand(StoredProcedures.GET_PRODUCTS_BY_CRITERIA);
                 cmdProduct.CommandType = CommandType.StoredProcedure;
+                cmdProduct.Parameters.AddWithValue("@p_Deals", criteria.Deals);
                 cmdProduct.Parameters.AddWithValue("@p_Manufacturer", criteria.Brands);
+                cmdProduct.Parameters.AddWithValue("@p_Generics", criteria.Generics);
                 cmdProduct.Parameters.AddWithValue("@p_Discount", criteria.Discount);
                 cmdProduct.Parameters.AddWithValue("@p_ExpiringMonths", criteria.Expiring);
-                cmdProduct.Parameters.AddWithValue("@p_OTCProducts", string.Compare(criteria.OTCProducts, "otc", true));
-                cmdProduct.Parameters.AddWithValue("@p_RxProducts", string.Compare(criteria.PrescriptionDrugs, "rx", true));
+                cmdProduct.Parameters.AddWithValue("@p_OTCProducts", criteria.OTCProducts == true ? 1 : 0);
+                cmdProduct.Parameters.AddWithValue("@p_RxProducts", criteria.PrescriptionDrugs == true ? 1 : 0);
                 cmdProduct.Parameters.AddWithValue("@p_VAWDSeller", criteria.VAWDSeller);
-                cmdProduct.Parameters.AddWithValue("@p_TopSelling", string.Compare(criteria.TopSellingProducts, "topselling", true));
-                cmdProduct.Parameters.AddWithValue("@p_BuyAgain", string.Compare(criteria.BuyAgain, "buyagain", true));
+                cmdProduct.Parameters.AddWithValue("@p_TopSelling", criteria.TopSellingProducts == true ? 1 : 0);
+                cmdProduct.Parameters.AddWithValue("@p_BuyAgain", criteria.BuyAgain == true ? 1 : 0);
+                cmdProduct.Parameters.AddWithValue("@p_ProductCategoryId", criteria.ProductCategoryId);
+                cmdProduct.Parameters.AddWithValue("@p_CategorySpecificationId", criteria.CategorySpecificationId);
+                cmdProduct.Parameters.AddWithValue("@p_ExpiryDate", criteria.ExpiryDate);
+                cmdProduct.Parameters.AddWithValue("@p_NDCUPC", criteria.NDCUPC);
+                cmdProduct.Parameters.AddWithValue("@p_SalePriceValidFrom", criteria.SalePriceValidFrom);
+                cmdProduct.Parameters.AddWithValue("@p_SalePriceValidTo", criteria.SalePriceValidTo);
+                cmdProduct.Parameters.AddWithValue("@p_ProductName", criteria.ProductName);
 
                 DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProduct));
                 response.StatusCode = 200;
@@ -499,7 +509,34 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
+        private ProductCriteria ValidateAndUpdateCriteria(ProductCriteria criteria)
+        {
+            // String null checks
+            if (criteria.Deals == null)
+                criteria.Deals = "";
+            if (criteria.Brands == null)
+                criteria.Brands = "";
+            if (criteria.Generics == null)
+                criteria.Generics = "";
+            if (criteria.WholeSeller == null)
+                criteria.WholeSeller = "";
+            if (criteria.VAWDSeller == null)
+                criteria.VAWDSeller = "";
+            if (criteria.NDCUPC == null)
+                criteria.NDCUPC = "";
+            if (criteria.ProductName == null)
+                criteria.ProductName = "";
 
+            // Datetime null checks
+            if (criteria.ExpiryDate == null)
+                criteria.ExpiryDate = DateTime.MinValue;
+            if (criteria.SalePriceValidFrom == null)
+                criteria.SalePriceValidFrom = DateTime.MinValue;
+            if (criteria.SalePriceValidTo == null)
+                criteria.SalePriceValidTo = DateTime.MinValue;
+
+            return criteria;
+        }
         public async Task<Response<ProductInfo>> AddUpdateProductInfo(ProductInfo productInfo)
         {
             Response<ProductInfo> response = new Response<ProductInfo>();
@@ -529,6 +566,12 @@ namespace BAL.BusinessLogic.Helper
                 cmdProductInfo.Parameters.AddWithValue("@p_ProductTypeId", productInfo.ProductTypeId);
                 cmdProductInfo.Parameters.AddWithValue("@p_SellerId", productInfo.SellerId);
                 cmdProductInfo.Parameters.AddWithValue("@p_States", productInfo.States);
+                cmdProductInfo.Parameters.AddWithValue("@p_Form", productInfo.Form);
+                cmdProductInfo.Parameters.AddWithValue("@p_Width", productInfo.Width);
+                cmdProductInfo.Parameters.AddWithValue("@p_Height", productInfo.Height);
+                cmdProductInfo.Parameters.AddWithValue("@p_Length", productInfo.Length);
+                cmdProductInfo.Parameters.AddWithValue("@p_Weight", productInfo.Weight);
+                cmdProductInfo.Parameters.AddWithValue("@p_MainImageUrl", productInfo.MainImageUrl);
 
                 DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProductInfo));
 
@@ -556,6 +599,12 @@ namespace BAL.BusinessLogic.Helper
                     objProductInfo.ProductTypeId = Convert.ToInt32(tblProduct.Rows[0]["ProductTypeId"] ?? 0);
                     objProductInfo.SellerId = tblProduct.Rows[0]["SellerId"].ToString() ?? "";
                     objProductInfo.States = tblProduct.Rows[0]["States"].ToString() ?? "";
+                    objProductInfo.Form = tblProduct.Rows[0]["Form"].ToString() ?? "";
+                    objProductInfo.Width = Convert.ToDecimal(tblProduct.Rows[0]["Width"] ?? 0.0);
+                    objProductInfo.Height = Convert.ToDecimal(tblProduct.Rows[0]["Height"] ?? 0.0);
+                    objProductInfo.Length = Convert.ToDecimal(tblProduct.Rows[0]["Length"] ?? 0.0);
+                    objProductInfo.Weight = Convert.ToDecimal(tblProduct.Rows[0]["Weight"] ?? 0.0);
+                    objProductInfo.MainImageUrl = tblProduct.Rows[0]["MainImageUrl"].ToString() ?? "";
                 }
 
                 response.StatusCode = 200;
