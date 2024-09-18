@@ -24,39 +24,39 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             _BidHelper = BidHelper;
         }
 
-        public async Task<Response<BidResponse>> AddBid(Bid bid)
+        public async Task<Response<BidsResponse>> AddBid(Bids bid)
         {
             return await _BidHelper.AddBid(bid);
         }
 
-        public async Task<Response<BidResponse>> UpdateBid(Bid bid)
+        public async Task<Response<BidsResponse>> UpdateBid(Bids bid)
         {
             return await _BidHelper.UpdateBid(bid);
 
         }
 
-        public async Task<Response<BidResponse>> GetBidsByBuyer(string BidId)
+        public async Task<Response<BidsResponse>> GetBidsByBuyer(string BidId)
         {
             return await _BidHelper.GetBidsByBuyer(BidId);
         }
 
-        public async Task<Response<BidResponse>> GetBidsBySeller(string BidId)
+        public async Task<Response<BidsResponse>> GetBidsBySeller(string BidId)
         {
             return await _BidHelper.GetBidsByBuyer(BidId);
         }
 
 
-        public async Task<Response<BidResponse>> GetBidsByProduct(string productId)
+        public async Task<Response<BidsResponse>> GetBidsByProduct(string productId)
         {
             return await _BidHelper.GetBidsByProduct(productId);
         }
 
-        public async Task<Response<BidResponse>> GetProductsQuotesByBuyer(string BuyerId)
+        public async Task<Response<BidsResponse>> GetProductsQuotesByBuyer(string BuyerId)
         {
             return await _BidHelper.GetProductsQuotesByBuyer(BuyerId);
         }
 
-        public async Task<Response<BidResponse>> GetProductsQuotesBySeller(string sellerId)
+        public async Task<Response<BidsResponse>> GetProductsQuotesBySeller(string sellerId)
         {
             return await _BidHelper.GetProductsQuotesBySeller(sellerId);
         }

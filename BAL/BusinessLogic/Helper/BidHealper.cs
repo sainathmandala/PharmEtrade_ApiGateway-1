@@ -33,9 +33,9 @@ namespace BAL.BusinessLogic.Helper
             _exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), "BidExceptionLogs");
         }
 
-        public async Task<Response<BidResponse>> AddBid(Bid bid)
+        public async Task<Response<BidsResponse>> AddBid(Bids bid)
         {
-            Response<BidResponse> response = new Response<BidResponse>();
+            Response<BidsResponse> response = new Response<BidsResponse>();
             try
             {
                 MySqlCommand cmdbid = new MySqlCommand(StoredProcedures.ADD_UPDATE_BID);
@@ -51,7 +51,7 @@ namespace BAL.BusinessLogic.Helper
                 cmdbid.Parameters.AddWithValue("@p_CreatedOn", bid.CreatedOn);
                 DataTable tblbid = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdbid));
 
-                var objbid = new BidResponse();
+                var objbid = new BidsResponse();
 
                 if (tblbid?.Rows.Count > 0)
                 {
@@ -68,7 +68,7 @@ namespace BAL.BusinessLogic.Helper
                 }
                 response.StatusCode = 200;
                 response.Message = "Bid  Added Successfully.";
-                response.Result = new List<BidResponse>() { objbid };
+                response.Result = new List<BidsResponse>() { objbid };
             }
             catch(Exception ex)
             {
@@ -78,9 +78,9 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
-        public async Task<Response<BidResponse>> UpdateBid(Bid bid)
+        public async Task<Response<BidsResponse>> UpdateBid(Bids bid)
         {
-            Response<BidResponse> response = new Response<BidResponse>();
+            Response<BidsResponse> response = new Response<BidsResponse>();
             try
             {
                 MySqlCommand cmdbid = new MySqlCommand(StoredProcedures.ADD_UPDATE_BID);
@@ -96,7 +96,7 @@ namespace BAL.BusinessLogic.Helper
                 cmdbid.Parameters.AddWithValue("@p_CreatedOn", bid.CreatedOn);
                 DataTable tblbid = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdbid));
 
-                var objbid = new BidResponse();
+                var objbid = new BidsResponse();
 
                 if (tblbid?.Rows.Count > 0)
                 {
@@ -113,7 +113,7 @@ namespace BAL.BusinessLogic.Helper
                 }
                 response.StatusCode = 200;
                 response.Message = "Bid  Updated Successfully.";
-                response.Result = new List<BidResponse>() { objbid };
+                response.Result = new List<BidsResponse>() { objbid };
 
             }
             catch(Exception ex)
@@ -125,9 +125,9 @@ namespace BAL.BusinessLogic.Helper
 
         }
 
-        public async  Task<Response<BidResponse>> GetBidsByBuyer(string BidId = null)
+        public async  Task<Response<BidsResponse>> GetBidsByBuyer(string BidId = null)
         {
-            Response<BidResponse> response = new Response<BidResponse>();
+            Response<BidsResponse> response = new Response<BidsResponse>();
             try
             {
                 MySqlCommand bidsbybuyer = new MySqlCommand(StoredProcedures.GET_BIDS_BY_BUYER);
@@ -150,10 +150,10 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-        public async Task<Response<BidResponse>> GetBidsByProduct(string productId)
+        public async Task<Response<BidsResponse>> GetBidsByProduct(string productId)
         {
 
-            Response<BidResponse> response = new Response<BidResponse>();
+            Response<BidsResponse> response = new Response<BidsResponse>();
             try
             {
                 MySqlCommand bidsbyproduct = new MySqlCommand(StoredProcedures.GET_BIDS_BY_PRODUCT);
@@ -177,9 +177,9 @@ namespace BAL.BusinessLogic.Helper
 
         }
 
-        public async Task<Response<BidResponse>> GetBidsBySeller(string sellerId = null)
+        public async Task<Response<BidsResponse>> GetBidsBySeller(string sellerId = null)
         {
-            Response<BidResponse> response = new Response<BidResponse>();
+            Response<BidsResponse> response = new Response<BidsResponse>();
             try
             {
                 MySqlCommand bidsbyseller = new MySqlCommand(StoredProcedures.GET_BIDS_BY_SELLER);
@@ -202,9 +202,9 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-        public async Task<Response<BidResponse>> GetProductsQuotesByBuyer(string BuyerId)
+        public async Task<Response<BidsResponse>> GetProductsQuotesByBuyer(string BuyerId)
         {
-            Response<BidResponse> response = new Response<BidResponse>();
+            Response<BidsResponse> response = new Response<BidsResponse>();
             try
             {
                 MySqlCommand productquotesbuyer = new MySqlCommand(StoredProcedures.GET_PRODUCTS_QUOTED_BY_BUYER);
@@ -227,9 +227,9 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-        public async Task<Response<BidResponse>> GetProductsQuotesBySeller(string sellerId)
+        public async Task<Response<BidsResponse>> GetProductsQuotesBySeller(string sellerId)
         {
-            Response<BidResponse> response = new Response<BidResponse>();
+            Response<BidsResponse> response = new Response<BidsResponse>();
             try
             {
                 MySqlCommand productquotesseller = new MySqlCommand(StoredProcedures.GET_PRODUCTS_QUOTED_BY_SELLER);
@@ -282,12 +282,12 @@ namespace BAL.BusinessLogic.Helper
             return response;
 
         }
-        private static List<BidResponse> MapDataTableToBidList(DataTable tblbid)
+        private static List<BidsResponse> MapDataTableToBidList(DataTable tblbid)
         {
-            List<BidResponse> lstbids = new List<BidResponse>();
+            List<BidsResponse> lstbids = new List<BidsResponse>();
             foreach (DataRow bid in tblbid.Rows)
             {
-                BidResponse item = new BidResponse();
+                BidsResponse item = new BidsResponse();
                 item.BidId = bid["BidId"].ToString() ?? "";
                 item.BuyerId = bid["BuyerId"].ToString() ?? "";
                 item.ProductId = bid["ProductId"].ToString() ?? "";

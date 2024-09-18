@@ -77,14 +77,14 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpPost("Add")]
-        public async Task<IActionResult> AddBid(Bid bid)
+        public async Task<IActionResult> AddBid(Bids bid)
         {
             var response = await _ibidrepository.AddBid(bid);
             return Ok(response);
         }
 
         [HttpPost("Update")]
-        public async Task<IActionResult> UpdateBid(Bid bid)
+        public async Task<IActionResult> UpdateBid(Bids bid)
         {
             var response = await _ibidrepository.UpdateBid(bid);
             return Ok(response);

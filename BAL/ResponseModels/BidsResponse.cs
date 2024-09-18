@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BAL.ResponseModels
 {
-    public class BidResponse
+    public class BidsResponse
     {
         public string BidId { get; set; }
         public string BuyerId { get; set; }
