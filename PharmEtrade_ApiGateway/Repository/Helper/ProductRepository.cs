@@ -85,9 +85,9 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return await _productHelper.GetAllProducts(productId);
         }
 
-        public async Task<Response<ProductResponse>> GetProductsBySpecification(int categorySpecificationId)
+        public async Task<Response<ProductResponse>> GetProductsBySpecification(int categorySpecificationId, bool withDiscount = false)
         {
-            return await _productHelper.GetProductsBySpecification(categorySpecificationId);
+            return await _productHelper.GetProductsBySpecification(categorySpecificationId, withDiscount);
         }
 
         public async Task<Response<ProductResponse>> GetRecentSoldProducts(int numberOfProducts)

@@ -24,7 +24,7 @@ namespace BAL.BusinessLogic.Helper
         {
             _s3Helper = new S3Helper(configuration);
             _configuration = configuration;
-            _isqlDataHelper = isqlDataHelper;            
+            _isqlDataHelper = isqlDataHelper;
             _exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), "ProductExceptionLogs");
         }
 
@@ -353,7 +353,7 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-        public async Task<Response<ProductResponse>> GetProductsBySpecification(int categorySpecificationId)
+        public async Task<Response<ProductResponse>> GetProductsBySpecification(int categorySpecificationId, bool withDiscount = false)
         {
             Response<ProductResponse> response = new Response<ProductResponse>();
             try
@@ -361,6 +361,7 @@ namespace BAL.BusinessLogic.Helper
                 MySqlCommand cmdProduct = new MySqlCommand("sp_GetProductsBySpecification");
                 cmdProduct.CommandType = CommandType.StoredProcedure;
                 cmdProduct.Parameters.AddWithValue("@p_CategorySpecificationId", categorySpecificationId);
+                cmdProduct.Parameters.AddWithValue("@p_WithDiscount", withDiscount ? 1 : 0); 
 
                 DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProduct));
                 response.StatusCode = 200;
@@ -473,7 +474,26 @@ namespace BAL.BusinessLogic.Helper
             Response<ProductResponse> response = new Response<ProductResponse>();
             try
             {
-
+                criteria = ValidateAndUpdateCriteria(criteria);
+                var strCommand = string.Format("p_Deals : {0} , \tp_Manufacturer : {1} , \tp_Generics : {2} , \tp_Discount : {3} , \tp_ExpiringMonths : {4} , \tp_OTCProducts : {5} , \tp_RxProducts : {6} , \tp_VAWDSeller : {7} , \tp_TopSelling : {8} , \tp_BuyAgain : {9} , \tp_ProductCategoryId : {10} , \tp_CategorySpecificationId : {11} , \tp_ExpiryDate : {12} , \tp_NDCUPC : {13} , \tp_SalePriceValidFrom : {14} , \tp_SalePriceValidTo : {15} , \tp_ProductName : {16}",
+                    criteria.Deals,
+                    criteria.Deals,
+                    criteria.Generics,
+                    criteria.Discount,
+                    criteria.ExpiryDate,
+                    criteria.OTCProducts,
+                    criteria.PrescriptionDrugs,
+                    criteria.VAWDSeller,
+                    criteria.TopSellingProducts,
+                    criteria.BuyAgain,
+                    criteria.ProductCategoryId,
+                    criteria.CategorySpecificationId,
+                    criteria.ExpiryDate,
+                    criteria.NDCUPC,
+                    criteria.SalePriceValidFrom,
+                    criteria.SalePriceValidTo,
+                    criteria.ProductName
+                    );
                 MySqlCommand cmdProduct = new MySqlCommand(StoredProcedures.GET_PRODUCTS_BY_CRITERIA);
                 cmdProduct.CommandType = CommandType.StoredProcedure;
                 cmdProduct.Parameters.AddWithValue("@p_Deals", criteria.Deals);
@@ -772,10 +792,10 @@ namespace BAL.BusinessLogic.Helper
             {
                 MySqlCommand cmdProductGallery = new MySqlCommand(StoredProcedures.GET_RELATED_PRODUCTS);
                 cmdProductGallery.CommandType = CommandType.StoredProcedure;
-                
-                cmdProductGallery.Parameters.AddWithValue("@p_ProductId", productId);                
 
-                DataTable tblRelatedProducts = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProductGallery));                
+                cmdProductGallery.Parameters.AddWithValue("@p_ProductId", productId);
+
+                DataTable tblRelatedProducts = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProductGallery));
 
                 response.StatusCode = 200;
                 response.Message = "SUCCESS : Fetch Data";
@@ -850,7 +870,7 @@ namespace BAL.BusinessLogic.Helper
             {
                 MySqlCommand cmdRelatedProduct = new MySqlCommand(StoredProcedures.ADD_RELATED_PRODUCT);
                 cmdRelatedProduct.CommandType = CommandType.StoredProcedure;
-                
+
                 cmdRelatedProduct.Parameters.AddWithValue("@p_ProductId", productId);
                 cmdRelatedProduct.Parameters.AddWithValue("@p_RelatedProductId", relatedProductId);
                 MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
