@@ -70,5 +70,10 @@ namespace BAL.Common
 
         public const string ADD_UPDATE_BID = "sp_AddUpdateBid";        
         public const string REMOVE_BID = "sp_RemoveBid";
+
+        // DASHBOARDS
+        public const string DASHBOARD_GET_BY_SELLER = "sp_GetSellerDashboard";
+        public const string DASHBOARD_GET_BY_BUYER = "sp_GetBuyerDashboard";
+        public const string DASHBOARD_GET_BY_ADMIN = "sp_GetAdminDashboard";
     }
 }

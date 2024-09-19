@@ -120,6 +120,8 @@ builder.Services.AddSingleton<IMastersRepository, MastersRepository>();
 builder.Services.AddSingleton<IMastersHelper, MastersHelper>();
 builder.Services.AddSingleton<IBidHealper, BidHealper>();
 builder.Services.AddSingleton<IBidRepository, BidRepository>();
+builder.Services.AddSingleton<IDashboardHelper, DashboardHelper>();
+builder.Services.AddSingleton<IDashboardRepository, DashboardRepository>();
 
 
 builder.Services.AddCors(options =>

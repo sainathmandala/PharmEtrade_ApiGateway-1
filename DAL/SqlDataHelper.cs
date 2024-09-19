@@ -18,7 +18,7 @@ namespace DAL
         public SqlDataHelper(IConfiguration configuration)
         {
             exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), exFolder);
-            _connectionString = configuration.GetConnectionString("APIDBConnectionString");
+            _connectionString = configuration.GetConnectionString("APIDBConnectionString") ?? "";
         }
 
         public async Task<int> ExcuteNonQueryasync(MySqlCommand cmd)
@@ -65,6 +65,32 @@ namespace DAL
                 adp.Dispose();
                 throw ex;
             }
+        }
+
+        public async Task<DataTable> ExecuteDataTableAsync(MySqlCommand command)
+        {            
+            using (MySqlConnection dbConnection = new MySqlConnection(_connectionString))
+            {
+                command.Connection = dbConnection;
+                MySqlDataAdapter adapter = new MySqlDataAdapter(command);                
+                DataTable dt = new DataTable();
+                try
+                {
+                    await dbConnection.OpenAsync();                    
+                    await Task.Run(() => adapter.Fill(dt));
+                    await dbConnection.CloseAsync();
+                    command.Dispose();
+                    adapter.Dispose();
+                    return dt;
+                }
+                catch (Exception ex)
+                {
+                    dbConnection.Close();
+                    command.Dispose();
+                    adapter.Dispose();
+                    return null;
+                }
+            }                
         }
 
         public async Task<MySqlDataReader> ExecuteReaderAsync(MySqlCommand cmd)
