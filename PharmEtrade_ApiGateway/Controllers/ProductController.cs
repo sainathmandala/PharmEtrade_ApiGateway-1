@@ -163,7 +163,8 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             var response = await _productRepo.GetSpecialOffers();
             return Ok(response);
-        }        
+        } 
+        
 
         [HttpGet("GetRelatedProducts")]
         public async Task<IActionResult> GetRelatedProducts(string productId)
@@ -226,6 +227,9 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             var response = await _productRepo.RemoveCrossSellProduct(productId, crossSellProductId);
             return Ok(response);
-        }        
+        }  
+        
+
+
     }
 }

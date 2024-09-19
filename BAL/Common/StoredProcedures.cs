@@ -70,5 +70,9 @@ namespace BAL.Common
 
         public const string ADD_UPDATE_BID = "sp_AddUpdateBid";        
         public const string REMOVE_BID = "sp_RemoveBid";
+        //Paymentinfo 
+        public const string ADD_UPDATE_PAYMENTINFO = "sp_AddUpdatePaymentInfo";
+        public const string GET_PAYMENTINFO_BY_ORDERID = "SP_GetPaymentInfoByOrderId";
+        public const string GET_PAYMENTINFO_BY_CUSTOMERID = "SP_GetPaymentInfoByCustomerId";
     }
 }

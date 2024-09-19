@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using BAL.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 
 
@@ -49,6 +50,8 @@ namespace BAL.BusinessLogic.Helper
                     cmd.Parameters.AddWithValue("@p_OrderStatusId", orderRequest.OrderStatusId);
                     cmd.Parameters.AddWithValue("@p_VendorId", orderRequest.VendorId);
                     cmd.Parameters.AddWithValue("@p_TrackingNumber", orderRequest.TrackingNumber);
+                    cmd.Parameters.AddWithValue("@p_ImageUrl", orderRequest.ImageUrl);
+
 
                     try
                     {
@@ -133,7 +136,9 @@ namespace BAL.BusinessLogic.Helper
                                     VendorId = row["VendorId"].ToString() ?? "",
                                     ProductDescription = row["ProductDescription"].ToString() ?? "",
                                     //OrderDate = Convert.ToDateTime(row["OrderDate"])
-                                    OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue
+                                    OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue,
+                                    ImageUrl = row["MainImageUrl"].ToString() ?? "" 
+
                                 });
                             }
                             response.StatusCode = 200;
@@ -203,7 +208,9 @@ namespace BAL.BusinessLogic.Helper
                                     VendorId = row["VendorId"].ToString(),
                                     ProductDescription = row["ProductDescription"].ToString(),
                                     //OrderDate = Convert.ToDateTime(row["OrderDate"])
-                                    OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue
+                                    OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue,
+                                    ImageUrl = row["ImageUrl"].ToString() ?? ""
+
                                 });
                             }
                             response.StatusCode = 200;

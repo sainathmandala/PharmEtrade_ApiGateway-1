@@ -12,9 +12,11 @@ namespace PharmEtrade_ApiGateway.Controllers
     public class OrdersController : ControllerBase
     {
         private IOrdersRepository _ordersRepository;
-        public OrdersController(IOrdersRepository ordersRepository) 
+        private IPaymentinfoRepository _paymentinfoRepository;
+        public OrdersController(IOrdersRepository ordersRepository,IPaymentinfoRepository paymentinfoRepository) 
         { 
             _ordersRepository = ordersRepository;
+            _paymentinfoRepository = paymentinfoRepository;
         }
 
         [HttpPost]
@@ -46,7 +48,35 @@ namespace PharmEtrade_ApiGateway.Controllers
             PaymentResponse response = await _ordersRepository.AddPayment(request);
             return Ok(response);
         }
+        [HttpPost]
+        [Route("AddPayment")]
+        public async Task<IActionResult> AddPaymentInfo(PaymentInfo paymentInfo)
+        {
+            var response = await _paymentinfoRepository.AddPayment(paymentInfo);
+            return Ok(response);
+        }
+        [HttpPost]
+        [Route("UpdatePayment")]
+        public async Task<IActionResult> UpdatePaymentInfo(PaymentInfo paymentInfo)
+        {
+            var response = await _paymentinfoRepository.UpdatePayment(paymentInfo);
+            return Ok(response);
+        }
+        [HttpGet]
+        [Route("GetPaymentByOrderId")]
+        public async Task<IActionResult> GetPaymentInfoByOrderId(string OrderId)
+        {
+            var response = await _paymentinfoRepository.GetPaymentInfoByOrderId(OrderId);
+            return Ok(response);
+        }
 
-       
+        [HttpGet]
+        [Route("GetPaymentByCustomerId")]
+        public async Task<IActionResult> GetPaymentInfoByCustomerId(string CustomerId)
+        {
+            var response = await _paymentinfoRepository.GetPaymentInfoByCustmoerId(CustomerId);
+            return Ok(response);
+        }
+
     }
 }

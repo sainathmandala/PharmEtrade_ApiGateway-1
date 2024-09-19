@@ -120,6 +120,8 @@ builder.Services.AddSingleton<IMastersRepository, MastersRepository>();
 builder.Services.AddSingleton<IMastersHelper, MastersHelper>();
 builder.Services.AddSingleton<IBidHealper, BidHealper>();
 builder.Services.AddSingleton<IBidRepository, BidRepository>();
+builder.Services.AddSingleton<IPaymentinfoRepository, PaymentInfoRepository>();
+builder.Services.AddSingleton<IPaymentInfo, PaymentInfoHelper>();
 
 
 builder.Services.AddCors(options =>
