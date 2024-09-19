@@ -14,5 +14,6 @@ namespace DAL
         Task<int> ExcuteNonQueryasync(MySqlCommand cmd);
         Task<DataTable> SqlDataAdapterasync(MySqlCommand cmd);
         Task<MySqlDataReader> ExecuteReaderAsync(MySqlCommand cmd);
+        Task<DataTable> ExecuteDataTableAsync(MySqlCommand command);
     }
 }

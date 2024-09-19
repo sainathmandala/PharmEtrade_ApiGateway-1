@@ -122,6 +122,8 @@ builder.Services.AddSingleton<IBidHealper, BidHealper>();
 builder.Services.AddSingleton<IBidRepository, BidRepository>();
 builder.Services.AddSingleton<IPaymentinfoRepository, PaymentInfoRepository>();
 builder.Services.AddSingleton<IPaymentInfo, PaymentInfoHelper>();
+builder.Services.AddSingleton<IDashboardHelper, DashboardHelper>();
+builder.Services.AddSingleton<IDashboardRepository, DashboardRepository>();
 
 
 builder.Services.AddCors(options =>

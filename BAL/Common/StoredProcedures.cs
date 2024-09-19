@@ -74,5 +74,10 @@ namespace BAL.Common
         public const string ADD_UPDATE_PAYMENTINFO = "sp_AddUpdatePaymentInfo";
         public const string GET_PAYMENTINFO_BY_ORDERID = "SP_GetPaymentInfoByOrderId";
         public const string GET_PAYMENTINFO_BY_CUSTOMERID = "SP_GetPaymentInfoByCustomerId";
+
+        // DASHBOARDS
+        public const string DASHBOARD_GET_BY_SELLER = "sp_GetSellerDashboard";
+        public const string DASHBOARD_GET_BY_BUYER = "sp_GetBuyerDashboard";
+        public const string DASHBOARD_GET_BY_ADMIN = "sp_GetAdminDashboard";
     }
 }
