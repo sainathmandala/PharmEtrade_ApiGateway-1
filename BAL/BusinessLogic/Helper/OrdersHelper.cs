@@ -209,7 +209,7 @@ namespace BAL.BusinessLogic.Helper
                                     ProductDescription = row["ProductDescription"].ToString(),
                                     //OrderDate = Convert.ToDateTime(row["OrderDate"])
                                     OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue,
-                                    ImageUrl = row["ImageUrl"].ToString() ?? ""
+                                    ImageUrl = row["MainImageUrl"].ToString() ?? ""
 
                                 });
                             }
