@@ -17,8 +17,8 @@ namespace BAL.Models
         public string Manufacturer { get; set; }
         public string Strength { get; set; }        
         public string LotNumber { get; set; }
-        public DateTime AvailableFromDate { get; set; }
-        public DateTime ExpiryDate { get; set; }
+        public DateTime? AvailableFromDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
         public int PackQuantity { get; set; }
         public string PackType { get; set; }
         public string PackCondition { get; set; }

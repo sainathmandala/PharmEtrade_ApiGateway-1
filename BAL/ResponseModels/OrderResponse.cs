@@ -8,5 +8,6 @@
         public string VendorName { get; set; }
         public string Message { get; set; }
         public int Status { get; set; }
+        public string? ImageUrl { get; set; }
     }
 }
