@@ -1,7 +1,6 @@
 ﻿using BAL.BusinessLogic.Interface;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using DAL;
 using BAL.Common;
 using BAL.ViewModels;
 using OfficeOpenXml;
@@ -11,18 +10,17 @@ using BAL.Models;
 using Microsoft.AspNetCore.Http;
 using BAL.RequestModels;
 using System.Configuration;
-using DAL.Models;
 using BAL;
 
 namespace BAL.BusinessLogic.Helper
 {
     public class ProductHelper : IProductHelper
     {
-        private readonly IsqlDataHelper _isqlDataHelper;
+        private readonly DAL.IsqlDataHelper _isqlDataHelper;
         private readonly string _exPathToSave;
         private readonly IConfiguration _configuration;
         private readonly S3Helper _s3Helper;
-        public ProductHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper)
+        public ProductHelper(IConfiguration configuration, DAL.IsqlDataHelper isqlDataHelper)
         {
             _s3Helper = new S3Helper(configuration);
             _configuration = configuration;
@@ -434,9 +432,9 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-        public async Task<Response<ProductSize>> AddUpdateProductSize(ProductSize productSize)
+        public async Task<Response<Models.ProductSize>> AddUpdateProductSize(Models.ProductSize productSize)
         {
-            Response<ProductSize> response = new Response<ProductSize>();
+            Response<Models.ProductSize> response = new Response<Models.ProductSize>();
             try
             {
                 MySqlCommand cmdProduct = new MySqlCommand("sp_AddUpdateProductSize");
@@ -450,7 +448,7 @@ namespace BAL.BusinessLogic.Helper
 
                 DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProduct));
 
-                var objProductSize = new ProductSize();
+                var objProductSize = new Models.ProductSize();
                 if (tblProduct?.Rows.Count > 0)
                 {
                     objProductSize.ProductSizeId = Convert.ToInt32(tblProduct.Rows[0]["ProductSizeId"]);
@@ -462,7 +460,7 @@ namespace BAL.BusinessLogic.Helper
 
                 response.StatusCode = 200;
                 response.Message = "ProductSize Added/Updated Successfully.";
-                response.Result = new List<ProductSize>() { objProductSize };
+                response.Result = new List<Models.ProductSize>() { objProductSize };
             }
             catch (Exception ex)
             {
@@ -701,10 +699,10 @@ namespace BAL.BusinessLogic.Helper
         }
 
 
-        public async Task<Response<ProductGallery>> AddUpdateProductGallery(ProductGallery productGallery)
+        public async Task<Response<Models.ProductGallery>> AddUpdateProductGallery(Models.ProductGallery productGallery)
 
         {
-            Response<ProductGallery> response = new Response<ProductGallery>();
+            Response<Models.ProductGallery> response = new Response<Models.ProductGallery>();
             try
             {
                 MySqlCommand cmdProductGallery = new MySqlCommand(StoredProcedures.ADD_UPDATE_PRODUCT_GALLERY);

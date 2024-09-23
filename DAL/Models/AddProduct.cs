@@ -29,8 +29,8 @@ namespace DAL.Models
         public string? PackCondition { get; set; }
         public string? ProductDescription { get; set; }
 
-        public virtual ProductGallery? Image { get; set; }
+        //public virtual ProductGallery? Image { get; set; }
         public virtual Category? Productcategory { get; set; }
-        public virtual ProductSize? Size { get; set; }
+        //public virtual ProductSize? Size { get; set; }
     }
 }
