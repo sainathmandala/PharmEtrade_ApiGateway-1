@@ -218,9 +218,11 @@ namespace BAL.BusinessLogic.Helper
                                     OrderDetailId = row["OrderDetailId"].ToString() ?? "",
                                     Quantity = Convert.ToInt32(row["Quantity"]),
                                     PricePerProduct = Convert.ToDouble(row["PricePerProduct"]),
-                                    VendorId = row["VendorId"].ToString() ?? "",
-                                    ProductDescription = row["ProductDescription"].ToString() ?? "",
-                                    OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue
+                                    VendorId = row["VendorId"].ToString(),
+                                    ProductDescription = row["ProductDescription"].ToString(),
+                                    //OrderDate = Convert.ToDateTime(row["OrderDate"])
+                                    OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue,
+                                    ImageUrl = row["MainImageUrl"].ToString() ?? ""
 
                                 });
                             }
