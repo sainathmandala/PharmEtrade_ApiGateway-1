@@ -25,12 +25,14 @@ namespace BAL.BusinessLogic.Helper
         private readonly IsqlDataHelper _isqlDataHelper;
         private readonly string _connectionString;
         private readonly IConfiguration _configuration;
+        private readonly IEmailHelper _emailHelper;
 
-        public OrdersHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper)
+        public OrdersHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper, IEmailHelper emailHelper)
         {
             _configuration = configuration;
             _isqlDataHelper = isqlDataHelper;
             _connectionString = configuration.GetConnectionString("APIDBConnectionString");
+            _emailHelper = emailHelper;
         }
         public async Task<OrderResponse> AddOrder(OrderRequest orderRequest)
         {
@@ -40,7 +42,7 @@ namespace BAL.BusinessLogic.Helper
                 using (MySqlCommand cmd = new MySqlCommand(StoredProcedures.ADD_UPDATE_ORDER, sqlcon))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-
+                    cmd.Parameters.AddWithValue("@p_OrderId", orderRequest.OrderId);
                     cmd.Parameters.AddWithValue("@p_CustomerId", orderRequest.CustomerId);
                     cmd.Parameters.AddWithValue("@p_ProductId", orderRequest.ProductId);
                     cmd.Parameters.AddWithValue("@p_Quantity", orderRequest.Quantity);
@@ -52,7 +54,6 @@ namespace BAL.BusinessLogic.Helper
                     cmd.Parameters.AddWithValue("@p_TrackingNumber", orderRequest.TrackingNumber);
                     cmd.Parameters.AddWithValue("@p_ImageUrl", orderRequest.ImageUrl);
 
-
                     try
                     {
                         DataTable tblOrders = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
@@ -60,12 +61,24 @@ namespace BAL.BusinessLogic.Helper
                         if (tblOrders.Rows.Count > 0)
                         {
                             response.Status = 200;
-                            response.CustomerName = tblOrders.Rows[0]["CustomerName"].ToString();
-                            response.ProductName = tblOrders.Rows[0]["ProductName"].ToString();
-                            response.OrderId = tblOrders.Rows[0]["OrderId"].ToString();
+                            response.CustomerName = tblOrders.Rows[0]["CustomerName"].ToString() ?? "";
+                            response.ProductName = tblOrders.Rows[0]["ProductName"].ToString() ?? "";
+                            response.OrderId = tblOrders.Rows[0]["OrderId"].ToString() ?? "";
+                            response.ImageUrl = orderRequest.ImageUrl;
+                            string _customerEmail = tblOrders.Rows[0]["CustomerEmail"].ToString() ?? "";
+                            int _quantity = Convert.ToInt32(string.IsNullOrEmpty(tblOrders.Rows[0]["Quantity"].ToString() ?? "") ? 0 : tblOrders.Rows[0]["Quantity"]);
 
                             //response.VendorName = tblOrders.Rows[0][""].ToString();
                             response.Message = "Success";
+                            string _mailBody = string.Format(EmailTemplates.ORDER_TEMPLATE
+                                                                ,1
+                                                                ,orderRequest.ImageUrl
+                                                                ,response.ProductName
+                                                                ,orderRequest.PricePerProduct
+                                                                ,_quantity
+                                                                ,(orderRequest.Quantity * orderRequest.PricePerProduct));
+                            _mailBody.Replace("[[OrderId]]", response.OrderId);
+                            await _emailHelper.SendEmail(_customerEmail, "", "Your Order Has been Placed", _mailBody);
                         }
                         else
                         {
@@ -193,23 +206,21 @@ namespace BAL.BusinessLogic.Helper
                             {
                                 ordersList.Add(new Order
                                 {
-                                    OrderId = row["OrderId"].ToString(),
+                                    OrderId = row["OrderId"].ToString() ?? "",
                                     CustomerId = row["CustomerId"].ToString(),
-                                    CustomerName = row["CustomerName"].ToString(),
+                                    CustomerName = row["CustomerName"].ToString() ?? "",
                                     ProductId = row["ProductId"].ToString(),
-                                    ProductName = row["ProductName"].ToString(),
+                                    ProductName = row["ProductName"].ToString() ?? "",
                                     TotalAmount = Convert.ToDouble(row["TotalAmount"]),
                                     ShippingMethodId = Convert.ToInt32(row["ShippingMethodId"]),
                                     OrderStatusId = Convert.ToInt32(row["OrderStatusId"]),
-                                    TrackingNumber = row["TrackingNumber"].ToString(),
-                                    OrderDetailId = row["OrderDetailId"].ToString(),
+                                    TrackingNumber = row["TrackingNumber"].ToString() ?? "",
+                                    OrderDetailId = row["OrderDetailId"].ToString() ?? "",
                                     Quantity = Convert.ToInt32(row["Quantity"]),
                                     PricePerProduct = Convert.ToDouble(row["PricePerProduct"]),
-                                    VendorId = row["VendorId"].ToString(),
-                                    ProductDescription = row["ProductDescription"].ToString(),
-                                    //OrderDate = Convert.ToDateTime(row["OrderDate"])
-                                    OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue,
-                                    ImageUrl = row["ImageUrl"].ToString() ?? ""
+                                    VendorId = row["VendorId"].ToString() ?? "",
+                                    ProductDescription = row["ProductDescription"].ToString() ?? "",
+                                    OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue
 
                                 });
                             }

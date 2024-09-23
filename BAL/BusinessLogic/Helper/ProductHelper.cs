@@ -265,6 +265,12 @@ namespace BAL.BusinessLogic.Helper
                 item.SellerId = product["SellerId"].ToString() ?? "";
                 item.States = product["States"].ToString() ?? "";
                 item.UnitOfMeasure = product["UnitOfMeasure"].ToString() ?? "";
+                item.Form = product["Form"].ToString() ?? "";
+                item.MainImageUrl = product["MainImageUrl"].ToString() ?? "";
+                item.Width = Convert.ToDecimal(Convert.IsDBNull(product["Width"]) ? 0.0 : product["Width"]);
+                item.Height = Convert.ToDecimal(Convert.IsDBNull(product["Height"]) ? 0.0 : product["Height"]);
+                item.Length = Convert.ToDecimal(Convert.IsDBNull(product["Length"]) ? 0.0 : product["Length"]);
+                item.Weight = Convert.ToDecimal(Convert.IsDBNull(product["Weight"]) ? 0.0 : product["Weight"]);
 
                 item.ProductPriceId = product["ProductPriceId"].ToString() ?? "";
                 //item.ProductId = product["ProductId"].ToString() ?? "";
@@ -295,9 +301,6 @@ namespace BAL.BusinessLogic.Helper
 
                 item.CategorySpecification.CategorySpecificationId = Convert.ToInt32(product["CategorySpecificationId"] != DBNull.Value ? product["CategorySpecificationId"] : 0);
                 item.CategorySpecification.SpecificationName = product["SpecificationName"].ToString() ?? "";
-
-                item.ProductType.ProductTypeId = Convert.ToInt32(product["ProductTypeId"] != DBNull.Value ? product["ProductTypeId"] : 0);
-                item.ProductType.Description = product["ProductType"].ToString() ?? "";
 
                 lstProduct.Add(item);
             }

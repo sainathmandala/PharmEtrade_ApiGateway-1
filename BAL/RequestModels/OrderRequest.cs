@@ -20,8 +20,5 @@ namespace BAL.RequestModels
         public decimal PricePerProduct { get; set; }
         public string VendorId { get; set; }
         public string? ImageUrl { get; set; }
-
-
-
     }
 }

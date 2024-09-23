@@ -124,6 +124,7 @@ builder.Services.AddSingleton<IPaymentinfoRepository, PaymentInfoRepository>();
 builder.Services.AddSingleton<IPaymentInfo, PaymentInfoHelper>();
 builder.Services.AddSingleton<IDashboardHelper, DashboardHelper>();
 builder.Services.AddSingleton<IDashboardRepository, DashboardRepository>();
+builder.Services.AddSingleton<IEmailHelper, EmailHelper>();
 
 
 builder.Services.AddCors(options =>

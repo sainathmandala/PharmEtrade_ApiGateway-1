@@ -14,7 +14,6 @@ namespace BAL.ResponseModels
             this.CategorySpecification = new CategorySpecification();
             this.ProductCategory = new ProductCategory();
             this.ProductGallery = new ProductGallery();
-            this.ProductType = new ProductType();
             //this.Price = new ProductPrice();
             //this.ProductInfo = new ProductInfo();            
         }
@@ -22,8 +21,7 @@ namespace BAL.ResponseModels
         public ProductCategory ProductCategory { get; set; }
         public ProductGallery ProductGallery { get; set; }
         //public ProductPrice Price { get; set; }        
-        public CategorySpecification CategorySpecification { get; set; }
-        public ProductType ProductType { get; set; }
+        public CategorySpecification CategorySpecification { get; set; }        
 
         // Product Info
         public string ProductID { get; set; }
@@ -49,6 +47,12 @@ namespace BAL.ResponseModels
         public string SellerId { get; set; }
         public string? States { get; set; }
         public string UnitOfMeasure { get; set; }
+        public string? Form { get; set; }
+        public decimal Width { get; set; }
+        public decimal Height { get; set; }
+        public decimal Length { get; set; }
+        public decimal Weight { get; set; }
+        public string? MainImageUrl { get; set; }
 
 
         // Price

@@ -14,8 +14,8 @@ namespace BAL.Models
         public decimal UPNMemberPrice { get; set; }
         public int Discount { get; set; }
         public decimal SalePrice { get; set; }
-        public DateTime SalePriceValidFrom { get; set; }
-        public DateTime SalePriceValidTo { get; set; }
+        public DateTime? SalePriceValidFrom { get; set; }
+        public DateTime? SalePriceValidTo { get; set; }
 
         public bool Taxable { get; set; }
         public bool ShippingCostApplicable { get; set; }
