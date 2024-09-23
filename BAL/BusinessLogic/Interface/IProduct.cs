@@ -32,5 +32,11 @@ namespace BAL.BusinessLogic.Interface
         Task<Response<string>> RemoveRelatedProduct(string productId, string relatedProductId);
         Task<Response<string>> RemoveUpsellProduct(string productId, string upsellProductId);
         Task<Response<string>> RemoveCrossSellProduct(string productId, string crossSellProductId);
+        Task<BAL.ResponseModels.Response<ProductRating>> AddProductRating(ProductRating productRating);
+        Task<BAL.ResponseModels.Response<ProductRating>> UpdateProductRating(ProductRating productrating);
+        Task<Response<ProductRating>> GetRatingwithProduct(string ProductID);
+        Task<Response<string>> RemoveProductRating(string RatingID);
+        Task<Response<ProductRating>> GetRatingbyId(string RatingID);
+
     }
 }

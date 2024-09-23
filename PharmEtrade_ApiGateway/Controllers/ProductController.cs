@@ -227,9 +227,36 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             var response = await _productRepo.RemoveCrossSellProduct(productId, crossSellProductId);
             return Ok(response);
-        }  
-        
-
-
+        }
+        [HttpPost("AddRating")]
+        public async Task<IActionResult> AddProductRating(ProductRating productRating)
+        {
+            var response = await _productRepo.AddProductRating(productRating);
+            return Ok(response);
+        }
+        [HttpPost("UpdateRating")]
+        public async Task<IActionResult> UpdateProductRating(ProductRating productRating)
+        {
+            var response = await _productRepo.UpdateProductRating(productRating);
+            return Ok(response);
+        }
+        [HttpGet("GetRatingWithProduct")]
+        public async Task<IActionResult> GetRatingwithProduct(string productId)
+        {
+            var response = await _productRepo.GetRatingwithProduct(productId);
+            return Ok(response);
+        }
+        [HttpGet("GetRatingById")]
+        public async Task<IActionResult> GetRating(string RatingID)
+        {
+            var response = await _productRepo.GetRating(RatingID);
+            return Ok(response);
+        }
+        [HttpPost("RemoveProductRating")]
+        public async Task<IActionResult> RemoveProductRating(string RatingID)
+        {
+            var response = await _productRepo.RemoveProductRating(RatingID);
+            return Ok(response);
+        }
     }
 }

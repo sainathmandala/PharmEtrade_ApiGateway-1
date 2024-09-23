@@ -115,6 +115,26 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return await _productHelper.AddUpdateProductInfo(productInfo);
         }
 
+        public async Task<Response<ProductRating>> AddProductRating(ProductRating productRating)
+        {
+            return await _productHelper.AddProductRating(productRating);
+        }
+        public async Task<Response<ProductRating>> UpdateProductRating(ProductRating productRating)
+        {
+            return await _productHelper.UpdateProductRating(productRating);
+        }
+
+        public async Task<Response<ProductRating>> GetRatingwithProduct(string productId)
+        {
+            return await _productHelper.GetRatingwithProduct(productId);
+        }
+        
+        public async Task<Response<string>> RemoveProductRating(string RatingID)
+        {
+            return await _productHelper.RemoveProductRating(RatingID);
+        }
+
+
         public async Task<Response<ProductPrice>> AddUpdateProductPrice(ProductPrice productPrice)
         {
             return await _productHelper.AddUpdateProductPrice(productPrice);
@@ -148,6 +168,8 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _productHelper.AddRelatedProduct(productId, relatedProductId);
         }
+        
+
 
         public async Task<Response<string>> AddUpsellProduct(string productId, string upsellProductId)
         {
@@ -172,6 +194,11 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         public async Task<Response<string>> RemoveCrossSellProduct(string productId, string crossSellProductId)
         {
             return await _productHelper.RemoveCrossSellProduct(productId, crossSellProductId);
+        }
+
+        public async Task<Response<ProductRating>> GetRating(string RatingID)
+        {
+            return await _productHelper.GetRatingbyId(RatingID);
         }
     }
 }

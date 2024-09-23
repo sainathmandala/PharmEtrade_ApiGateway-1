@@ -11,6 +11,8 @@ using BAL.Models;
 using Microsoft.AspNetCore.Http;
 using BAL.RequestModels;
 using System.Configuration;
+using DAL.Models;
+using BAL;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -361,7 +363,7 @@ namespace BAL.BusinessLogic.Helper
                 MySqlCommand cmdProduct = new MySqlCommand("sp_GetProductsBySpecification");
                 cmdProduct.CommandType = CommandType.StoredProcedure;
                 cmdProduct.Parameters.AddWithValue("@p_CategorySpecificationId", categorySpecificationId);
-                cmdProduct.Parameters.AddWithValue("@p_WithDiscount", withDiscount ? 1 : 0); 
+                cmdProduct.Parameters.AddWithValue("@p_WithDiscount", withDiscount ? 1 : 0);
 
                 DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProduct));
                 response.StatusCode = 200;
@@ -695,7 +697,9 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
+
         public async Task<Response<ProductGallery>> AddUpdateProductGallery(ProductGallery productGallery)
+
         {
             Response<ProductGallery> response = new Response<ProductGallery>();
             try
@@ -1054,6 +1058,194 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
+
+        public async Task<Response<ProductRating>> AddProductRating(ProductRating productrating)
+        {
+            Response<ProductRating> response = new Response<ProductRating>();
+            try
+            {
+                MySqlCommand cmdrating = new MySqlCommand(StoredProcedures.ADD_PRODUCT_RATING);
+                cmdrating.CommandType = CommandType.StoredProcedure;
+
+                cmdrating.Parameters.AddWithValue("@p_RatingID", productrating.RatingID);
+                cmdrating.Parameters.AddWithValue("@p_ProductID", productrating.ProductID);
+                cmdrating.Parameters.AddWithValue("@p_CustomerID", productrating.CustomerID);
+                cmdrating.Parameters.AddWithValue("@p_Rating", productrating.Rating);
+                cmdrating.Parameters.AddWithValue("@p_Feedback", productrating.Feedback);
+                cmdrating.Parameters.AddWithValue("@p_Date", productrating.Date);
+                cmdrating.Parameters.AddWithValue("@p_IsActive", productrating.IsActive);
+
+                DataTable tblProductrating = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdrating));
+
+                var objProductrating = new ProductRating();
+                if (tblProductrating?.Rows.Count > 0)
+                {
+                    objProductrating.RatingID = tblProductrating.Rows[0]["RatingID"].ToString() ?? "";
+                    objProductrating.ProductID = tblProductrating.Rows[0]["ProductID"].ToString() ?? "";
+                    objProductrating.CustomerID = tblProductrating.Rows[0]["CustomerID"].ToString() ?? "";
+                    objProductrating.Rating = tblProductrating.Rows[0]["Rating"].ToString() ?? "";
+                    objProductrating.Feedback = tblProductrating.Rows[0]["Feedback"].ToString() ?? "";
+                    objProductrating.Date = Convert.ToDateTime(tblProductrating.Rows[0]["Date"] ?? DateTime.MinValue);
+                    objProductrating.IsActive = Convert.ToInt32(tblProductrating.Rows[0]["IsActive"] ?? 0) == 1 ? true : false;
+
+
+                }
+
+                response.StatusCode = 200;
+                response.Message = " Added ProductRating Successfully.";
+                response.Result = new List<ProductRating>() { objProductrating };
+            }
+            catch (Exception ex)
+            {
+                // Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+
+
+        }
+        public async Task<Response<ProductRating>> UpdateProductRating(ProductRating productrating)
+        {
+            Response<ProductRating> response = new Response<ProductRating>();
+            try
+            {
+                MySqlCommand cmdrating = new MySqlCommand(StoredProcedures.UPDATE_PRODUCT_RATING);
+                cmdrating.CommandType = CommandType.StoredProcedure;
+
+                cmdrating.Parameters.AddWithValue("@p_RatingID", productrating.RatingID);
+                cmdrating.Parameters.AddWithValue("@p_ProductID", productrating.ProductID);
+                cmdrating.Parameters.AddWithValue("@p_CustomerID", productrating.CustomerID);
+                cmdrating.Parameters.AddWithValue("@p_Rating", productrating.Rating);
+                cmdrating.Parameters.AddWithValue("@p_Feedback", productrating.Feedback);
+                cmdrating.Parameters.AddWithValue("@p_Date", productrating.Date);
+                cmdrating.Parameters.AddWithValue("@p_IsActive", productrating.IsActive);
+
+                DataTable tblProductrating = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdrating));
+
+                var objProductrating = new ProductRating();
+                if (tblProductrating?.Rows.Count > 0)
+                {
+                    objProductrating.RatingID = tblProductrating.Rows[0]["RatingID"].ToString() ?? "";
+                    objProductrating.ProductID = tblProductrating.Rows[0]["ProductID"].ToString() ?? "";
+                    objProductrating.CustomerID = tblProductrating.Rows[0]["CustomerID"].ToString() ?? "";
+                    objProductrating.Rating = tblProductrating.Rows[0]["Rating"].ToString() ?? "";
+                    objProductrating.Feedback = tblProductrating.Rows[0]["Feedback"].ToString() ?? "";
+                    objProductrating.Date = Convert.ToDateTime(tblProductrating.Rows[0]["Date"] ?? DateTime.MinValue);
+                    objProductrating.IsActive = Convert.ToInt32(tblProductrating.Rows[0]["IsActive"] ?? 0) == 1 ? true : false;
+
+
+                }
+
+                response.StatusCode = 200;
+                response.Message = " Update ProductRating Successfully.";
+                response.Result = new List<ProductRating>() { objProductrating };
+            }
+            catch (Exception ex)
+            {
+                // Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+
+
+        }
+        public async Task<Response<ProductRating>> GetRatingwithProduct(string ProductID)
+        {
+            Response<ProductRating> response = new Response<ProductRating>();
+            try
+            {
+                MySqlCommand cmdrating = new MySqlCommand(StoredProcedures.GET_PRODUCT_RATING);
+                cmdrating.CommandType = CommandType.StoredProcedure;
+                cmdrating.Parameters.AddWithValue("@p_ProductID", ProductID);
+
+                DataTable tblrating = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdrating));
+                response.StatusCode = 200;
+                response.Message = "Successfully Fetched Data.";
+                response.Result = MapDataTableToProductRating(tblrating);
+            }
+            catch (Exception ex)
+            {
+
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+            return response;
+        }
+        public async Task<Response<ProductRating>> GetRatingbyId(string RatingID)
+        {
+            Response<ProductRating> response = new Response<ProductRating>();
+            try
+            {
+                MySqlCommand cmdrating = new MySqlCommand(StoredProcedures.GET_PRODUCT_RATING_BYID);
+                cmdrating.CommandType = CommandType.StoredProcedure;
+                cmdrating.Parameters.AddWithValue("@p_RatingID", RatingID);
+
+                DataTable tblrating = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdrating));
+                response.StatusCode = 200;
+                response.Message = "Successfully Fetched Data.";
+                response.Result = MapDataTableToProductRating(tblrating);
+            }
+            catch (Exception ex)
+            {
+
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+            return response;
+        }
+        private static List<ProductRating> MapDataTableToProductRating(DataTable tblProduct)
+        {
+            List<ProductRating> lstProduct = new List<ProductRating>();
+            foreach (DataRow product in tblProduct.Rows)
+            {
+                ProductRating item = new ProductRating();
+                item.RatingID = product["RatingID"].ToString() ?? "";
+                item.ProductID = product["ProductID"].ToString() ?? "";
+                item.CustomerID = product["CustomerID"].ToString() ?? "";
+                item.Feedback = product["Feedback"].ToString() ?? "";
+                item.Rating = product["Rating"].ToString() ?? "";
+                item.Date = Convert.ToDateTime(Convert.IsDBNull(product["Date"]) ? DateTime.MinValue : product["Date"]);
+                item.IsActive = Convert.ToInt32(Convert.IsDBNull(product["IsActive"]) ? 0 : product["IsActive"]) == 1 ? true : false;
+
+                lstProduct.Add(item);
+            }
+            return lstProduct;
+        }
+        public async Task<Response<string>> RemoveProductRating(string RatingID)
+        {
+            Response<string> response = new Response<string>();
+            try
+            {
+                MySqlCommand cmdCrossSellProduct = new MySqlCommand(StoredProcedures.REMOVE_PRODUCT_RATING);
+                cmdCrossSellProduct.CommandType = CommandType.StoredProcedure;
+
+                cmdCrossSellProduct.Parameters.AddWithValue("@p_RatingID", RatingID);    
+                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmdCrossSellProduct.Parameters.Add(outMessageParam);
+
+                await _isqlDataHelper.ExcuteNonQueryasync(cmdCrossSellProduct);
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Command Execution";
+                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "Add Update Product Size :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
     }
 }
-
