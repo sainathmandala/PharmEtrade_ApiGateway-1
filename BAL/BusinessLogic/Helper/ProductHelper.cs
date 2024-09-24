@@ -1068,9 +1068,9 @@ namespace BAL.BusinessLogic.Helper
                 MySqlCommand cmdrating = new MySqlCommand(StoredProcedures.ADD_PRODUCT_RATING);
                 cmdrating.CommandType = CommandType.StoredProcedure;
 
-                cmdrating.Parameters.AddWithValue("@p_RatingID", productrating.RatingID);
-                cmdrating.Parameters.AddWithValue("@p_ProductID", productrating.ProductID);
-                cmdrating.Parameters.AddWithValue("@p_CustomerID", productrating.CustomerID);
+                cmdrating.Parameters.AddWithValue("@p_RatingID", productrating.RatingId);
+                cmdrating.Parameters.AddWithValue("@p_ProductID", productrating.ProductId);
+                cmdrating.Parameters.AddWithValue("@p_CustomerID", productrating.CustomerId);
                 cmdrating.Parameters.AddWithValue("@p_Rating", productrating.Rating);
                 cmdrating.Parameters.AddWithValue("@p_Feedback", productrating.Feedback);
                 cmdrating.Parameters.AddWithValue("@p_Date", productrating.Date);
@@ -1081,15 +1081,13 @@ namespace BAL.BusinessLogic.Helper
                 var objProductrating = new ProductRating();
                 if (tblProductrating?.Rows.Count > 0)
                 {
-                    objProductrating.RatingID = tblProductrating.Rows[0]["RatingID"].ToString() ?? "";
-                    objProductrating.ProductID = tblProductrating.Rows[0]["ProductID"].ToString() ?? "";
-                    objProductrating.CustomerID = tblProductrating.Rows[0]["CustomerID"].ToString() ?? "";
-                    objProductrating.Rating = tblProductrating.Rows[0]["Rating"].ToString() ?? "";
+                    objProductrating.RatingId = tblProductrating.Rows[0]["RatingID"].ToString() ?? "";
+                    objProductrating.ProductId = tblProductrating.Rows[0]["ProductID"].ToString() ?? "";
+                    objProductrating.CustomerId = tblProductrating.Rows[0]["CustomerID"].ToString() ?? "";
+                    objProductrating.Rating = Convert.ToInt32(tblProductrating.Rows[0]["Rating"] ?? 0);
                     objProductrating.Feedback = tblProductrating.Rows[0]["Feedback"].ToString() ?? "";
                     objProductrating.Date = Convert.ToDateTime(tblProductrating.Rows[0]["Date"] ?? DateTime.MinValue);
                     objProductrating.IsActive = Convert.ToInt32(tblProductrating.Rows[0]["IsActive"] ?? 0) == 1 ? true : false;
-
-
                 }
 
                 response.StatusCode = 200;
@@ -1115,9 +1113,9 @@ namespace BAL.BusinessLogic.Helper
                 MySqlCommand cmdrating = new MySqlCommand(StoredProcedures.UPDATE_PRODUCT_RATING);
                 cmdrating.CommandType = CommandType.StoredProcedure;
 
-                cmdrating.Parameters.AddWithValue("@p_RatingID", productrating.RatingID);
-                cmdrating.Parameters.AddWithValue("@p_ProductID", productrating.ProductID);
-                cmdrating.Parameters.AddWithValue("@p_CustomerID", productrating.CustomerID);
+                cmdrating.Parameters.AddWithValue("@p_RatingID", productrating.RatingId);
+                cmdrating.Parameters.AddWithValue("@p_ProductID", productrating.ProductId);
+                cmdrating.Parameters.AddWithValue("@p_CustomerID", productrating.CustomerId);
                 cmdrating.Parameters.AddWithValue("@p_Rating", productrating.Rating);
                 cmdrating.Parameters.AddWithValue("@p_Feedback", productrating.Feedback);
                 cmdrating.Parameters.AddWithValue("@p_Date", productrating.Date);
@@ -1128,10 +1126,10 @@ namespace BAL.BusinessLogic.Helper
                 var objProductrating = new ProductRating();
                 if (tblProductrating?.Rows.Count > 0)
                 {
-                    objProductrating.RatingID = tblProductrating.Rows[0]["RatingID"].ToString() ?? "";
-                    objProductrating.ProductID = tblProductrating.Rows[0]["ProductID"].ToString() ?? "";
-                    objProductrating.CustomerID = tblProductrating.Rows[0]["CustomerID"].ToString() ?? "";
-                    objProductrating.Rating = tblProductrating.Rows[0]["Rating"].ToString() ?? "";
+                    objProductrating.RatingId = tblProductrating.Rows[0]["RatingID"].ToString() ?? "";
+                    objProductrating.ProductId = tblProductrating.Rows[0]["ProductID"].ToString() ?? "";
+                    objProductrating.CustomerId = tblProductrating.Rows[0]["CustomerID"].ToString() ?? "";
+                    objProductrating.Rating = Convert.ToInt32(tblProductrating.Rows[0]["Rating"]?? 0);
                     objProductrating.Feedback = tblProductrating.Rows[0]["Feedback"].ToString() ?? "";
                     objProductrating.Date = Convert.ToDateTime(tblProductrating.Rows[0]["Date"] ?? DateTime.MinValue);
                     objProductrating.IsActive = Convert.ToInt32(tblProductrating.Rows[0]["IsActive"] ?? 0) == 1 ? true : false;
@@ -1206,11 +1204,11 @@ namespace BAL.BusinessLogic.Helper
             foreach (DataRow product in tblProduct.Rows)
             {
                 ProductRating item = new ProductRating();
-                item.RatingID = product["RatingID"].ToString() ?? "";
-                item.ProductID = product["ProductID"].ToString() ?? "";
-                item.CustomerID = product["CustomerID"].ToString() ?? "";
+                item.RatingId = product["RatingID"].ToString() ?? "";
+                item.RatingId = product["ProductID"].ToString() ?? "";
+                item.RatingId = product["CustomerID"].ToString() ?? "";
                 item.Feedback = product["Feedback"].ToString() ?? "";
-                item.Rating = product["Rating"].ToString() ?? "";
+                item.Rating = Convert.ToInt32(tblProduct.Rows[0]["Rating"] ?? 0);
                 item.Date = Convert.ToDateTime(Convert.IsDBNull(product["Date"]) ? DateTime.MinValue : product["Date"]);
                 item.IsActive = Convert.ToInt32(Convert.IsDBNull(product["IsActive"]) ? 0 : product["IsActive"]) == 1 ? true : false;
 
