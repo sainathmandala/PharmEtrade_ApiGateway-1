@@ -45,6 +45,8 @@ namespace BAL.ResponseModels
         public int CategorySpecificationId { get; set; }
         public int ProductTypeId { get; set; }
         public string SellerId { get; set; }
+        public string SellerFirstName { get; set; }
+        public string SellerLastName { get; set; }
         public string? States { get; set; }
         public string UnitOfMeasure { get; set; }
         public string? Form { get; set; }
@@ -59,7 +61,7 @@ namespace BAL.ResponseModels
         public string ProductPriceId { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal UPNMemberPrice { get; set; }
-        public int Discount { get; set; }
+        public decimal Discount { get; set; }
         public decimal SalePrice { get; set; }
         public DateTime SalePriceValidFrom { get; set; }
         public DateTime SalePriceValidTo { get; set; }

@@ -9,7 +9,7 @@ namespace BAL.ResponseModels
     public  class SpecialOffersResponse
     {
 
-        public int Discount { get; set; }
+        public decimal Discount { get; set; }
         public string SpecificationName { get; set; }
         public int CategorySpecificationId { get; set; }
     }
