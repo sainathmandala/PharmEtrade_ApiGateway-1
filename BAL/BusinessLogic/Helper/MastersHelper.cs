@@ -4,6 +4,7 @@ using BAL.Models;
 using BAL.RequestModels;
 using BAL.ResponseModels;
 using DAL;
+using DAL.Models;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace BAL.BusinessLogic.Helper
 
             try
             {
-                MySqlCommand cmdProduct = new MySqlCommand(StoredProcedures.GET_NDCUPC_DETAILS);
+                MySqlCommand cmdProduct = new MySqlCommand(StoredProcedures.MASTERS_GET_NDCUPC_DETAILS);
                 cmdProduct.CommandType = CommandType.StoredProcedure;
                 cmdProduct.Parameters.AddWithValue("@p_NDC", NDC);
                 cmdProduct.Parameters.AddWithValue("@p_UPC", UPC);
@@ -49,6 +50,83 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
+        public async Task<Response<ProductCategory>> GetProductCategories(int categoryId = 0)
+        {
+            var response = new Response<ProductCategory>();
+
+            try
+            {
+                MySqlCommand command = new MySqlCommand(StoredProcedures.MASTERS_GET_PRODUCT_CATEGORIES);
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@p_ProductCategoryId", categoryId);
+
+                DataTable tblCommandResult = await Task.Run(() => _sqlDataHelper.ExecuteDataTableAsync(command));
+                response.StatusCode = 200;
+                response.Message = "Successfully Fetched Data.";
+                response.Result = MapDataTableToProductCategoryList(tblCommandResult);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+
+            return response;
+        }
+
+        public async Task<Response<ProductCategory>> AddProductCategory(ProductCategory productCategory)
+        {
+            var response = new Response<ProductCategory>();
+
+            try
+            {
+                MySqlCommand command = new MySqlCommand(StoredProcedures.MASTERS_ADD_UPDATE_PRODUCT_CATEGORY);
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@p_ProductCategoryId", productCategory.ProductCategoryId);
+                command.Parameters.AddWithValue("@p_CategoryName", productCategory.CategoryName);
+
+                DataTable tblCommandResult = await Task.Run(() => _sqlDataHelper.ExecuteDataTableAsync(command));
+                response.StatusCode = 200;
+                response.Message = "Successfully Added Product Category.";
+                response.Result = MapDataTableToProductCategoryList(tblCommandResult);
+            }
+            catch (Exception ex)
+            {  
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+
+            return response;
+        }
+
+        public async Task<Response<ProductCategory>> RemoveProductCategory(int categoryId)
+        {
+            var response = new Response<ProductCategory>();
+
+            try
+            {
+                MySqlCommand command = new MySqlCommand(StoredProcedures.MASTERS_REMOVE_PRODUCT_CATEGORY);
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@p_ProductCategoryId", categoryId);
+
+                DataTable tblCommandResult = await Task.Run(() => _sqlDataHelper.ExecuteDataTableAsync(command));
+                response.StatusCode = 200;
+                response.Message = "Successfully Removed Product Category.";
+                response.Result = MapDataTableToProductCategoryList(tblCommandResult);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+
+            return response;
+        }
+
+        #region Mapping Methods
         private static List<NDCUPC> MapDataTableToNDCUPCList(DataTable tblNDCUPC)
         {
             List<NDCUPC> lstNDCUPC = new List<NDCUPC>();
@@ -68,5 +146,20 @@ namespace BAL.BusinessLogic.Helper
             }
             return lstNDCUPC;
         }
+
+        private static List<ProductCategory> MapDataTableToProductCategoryList(DataTable tblProductCategory)
+        {
+            List<ProductCategory> lstProductCategory = new List<ProductCategory>();
+            foreach (DataRow category in tblProductCategory.Rows)
+            {
+                ProductCategory item = new ProductCategory();
+                item.ProductCategoryId = Convert.ToInt32(category["ProductCategoryId"]);                
+                item.CategoryName = category["CategoryName"].ToString() ?? "";
+
+                lstProductCategory.Add(item);
+            }
+            return lstProductCategory;
+        }
+        #endregion Mapping Methonds
     }
 }

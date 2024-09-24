@@ -70,7 +70,11 @@ namespace BAL.Common
         public const string DELETE_BANNER = "sp_DeleteBanner";
 
         // MASTERS
-        public const string GET_NDCUPC_DETAILS = "sp_GetNDCUPCDetails";
+        public const string MASTERS_GET_NDCUPC_DETAILS = "sp_GetNDCUPCDetails";
+
+        public const string MASTERS_GET_PRODUCT_CATEGORIES = "sp_GetProductCategories";
+        public const string MASTERS_ADD_UPDATE_PRODUCT_CATEGORY = "sp_AddUpdateProductCategory";
+        public const string MASTERS_REMOVE_PRODUCT_CATEGORY = "sp_RemoveProductCategory";
 
         // BIDS
         public const string GET_BIDS_BY_BUYER = "sp_GetBidsByBuyer";
