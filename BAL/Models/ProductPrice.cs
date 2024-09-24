@@ -12,7 +12,7 @@ namespace BAL.Models
         public string ProductId { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal UPNMemberPrice { get; set; }
-        public int Discount { get; set; }
+        public decimal Discount { get; set; }
         public decimal SalePrice { get; set; }
         public DateTime? SalePriceValidFrom { get; set; }
         public DateTime? SalePriceValidTo { get; set; }

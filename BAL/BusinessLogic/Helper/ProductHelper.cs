@@ -260,9 +260,12 @@ namespace BAL.BusinessLogic.Helper
                 item.PackQuantity = Convert.ToInt32(Convert.IsDBNull(product["PackQuantity"]) ? 0 : product["PackQuantity"]);
                 item.PackType = product["PackType"].ToString() ?? "";
                 item.PackCondition = product["PackCondition"].ToString() ?? "";
+                item.Size = product["Size"].ToString() ?? "";
                 item.ProductDescription = product["ProductDescription"].ToString() ?? "";
                 item.AboutTheProduct = product["AboutTheProduct"].ToString() ?? "";
                 item.SellerId = product["SellerId"].ToString() ?? "";
+                item.SellerFirstName = product["SellerFirstName"].ToString() ?? "";
+                item.SellerLastName = product["SellerLastName"].ToString() ?? "";
                 item.States = product["States"].ToString() ?? "";
                 item.UnitOfMeasure = product["UnitOfMeasure"].ToString() ?? "";
                 item.Form = product["Form"].ToString() ?? "";
@@ -276,7 +279,7 @@ namespace BAL.BusinessLogic.Helper
                 //item.ProductId = product["ProductId"].ToString() ?? "";
                 item.UnitPrice = Convert.ToDecimal(Convert.IsDBNull(product["UnitPrice"]) ? 0.0 : product["UnitPrice"]);
                 item.UPNMemberPrice = Convert.ToDecimal(Convert.IsDBNull(product["UPNMemberPrice"]) ? 0.0 : product["UPNMemberPrice"]);
-                item.Discount = Convert.ToInt32(Convert.IsDBNull(product["Discount"]) ? 0 : product["Discount"]);
+                item.Discount = Convert.ToDecimal(Convert.IsDBNull(product["Discount"]) ? 0.0 : product["Discount"]);
                 item.SalePrice = Convert.ToDecimal(Convert.IsDBNull(product["SalePrice"]) ? 0.0 : product["SalePrice"]);
                 item.SalePriceValidFrom = Convert.ToDateTime(Convert.IsDBNull(product["SalePriceValidFrom"]) ? DateTime.MinValue : product["SalePriceValidFrom"]);
                 item.SalePriceValidTo = Convert.ToDateTime(Convert.IsDBNull(product["SalePriceValidTo"]) ? DateTime.MinValue : product["SalePriceValidTo"]);
@@ -610,9 +613,9 @@ namespace BAL.BusinessLogic.Helper
                     objProductInfo.Size = tblProduct.Rows[0]["Size"].ToString() ?? "";
                     objProductInfo.UnitOfMeasure = tblProduct.Rows[0]["UnitOfMeasure"].ToString() ?? "";
                     objProductInfo.Strength = tblProduct.Rows[0]["Strength"].ToString() ?? "";
-                    objProductInfo.AvailableFromDate = Convert.ToDateTime(tblProduct.Rows[0]["AvailableFromDate"] ?? DateTime.MinValue);
+                    objProductInfo.AvailableFromDate = Convert.IsDBNull(tblProduct.Rows[0]["AvailableFromDate"]) ? null : Convert.ToDateTime(tblProduct.Rows[0]["AvailableFromDate"]); 
                     objProductInfo.LotNumber = tblProduct.Rows[0]["LotNumber"].ToString() ?? "";
-                    objProductInfo.ExpiryDate = Convert.ToDateTime(tblProduct.Rows[0]["ExpiryDate"] ?? DateTime.MinValue);
+                    objProductInfo.ExpiryDate = Convert.IsDBNull(tblProduct.Rows[0]["ExpiryDate"]) ? null : Convert.ToDateTime(tblProduct.Rows[0]["ExpiryDate"]);
                     objProductInfo.PackQuantity = Convert.ToInt32(tblProduct.Rows[0]["PackQuantity"] ?? 0);
                     objProductInfo.PackCondition = tblProduct.Rows[0]["PackCondition"].ToString() ?? "";
                     objProductInfo.PackType = tblProduct.Rows[0]["PackType"].ToString() ?? "";
@@ -674,10 +677,10 @@ namespace BAL.BusinessLogic.Helper
                     objProductPrice.ProductId = tblProduct.Rows[0]["ProductId"].ToString() ?? "";
                     objProductPrice.UnitPrice = Convert.ToDecimal(tblProduct.Rows[0]["UnitPrice"] ?? 0.0);
                     objProductPrice.UPNMemberPrice = Convert.ToDecimal(tblProduct.Rows[0]["UPNMemberPrice"] ?? 0.0);
-                    objProductPrice.Discount = Convert.ToInt32(tblProduct.Rows[0]["Discount"] ?? 0);
+                    objProductPrice.Discount = Convert.ToDecimal(tblProduct.Rows[0]["Discount"] ?? 0.0);
                     objProductPrice.SalePrice = Convert.ToDecimal(tblProduct.Rows[0]["SalePrice"] ?? 0.0);
-                    objProductPrice.SalePriceValidFrom = Convert.ToDateTime(tblProduct.Rows[0]["SalePriceValidFrom"] ?? DateTime.MinValue);
-                    objProductPrice.SalePriceValidTo = Convert.ToDateTime(tblProduct.Rows[0]["SalePriceValidTo"] ?? DateTime.MinValue);
+                    objProductPrice.SalePriceValidFrom = Convert.IsDBNull(tblProduct.Rows[0]["SalePriceValidFrom"]) ? null : Convert.ToDateTime(tblProduct.Rows[0]["SalePriceValidFrom"]); 
+                    objProductPrice.SalePriceValidTo = Convert.IsDBNull(tblProduct.Rows[0]["SalePriceValidTo"]) ? null : Convert.ToDateTime(tblProduct.Rows[0]["SalePriceValidTo"]);
                     objProductPrice.Taxable = Convert.ToInt32(tblProduct.Rows[0]["Taxable"] ?? 0) == 1 ? true : false;
                     objProductPrice.ShippingCostApplicable = Convert.ToInt32(tblProduct.Rows[0]["ShippingCostApplicable"] ?? 0) == 1 ? true : false;
                     objProductPrice.ShippingCost = Convert.ToDecimal(tblProduct.Rows[0]["ShippingCost"] ?? 0.0);
@@ -758,7 +761,7 @@ namespace BAL.BusinessLogic.Helper
             foreach (DataRow offers in tbloffers.Rows)
             {
                 SpecialOffersResponse item = new SpecialOffersResponse();
-                item.Discount = Convert.ToInt32(offers["Discount"] != DBNull.Value ? offers["Discount"] : 0);
+                item.Discount = Convert.ToDecimal(offers["Discount"] != DBNull.Value ? offers["Discount"] : 0);
                 item.SpecificationName = offers["SpecificationName"].ToString() ?? "";
                 item.CategorySpecificationId = Convert.ToInt32(offers["CategorySpecificationId"] != DBNull.Value ? offers["CategorySpecificationId"] : 0);
 
