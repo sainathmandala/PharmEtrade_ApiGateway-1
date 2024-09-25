@@ -10,9 +10,9 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<Response<ProductCategory>> AddProductCategory(ProductCategory productCategory);
         Task<Response<ProductCategory>> RemoveProductCategory(int categoryId);
 
-        Task<Response<ProductCategory>> GetCategorySpecifications(int categorySpecificationId = 0);
-        Task<Response<ProductCategory>> AddCategorySpecification(CategorySpecification categorySpecification);
-        Task<Response<ProductCategory>> RemoveCategorySpecification(int categorySpecificationId);
+        Task<Response<CategorySpecification>> GetCategorySpecifications(int categorySpecificationId = 0);
+        Task<Response<CategorySpecification>> AddCategorySpecification(CategorySpecification categorySpecification);
+        Task<Response<CategorySpecification>> RemoveCategorySpecification(int categorySpecificationId);
 
     }
 }

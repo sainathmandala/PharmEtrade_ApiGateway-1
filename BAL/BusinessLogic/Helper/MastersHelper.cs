@@ -125,6 +125,80 @@ namespace BAL.BusinessLogic.Helper
 
             return response;
         }
+        public async Task<Response<CategorySpecification>> GetCategoriesSpecification(int CategorySpecificationId = 0)
+        {
+            var response = new Response<CategorySpecification>();
+
+            try
+            {
+                MySqlCommand command = new MySqlCommand(StoredProcedures.MASTERS_GET_CATEGORY_SPECIFICATION);
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@p_CategorySpecificationId", CategorySpecificationId);
+
+                DataTable tblCommandResult = await Task.Run(() => _sqlDataHelper.ExecuteDataTableAsync(command));
+                response.StatusCode = 200;
+                response.Message = "Successfully Fetched Data.";
+                response.Result = MapDataTableToCategorySpecificationList(tblCommandResult);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+
+            return response;
+        }
+
+        public async Task<Response<CategorySpecification>> AddCategorySpecification(CategorySpecification categorySpecification)
+        {
+            var response = new Response<CategorySpecification>();
+
+            try
+            {
+                MySqlCommand command = new MySqlCommand(StoredProcedures.MASTERS_ADD_UPDATE_CATEGORY_SPECIFICATION);
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@p_CategorySpecificationId", categorySpecification.CategorySpecificationId);
+                command.Parameters.AddWithValue("@p_SpecificationName", categorySpecification.SpecificationName);
+
+                DataTable tblCommandResult = await Task.Run(() => _sqlDataHelper.ExecuteDataTableAsync(command));
+                response.StatusCode = 200;
+                response.Message = "Successfully Added Product Category.";
+                response.Result = MapDataTableToCategorySpecificationList(tblCommandResult);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+
+            return response;
+        }
+        public async Task<Response<CategorySpecification>> RemoveCategorySpecification(int CategorySpecificationId)
+        {
+            var response = new Response<CategorySpecification>();
+
+            try
+            {
+                MySqlCommand command = new MySqlCommand(StoredProcedures.MASTERS_REMOVE_CATEGORY_SPECIFICATION);
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@p_CategorySpecificationId", CategorySpecificationId);
+
+                DataTable tblCommandResult = await Task.Run(() => _sqlDataHelper.ExecuteDataTableAsync(command));
+                response.StatusCode = 200;
+                response.Message = "Successfully Removed Product Category.";
+                response.Result = MapDataTableToCategorySpecificationList(tblCommandResult);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+
+            return response;
+        }
 
         #region Mapping Methods
         private static List<NDCUPC> MapDataTableToNDCUPCList(DataTable tblNDCUPC)
@@ -160,6 +234,23 @@ namespace BAL.BusinessLogic.Helper
             }
             return lstProductCategory;
         }
+        private static List<CategorySpecification> MapDataTableToCategorySpecificationList(DataTable tblcategoryspecification)
+        {
+            List<CategorySpecification> lstCategoryspecification = new List<CategorySpecification>();
+            foreach (DataRow category in tblcategoryspecification.Rows)
+            {
+                CategorySpecification item = new CategorySpecification();
+                item.CategorySpecificationId = Convert.ToInt32(category["CategorySpecificationId"]);
+                item.SpecificationName = category["SpecificationName"].ToString() ?? "";
+
+                lstCategoryspecification.Add(item);
+            }
+            return lstCategoryspecification;
+        }
+
+
+
+
         #endregion Mapping Methonds
     }
 }

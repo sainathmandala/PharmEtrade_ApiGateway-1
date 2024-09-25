@@ -13,9 +13,9 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             _mastersHelper = mastersHelper;
         }
 
-        public Task<Response<ProductCategory>> AddCategorySpecification(CategorySpecification categorySpecification)
+        public async Task<Response<CategorySpecification>> AddCategorySpecification(CategorySpecification categorySpecification)
         {
-            throw new NotImplementedException();
+            return await _mastersHelper.AddCategorySpecification(categorySpecification);
         }
 
         public async Task<Response<ProductCategory>> AddProductCategory(ProductCategory productCategory)
@@ -23,9 +23,9 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return await _mastersHelper.AddProductCategory(productCategory);
         }
 
-        public Task<Response<ProductCategory>> GetCategorySpecifications(int categorySpecificationId = 0)
+        public async Task<Response<CategorySpecification>> GetCategorySpecifications(int categorySpecificationId = 0)
         {
-            throw new NotImplementedException();
+            return await _mastersHelper.GetCategoriesSpecification(categorySpecificationId);
         }
 
         public async Task<Response<NDCUPC>> GetNDCUPCDetails(string? NDC, string? UPC)
@@ -38,9 +38,9 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return await _mastersHelper.GetProductCategories(categoryId);
         }
 
-        public Task<Response<ProductCategory>> RemoveCategorySpecification(int categorySpecificationId)
+        public async Task<Response<CategorySpecification>> RemoveCategorySpecification(int categorySpecificationId)
         {
-            throw new NotImplementedException();
+            return await _mastersHelper.RemoveCategorySpecification(categorySpecificationId);
         }
 
         public async Task<Response<ProductCategory>> RemoveProductCategory(int categoryId)

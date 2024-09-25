@@ -76,6 +76,10 @@ namespace BAL.Common
         public const string MASTERS_ADD_UPDATE_PRODUCT_CATEGORY = "sp_AddUpdateProductCategory";
         public const string MASTERS_REMOVE_PRODUCT_CATEGORY = "sp_RemoveProductCategory";
 
+        public const string MASTERS_GET_CATEGORY_SPECIFICATION = "sp_GetCategoriesSpecification";
+        public const string MASTERS_ADD_UPDATE_CATEGORY_SPECIFICATION = "sp_AddUpdateCategoriesSpecification";
+        public const string MASTERS_REMOVE_CATEGORY_SPECIFICATION = "sp_RemoveCategoriesSpecification";
+
         // BIDS
         public const string GET_BIDS_BY_BUYER = "sp_GetBidsByBuyer";
         public const string GET_BIDS_BY_SELLER = "sp_GetBidsBySeller";

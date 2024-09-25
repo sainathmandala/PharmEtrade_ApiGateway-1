@@ -14,5 +14,10 @@ namespace BAL.BusinessLogic.Interface
         Task<Response<ProductCategory>> GetProductCategories(int categoryId = 0);
         Task<Response<ProductCategory>> AddProductCategory(ProductCategory productCategory);
         Task<Response<ProductCategory>> RemoveProductCategory(int categoryId);
+
+        Task<Response<CategorySpecification>> GetCategoriesSpecification(int CategorySpecificationId = 0);
+        Task<Response<CategorySpecification>> AddCategorySpecification(CategorySpecification categoryspecification);
+        Task<Response<CategorySpecification>> RemoveCategorySpecification(int CategorySpecificationId);
+
     }
 }
