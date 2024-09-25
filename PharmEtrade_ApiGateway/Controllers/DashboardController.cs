@@ -14,9 +14,9 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpGet("GetAdminDashboard")]
-        public async Task<IActionResult> GetAdminDashboard(string adminId)
+        public async Task<IActionResult> GetAdminDashboard(string? adminId)
         {
-            var response = await _dashboardRepository.GetAdminDashboard(adminId);
+            var response = await _dashboardRepository.GetAdminDashboard(string.IsNullOrEmpty(adminId) ? "" : adminId);
             return Ok(response);
         }
 
