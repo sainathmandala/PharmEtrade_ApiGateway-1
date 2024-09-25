@@ -34,7 +34,11 @@ namespace BAL.BusinessLogic.Helper
                     if (tblAdminDashboard != null && tblAdminDashboard.Rows.Count > 0)
                     {
                         response.StatusCode = "SUCCESS".Equals(tblAdminDashboard.Rows[0]["Message"].ToString() ?? "") ? 200 : 500;
-                        response.Message = tblAdminDashboard.Rows[0]["Message"].ToString() ?? "";                        
+                        response.Message = tblAdminDashboard.Rows[0]["Message"].ToString() ?? "";
+                        response.TotalCustomers = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalCustomers"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalCustomers"]);
+                        response.TotalOrders = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalOrders"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalOrders"]);
+                        response.TotalProducts = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalProducts"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalProducts"]);
+                        response.TotalActiveProducts = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalActiveProducts"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalActiveProducts"]);
                     }
                     else
                     {
