@@ -39,6 +39,8 @@ namespace BAL.BusinessLogic.Interface
         Task<Response<string>> RemoveProductRating(string RatingId);
         Task<Response<ProductRating>> GetRatingbyId(string RatingId);
         Task<Response<ProductsPerCategory>> GetProductsPerCategoryCounts(string sellerId = "");
+        Task<Response<string>> DeactivateProduct(string productId);
+        Task<Response<string>>DeleteProduct (string productId);
 
     }
 }

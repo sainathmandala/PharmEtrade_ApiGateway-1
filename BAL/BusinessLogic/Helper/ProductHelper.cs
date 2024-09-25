@@ -1296,6 +1296,75 @@ namespace BAL.BusinessLogic.Helper
             return lstProduct;
         }
 
+        public  async Task<Response<string>> DeactivateProduct(string productId)
+        {
+            Response<string> response = new Response<string>();
+            try
+            {
+                MySqlCommand cmdDeactiveProduct = new MySqlCommand(StoredProcedures.PRODUCT_DEACTIVE);
+                cmdDeactiveProduct.CommandType = CommandType.StoredProcedure;
+
+                cmdDeactiveProduct.Parameters.AddWithValue("@p_ProductId", productId);
+
+                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmdDeactiveProduct.Parameters.Add(outMessageParam);
+
+                await _isqlDataHelper.ExcuteNonQueryasync(cmdDeactiveProduct);
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Command Execution";
+                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
+            }
+            catch (Exception ex)
+            {
+                
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+
+
+        public async Task<Response<string>> DeleteProduct(string productId)
+        {
+            Response<string> response = new Response<string>();
+            try
+            {
+                MySqlCommand cmdDeactiveProduct = new MySqlCommand(StoredProcedures.PRODUCT_DELETE);
+                cmdDeactiveProduct.CommandType = CommandType.StoredProcedure;
+
+                cmdDeactiveProduct.Parameters.AddWithValue("@p_ProductId", productId);
+
+                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmdDeactiveProduct.Parameters.Add(outMessageParam);
+
+                await _isqlDataHelper.ExcuteNonQueryasync(cmdDeactiveProduct);
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Command Execution";
+                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
+            }
+            catch (Exception ex)
+            {
+
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+
+
+
+
+
         #endregion Mapper methods
     }
 }

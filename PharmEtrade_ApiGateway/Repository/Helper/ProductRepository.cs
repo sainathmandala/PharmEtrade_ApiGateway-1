@@ -206,5 +206,16 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _productHelper.GetProductsPerCategoryCounts(sellerId);
         }
+
+        public async Task<Response<string>> DeactivateProduct(string productId)
+        {
+            return await _productHelper.DeactivateProduct(productId);
+        }
+        public async Task<Response<string>> DeleteProduct(string productId)
+        {
+            return await _productHelper.DeleteProduct(productId);
+        }
+
+
     }
 }

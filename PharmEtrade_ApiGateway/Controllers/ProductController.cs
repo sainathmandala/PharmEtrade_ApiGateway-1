@@ -264,5 +264,18 @@ namespace PharmEtrade_ApiGateway.Controllers
             var response = await _productRepo.RemoveProductRating(RatingID);
             return Ok(response);
         }
+        [HttpPost("DeActivateProduct")]
+        public async Task<IActionResult> DeActivateProduct(string productId)
+        {
+            var response = await _productRepo.DeactivateProduct(productId);
+            return Ok(response);
+        }
+        [HttpPost("DeleteProduct")]
+        public async Task<IActionResult> DeleteProduct(string productId)
+        {
+            var response = await _productRepo.DeleteProduct(productId);
+            return Ok(response);
+        }
+
     }
 }

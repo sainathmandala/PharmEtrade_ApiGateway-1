@@ -31,6 +31,9 @@ namespace BAL.Common
         public const string GET_UPSELL_PRODUCTS = "sp_GetUpsellProducts";
         public const string GET_CROSS_SELL_PRODUCTS = "sp_GetCrossSellProducts";
         public const string PRODUCTS_GET_PRODUCTS_COUNT_BY_CATEGORY = "sp_GetProductsCountByCategory";
+        public const string PRODUCT_DEACTIVE = "sp_ProductDeactivate";
+        public const string PRODUCT_DELETE = "sp_DeleteProduct";
+
 
         //PRODUCT RATING
         public const string ADD_PRODUCT_RATING = "sp_AddUpdateProductRating";

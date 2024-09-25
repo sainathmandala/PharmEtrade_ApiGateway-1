@@ -38,5 +38,9 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<Response<string>> RemoveProductRating(string RatingID);
         Task<Response<ProductRating>> GetRating(string RatingID);
         Task<Response<ProductsPerCategory>> GetProductsPerCategoryCounts(string sellerId = "");
+        Task<Response<string>> DeactivateProduct(string productId);
+        Task<Response<string>> DeleteProduct(string productId);
+
+
     }
 }
