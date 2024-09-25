@@ -163,8 +163,14 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             var response = await _productRepo.GetSpecialOffers();
             return Ok(response);
-        } 
-        
+        }
+
+        [HttpGet("GetProductsCountPerCategory")]
+        public async Task<IActionResult> GetProductsCountPerCategory(string? sellerId)
+        {
+            var response = await _productRepo.GetProductsPerCategoryCounts(string.IsNullOrEmpty(sellerId) ? "" : sellerId);
+            return Ok(response);
+        }
 
         [HttpGet("GetRelatedProducts")]
         public async Task<IActionResult> GetRelatedProducts(string productId)

@@ -1,4 +1,5 @@
 ﻿using BAL.Models;
+using BAL.Models.Products;
 using BAL.RequestModels;
 using BAL.ResponseModels;
 using BAL.ViewModel;
@@ -36,5 +37,6 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<Response<ProductRating>> GetRatingwithProduct(string ProductID);
         Task<Response<string>> RemoveProductRating(string RatingID);
         Task<Response<ProductRating>> GetRating(string RatingID);
+        Task<Response<ProductsPerCategory>> GetProductsPerCategoryCounts(string sellerId = "");
     }
 }

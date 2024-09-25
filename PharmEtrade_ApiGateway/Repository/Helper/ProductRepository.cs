@@ -9,6 +9,7 @@ using BAL.Models;
 using BAL.BusinessLogic.Helper;
 using BAL.ResponseModels;
 using BAL.RequestModels;
+using BAL.Models.Products;
 
 namespace PharmEtrade_ApiGateway.Repository.Helper
 {
@@ -199,6 +200,11 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         public async Task<Response<ProductRating>> GetRating(string RatingID)
         {
             return await _productHelper.GetRatingbyId(RatingID);
+        }
+
+        public async Task<Response<ProductsPerCategory>> GetProductsPerCategoryCounts(string sellerId = "")
+        {
+            return await _productHelper.GetProductsPerCategoryCounts(sellerId);
         }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using BAL.Models;
 using BAL.ResponseModels;
 using BAL.RequestModels;
+using BAL.Models.Products;
 
 namespace BAL.BusinessLogic.Interface
 {
@@ -37,6 +38,7 @@ namespace BAL.BusinessLogic.Interface
         Task<Response<ProductRating>> GetRatingwithProduct(string ProductId);
         Task<Response<string>> RemoveProductRating(string RatingId);
         Task<Response<ProductRating>> GetRatingbyId(string RatingId);
+        Task<Response<ProductsPerCategory>> GetProductsPerCategoryCounts(string sellerId = "");
 
     }
 }

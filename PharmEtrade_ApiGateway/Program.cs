@@ -125,6 +125,8 @@ builder.Services.AddSingleton<IPaymentInfo, PaymentInfoHelper>();
 builder.Services.AddSingleton<IDashboardHelper, DashboardHelper>();
 builder.Services.AddSingleton<IDashboardRepository, DashboardRepository>();
 builder.Services.AddSingleton<IEmailHelper, EmailHelper>();
+builder.Services.AddSingleton<IAdminRepository, AdminRepository>();
+builder.Services.AddSingleton<IAdminHelper, AdminHelper>();
 
 
 builder.Services.AddCors(options =>

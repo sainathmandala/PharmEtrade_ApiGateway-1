@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using BAL.RequestModels;
 using System.Configuration;
 using BAL;
+using BAL.Models.Products;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -239,76 +240,7 @@ namespace BAL.BusinessLogic.Helper
                 response.Message = ex.Message;
             }
             return response;
-        }
-        private static List<ProductResponse> MapDataTableToProductList(DataTable tblProduct)
-        {
-            List<ProductResponse> lstProduct = new List<ProductResponse>();
-            foreach (DataRow product in tblProduct.Rows)
-            {
-                ProductResponse item = new ProductResponse();
-                item.ProductID = product["ProductID"].ToString() ?? "";
-                item.ProductName = product["ProductName"].ToString() ?? "";
-                item.NDCorUPC = product["NDCorUPC"].ToString() ?? "";
-                item.BrandName = product["BrandName"].ToString() ?? "";
-                item.Manufacturer = product["Manufacturer"].ToString() ?? "";
-                item.Strength = product["Strength"].ToString() ?? "";
-                item.AvailableFromDate = Convert.ToDateTime(Convert.IsDBNull(product["AvailableFromDate"]) ? DateTime.MinValue : product["AvailableFromDate"]);
-                item.FormattedAvailableFromDate = item.AvailableFromDate.ToString("MM/yyyy");
-                item.LotNumber = product["LotNumber"].ToString() ?? "";
-                item.ExpiryDate = Convert.ToDateTime(Convert.IsDBNull(product["ExpiryDate"]) ? DateTime.MinValue : product["ExpiryDate"]);
-                item.FormattedExpiryDate = item.ExpiryDate.ToString("MM/yyyy");
-                item.PackQuantity = Convert.ToInt32(Convert.IsDBNull(product["PackQuantity"]) ? 0 : product["PackQuantity"]);
-                item.PackType = product["PackType"].ToString() ?? "";
-                item.PackCondition = product["PackCondition"].ToString() ?? "";
-                item.Size = product["Size"].ToString() ?? "";
-                item.ProductDescription = product["ProductDescription"].ToString() ?? "";
-                item.AboutTheProduct = product["AboutTheProduct"].ToString() ?? "";
-                item.SellerId = product["SellerId"].ToString() ?? "";
-                item.SellerFirstName = product["SellerFirstName"].ToString() ?? "";
-                item.SellerLastName = product["SellerLastName"].ToString() ?? "";
-                item.States = product["States"].ToString() ?? "";
-                item.UnitOfMeasure = product["UnitOfMeasure"].ToString() ?? "";
-                item.Form = product["Form"].ToString() ?? "";
-                item.MainImageUrl = product["MainImageUrl"].ToString() ?? "";
-                item.Width = Convert.ToDecimal(Convert.IsDBNull(product["Width"]) ? 0.0 : product["Width"]);
-                item.Height = Convert.ToDecimal(Convert.IsDBNull(product["Height"]) ? 0.0 : product["Height"]);
-                item.Length = Convert.ToDecimal(Convert.IsDBNull(product["Length"]) ? 0.0 : product["Length"]);
-                item.Weight = Convert.ToDecimal(Convert.IsDBNull(product["Weight"]) ? 0.0 : product["Weight"]);
-
-                item.ProductPriceId = product["ProductPriceId"].ToString() ?? "";
-                //item.ProductId = product["ProductId"].ToString() ?? "";
-                item.UnitPrice = Convert.ToDecimal(Convert.IsDBNull(product["UnitPrice"]) ? 0.0 : product["UnitPrice"]);
-                item.UPNMemberPrice = Convert.ToDecimal(Convert.IsDBNull(product["UPNMemberPrice"]) ? 0.0 : product["UPNMemberPrice"]);
-                item.Discount = Convert.ToDecimal(Convert.IsDBNull(product["Discount"]) ? 0.0 : product["Discount"]);
-                item.SalePrice = Convert.ToDecimal(Convert.IsDBNull(product["SalePrice"]) ? 0.0 : product["SalePrice"]);
-                item.SalePriceValidFrom = Convert.ToDateTime(Convert.IsDBNull(product["SalePriceValidFrom"]) ? DateTime.MinValue : product["SalePriceValidFrom"]);
-                item.SalePriceValidTo = Convert.ToDateTime(Convert.IsDBNull(product["SalePriceValidTo"]) ? DateTime.MinValue : product["SalePriceValidTo"]);
-                item.Taxable = Convert.ToInt32(Convert.IsDBNull(product["Taxable"]) ? 0 : product["Taxable"]) == 1 ? true : false;
-                item.ShippingCostApplicable = Convert.ToInt32(Convert.IsDBNull(product["ShippingCostApplicable"]) ? 0 : product["ShippingCostApplicable"]) == 1 ? true : false;
-                item.ShippingCost = Convert.ToDecimal(Convert.IsDBNull(product["ShippingCost"]) ? 0.0 : product["ShippingCost"]);
-                item.AmountInStock = Convert.ToInt32(Convert.IsDBNull(product["AmountInStock"]) ? 0 : product["AmountInStock"]);
-
-                item.ProductCategory.ProductCategoryId = Convert.ToInt32(product["ProductCategoryId"] != DBNull.Value ? product["ProductCategoryId"] : 0);
-                item.ProductCategory.CategoryName = product["CategoryName"].ToString() ?? "";
-
-                item.ProductGallery.ProductGalleryId = product["ProductGalleryId"].ToString() ?? "";
-                item.ProductGallery.ImageUrl = product["ImageUrl"].ToString() ?? "";
-                item.ProductGallery.Caption = product["Caption"].ToString() ?? "";
-                item.ProductGallery.Thumbnail1 = product["Thumbnail1"].ToString() ?? "";
-                item.ProductGallery.Thumbnail2 = product["Thumbnail2"].ToString() ?? "";
-                item.ProductGallery.Thumbnail3 = product["Thumbnail3"].ToString() ?? "";
-                item.ProductGallery.Thumbnail4 = product["Thumbnail4"].ToString() ?? "";
-                item.ProductGallery.Thumbnail5 = product["Thumbnail5"].ToString() ?? "";
-                item.ProductGallery.Thumbnail6 = product["Thumbnail6"].ToString() ?? "";
-                item.ProductGallery.VideoUrl = product["VideoUrl"].ToString() ?? "";
-
-                item.CategorySpecification.CategorySpecificationId = Convert.ToInt32(product["CategorySpecificationId"] != DBNull.Value ? product["CategorySpecificationId"] : 0);
-                item.CategorySpecification.SpecificationName = product["SpecificationName"].ToString() ?? "";
-
-                lstProduct.Add(item);
-            }
-            return lstProduct;
-        }
+        }        
 
         public async Task<UploadResponse> UploadImage(IFormFile image, string sellerId, string productId)
         {
@@ -535,34 +467,7 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
-        private ProductCriteria ValidateAndUpdateCriteria(ProductCriteria criteria)
-        {
-            // String null checks
-            if (criteria.Deals == null)
-                criteria.Deals = "";
-            if (criteria.Brands == null)
-                criteria.Brands = "";
-            if (criteria.Generics == null)
-                criteria.Generics = "";
-            if (criteria.WholeSeller == null)
-                criteria.WholeSeller = "";
-            if (criteria.VAWDSeller == null)
-                criteria.VAWDSeller = "";
-            if (criteria.NDCUPC == null)
-                criteria.NDCUPC = "";
-            if (criteria.ProductName == null)
-                criteria.ProductName = "";
-
-            // Datetime null checks
-            if (criteria.ExpiryDate == null)
-                criteria.ExpiryDate = DateTime.MinValue;
-            if (criteria.SalePriceValidFrom == null)
-                criteria.SalePriceValidFrom = DateTime.MinValue;
-            if (criteria.SalePriceValidTo == null)
-                criteria.SalePriceValidTo = DateTime.MinValue;
-
-            return criteria;
-        }
+        
         public async Task<Response<ProductInfo>> AddUpdateProductInfo(ProductInfo productInfo)
         {
             Response<ProductInfo> response = new Response<ProductInfo>();
@@ -701,7 +606,6 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-
         public async Task<Response<Models.ProductGallery>> AddUpdateProductGallery(Models.ProductGallery productGallery)
 
         {
@@ -753,24 +657,7 @@ namespace BAL.BusinessLogic.Helper
                 response.Message = ex.Message;
             }
             return response;
-        }
-
-        private static List<SpecialOffersResponse> MapDataTableToSpecialOffers(DataTable tbloffers)
-        {
-            List<SpecialOffersResponse> listspecialoffers = new List<SpecialOffersResponse>();
-            foreach (DataRow offers in tbloffers.Rows)
-            {
-                SpecialOffersResponse item = new SpecialOffersResponse();
-                item.Discount = Convert.ToDecimal(offers["Discount"] != DBNull.Value ? offers["Discount"] : 0);
-                item.SpecificationName = offers["SpecificationName"].ToString() ?? "";
-                item.CategorySpecificationId = Convert.ToInt32(offers["CategorySpecificationId"] != DBNull.Value ? offers["CategorySpecificationId"] : 0);
-
-                listspecialoffers.Add(item);
-            }
-            return listspecialoffers;
-        }
-
-
+        }        
 
         public async Task<Response<SpecialOffersResponse>> GetSpecialOffers()
         {
@@ -1108,6 +995,7 @@ namespace BAL.BusinessLogic.Helper
 
 
         }
+
         public async Task<Response<ProductRating>> UpdateProductRating(ProductRating productrating)
         {
             Response<ProductRating> response = new Response<ProductRating>();
@@ -1155,6 +1043,7 @@ namespace BAL.BusinessLogic.Helper
 
 
         }
+
         public async Task<Response<ProductRating>> GetRatingwithProduct(string ProductID)
         {
             Response<ProductRating> response = new Response<ProductRating>();
@@ -1178,6 +1067,7 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
+
         public async Task<Response<ProductRating>> GetRatingbyId(string RatingID)
         {
             Response<ProductRating> response = new Response<ProductRating>();
@@ -1200,25 +1090,8 @@ namespace BAL.BusinessLogic.Helper
                 response.Result = null;
             }
             return response;
-        }
-        private static List<ProductRating> MapDataTableToProductRating(DataTable tblProduct)
-        {
-            List<ProductRating> lstProduct = new List<ProductRating>();
-            foreach (DataRow product in tblProduct.Rows)
-            {
-                ProductRating item = new ProductRating();
-                item.RatingId = product["RatingID"].ToString() ?? "";
-                item.RatingId = product["ProductID"].ToString() ?? "";
-                item.RatingId = product["CustomerID"].ToString() ?? "";
-                item.Feedback = product["Feedback"].ToString() ?? "";
-                item.Rating = Convert.ToInt32(tblProduct.Rows[0]["Rating"] ?? 0);
-                item.Date = Convert.ToDateTime(Convert.IsDBNull(product["Date"]) ? DateTime.MinValue : product["Date"]);
-                item.IsActive = Convert.ToInt32(Convert.IsDBNull(product["IsActive"]) ? 0 : product["IsActive"]) == 1 ? true : false;
+        }        
 
-                lstProduct.Add(item);
-            }
-            return lstProduct;
-        }
         public async Task<Response<string>> RemoveProductRating(string RatingID)
         {
             Response<string> response = new Response<string>();
@@ -1249,5 +1122,180 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
+
+        public async Task<Response<ProductsPerCategory>> GetProductsPerCategoryCounts(string sellerId = "")
+        {
+            Response<ProductsPerCategory> response = new Response<ProductsPerCategory>();
+            try
+            {
+                MySqlCommand command = new MySqlCommand(StoredProcedures.PRODUCTS_GET_PRODUCTS_COUNT_BY_CATEGORY);
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@p_SellerId", sellerId);
+
+                DataTable rblResult = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(command));
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Fetch Data";
+                response.Result = MapDataTableToProductsPerCategory(rblResult);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+            return response;
+        }
+        #region Mapper methods
+        private List<SpecialOffersResponse> MapDataTableToSpecialOffers(DataTable tbloffers)
+        {
+            List<SpecialOffersResponse> listspecialoffers = new List<SpecialOffersResponse>();
+            foreach (DataRow offers in tbloffers.Rows)
+            {
+                SpecialOffersResponse item = new SpecialOffersResponse();
+                item.Discount = Convert.ToDecimal(offers["Discount"] != DBNull.Value ? offers["Discount"] : 0);
+                item.SpecificationName = offers["SpecificationName"].ToString() ?? "";
+                item.CategorySpecificationId = Convert.ToInt32(offers["CategorySpecificationId"] != DBNull.Value ? offers["CategorySpecificationId"] : 0);
+
+                listspecialoffers.Add(item);
+            }
+            return listspecialoffers;
+        }
+
+        private List<ProductResponse> MapDataTableToProductList(DataTable tblProduct)
+        {
+            List<ProductResponse> lstProduct = new List<ProductResponse>();
+            foreach (DataRow product in tblProduct.Rows)
+            {
+                ProductResponse item = new ProductResponse();
+                item.ProductID = product["ProductID"].ToString() ?? "";
+                item.ProductName = product["ProductName"].ToString() ?? "";
+                item.NDCorUPC = product["NDCorUPC"].ToString() ?? "";
+                item.BrandName = product["BrandName"].ToString() ?? "";
+                item.Manufacturer = product["Manufacturer"].ToString() ?? "";
+                item.Strength = product["Strength"].ToString() ?? "";
+                item.AvailableFromDate = Convert.ToDateTime(Convert.IsDBNull(product["AvailableFromDate"]) ? DateTime.MinValue : product["AvailableFromDate"]);
+                item.FormattedAvailableFromDate = item.AvailableFromDate.ToString("MM/yyyy");
+                item.LotNumber = product["LotNumber"].ToString() ?? "";
+                item.ExpiryDate = Convert.ToDateTime(Convert.IsDBNull(product["ExpiryDate"]) ? DateTime.MinValue : product["ExpiryDate"]);
+                item.FormattedExpiryDate = item.ExpiryDate.ToString("MM/yyyy");
+                item.PackQuantity = Convert.ToInt32(Convert.IsDBNull(product["PackQuantity"]) ? 0 : product["PackQuantity"]);
+                item.PackType = product["PackType"].ToString() ?? "";
+                item.PackCondition = product["PackCondition"].ToString() ?? "";
+                item.Size = product["Size"].ToString() ?? "";
+                item.ProductDescription = product["ProductDescription"].ToString() ?? "";
+                item.AboutTheProduct = product["AboutTheProduct"].ToString() ?? "";
+                item.SellerId = product["SellerId"].ToString() ?? "";
+                item.SellerFirstName = product["SellerFirstName"].ToString() ?? "";
+                item.SellerLastName = product["SellerLastName"].ToString() ?? "";
+                item.States = product["States"].ToString() ?? "";
+                item.UnitOfMeasure = product["UnitOfMeasure"].ToString() ?? "";
+                item.Form = product["Form"].ToString() ?? "";
+                item.MainImageUrl = product["MainImageUrl"].ToString() ?? "";
+                item.Width = Convert.ToDecimal(Convert.IsDBNull(product["Width"]) ? 0.0 : product["Width"]);
+                item.Height = Convert.ToDecimal(Convert.IsDBNull(product["Height"]) ? 0.0 : product["Height"]);
+                item.Length = Convert.ToDecimal(Convert.IsDBNull(product["Length"]) ? 0.0 : product["Length"]);
+                item.Weight = Convert.ToDecimal(Convert.IsDBNull(product["Weight"]) ? 0.0 : product["Weight"]);
+
+                item.ProductPriceId = product["ProductPriceId"].ToString() ?? "";
+                //item.ProductId = product["ProductId"].ToString() ?? "";
+                item.UnitPrice = Convert.ToDecimal(Convert.IsDBNull(product["UnitPrice"]) ? 0.0 : product["UnitPrice"]);
+                item.UPNMemberPrice = Convert.ToDecimal(Convert.IsDBNull(product["UPNMemberPrice"]) ? 0.0 : product["UPNMemberPrice"]);
+                item.Discount = Convert.ToDecimal(Convert.IsDBNull(product["Discount"]) ? 0.0 : product["Discount"]);
+                item.SalePrice = Convert.ToDecimal(Convert.IsDBNull(product["SalePrice"]) ? 0.0 : product["SalePrice"]);
+                item.SalePriceValidFrom = Convert.ToDateTime(Convert.IsDBNull(product["SalePriceValidFrom"]) ? DateTime.MinValue : product["SalePriceValidFrom"]);
+                item.SalePriceValidTo = Convert.ToDateTime(Convert.IsDBNull(product["SalePriceValidTo"]) ? DateTime.MinValue : product["SalePriceValidTo"]);
+                item.Taxable = Convert.ToInt32(Convert.IsDBNull(product["Taxable"]) ? 0 : product["Taxable"]) == 1 ? true : false;
+                item.ShippingCostApplicable = Convert.ToInt32(Convert.IsDBNull(product["ShippingCostApplicable"]) ? 0 : product["ShippingCostApplicable"]) == 1 ? true : false;
+                item.ShippingCost = Convert.ToDecimal(Convert.IsDBNull(product["ShippingCost"]) ? 0.0 : product["ShippingCost"]);
+                item.AmountInStock = Convert.ToInt32(Convert.IsDBNull(product["AmountInStock"]) ? 0 : product["AmountInStock"]);
+
+                item.ProductCategory.ProductCategoryId = Convert.ToInt32(product["ProductCategoryId"] != DBNull.Value ? product["ProductCategoryId"] : 0);
+                item.ProductCategory.CategoryName = product["CategoryName"].ToString() ?? "";
+
+                item.ProductGallery.ProductGalleryId = product["ProductGalleryId"].ToString() ?? "";
+                item.ProductGallery.ImageUrl = product["ImageUrl"].ToString() ?? "";
+                item.ProductGallery.Caption = product["Caption"].ToString() ?? "";
+                item.ProductGallery.Thumbnail1 = product["Thumbnail1"].ToString() ?? "";
+                item.ProductGallery.Thumbnail2 = product["Thumbnail2"].ToString() ?? "";
+                item.ProductGallery.Thumbnail3 = product["Thumbnail3"].ToString() ?? "";
+                item.ProductGallery.Thumbnail4 = product["Thumbnail4"].ToString() ?? "";
+                item.ProductGallery.Thumbnail5 = product["Thumbnail5"].ToString() ?? "";
+                item.ProductGallery.Thumbnail6 = product["Thumbnail6"].ToString() ?? "";
+                item.ProductGallery.VideoUrl = product["VideoUrl"].ToString() ?? "";
+
+                item.CategorySpecification.CategorySpecificationId = Convert.ToInt32(product["CategorySpecificationId"] != DBNull.Value ? product["CategorySpecificationId"] : 0);
+                item.CategorySpecification.SpecificationName = product["SpecificationName"].ToString() ?? "";
+
+                lstProduct.Add(item);
+            }
+            return lstProduct;
+        }
+
+        private ProductCriteria ValidateAndUpdateCriteria(ProductCriteria criteria)
+        {
+            // String null checks
+            if (criteria.Deals == null)
+                criteria.Deals = "";
+            if (criteria.Brands == null)
+                criteria.Brands = "";
+            if (criteria.Generics == null)
+                criteria.Generics = "";
+            if (criteria.WholeSeller == null)
+                criteria.WholeSeller = "";
+            if (criteria.VAWDSeller == null)
+                criteria.VAWDSeller = "";
+            if (criteria.NDCUPC == null)
+                criteria.NDCUPC = "";
+            if (criteria.ProductName == null)
+                criteria.ProductName = "";
+
+            // Datetime null checks
+            if (criteria.ExpiryDate == null)
+                criteria.ExpiryDate = DateTime.MinValue;
+            if (criteria.SalePriceValidFrom == null)
+                criteria.SalePriceValidFrom = DateTime.MinValue;
+            if (criteria.SalePriceValidTo == null)
+                criteria.SalePriceValidTo = DateTime.MinValue;
+
+            return criteria;
+        }
+
+        private List<ProductRating> MapDataTableToProductRating(DataTable tblProduct)
+        {
+            List<ProductRating> lstProduct = new List<ProductRating>();
+            foreach (DataRow product in tblProduct.Rows)
+            {
+                ProductRating item = new ProductRating();
+                item.RatingId = product["RatingID"].ToString() ?? "";
+                item.RatingId = product["ProductID"].ToString() ?? "";
+                item.RatingId = product["CustomerID"].ToString() ?? "";
+                item.Feedback = product["Feedback"].ToString() ?? "";
+                item.Rating = Convert.ToInt32(tblProduct.Rows[0]["Rating"] ?? 0);
+                item.Date = Convert.ToDateTime(Convert.IsDBNull(product["Date"]) ? DateTime.MinValue : product["Date"]);
+                item.IsActive = Convert.ToInt32(Convert.IsDBNull(product["IsActive"]) ? 0 : product["IsActive"]) == 1 ? true : false;
+
+                lstProduct.Add(item);
+            }
+            return lstProduct;
+        }
+
+        private List<ProductsPerCategory> MapDataTableToProductsPerCategory(DataTable tblProduct)
+        {
+            List<ProductsPerCategory> lstProduct = new List<ProductsPerCategory>();
+            foreach (DataRow product in tblProduct.Rows)
+            {
+                ProductsPerCategory item = new ProductsPerCategory();
+                item.CategoryId = Convert.ToInt32(product["CategoryId"] == DBNull.Value ? 0 : product["CategoryId"]);
+                item.CategoryName = product["CategoryName"].ToString() ?? "";
+                item.Count = Convert.ToInt32(product["Count"] == DBNull.Value ? 0 : product["Count"]);              
+
+                lstProduct.Add(item);
+            }
+            return lstProduct;
+        }
+
+        #endregion Mapper methods
     }
 }
