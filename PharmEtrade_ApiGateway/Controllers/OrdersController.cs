@@ -21,9 +21,17 @@ namespace PharmEtrade_ApiGateway.Controllers
 
         [HttpPost]
         [Route("Add")]
-        public async Task<IActionResult> AddOrder(OrderRequest request)
+        public async Task<IActionResult> AddOrder(TempOrderRequest request)
         {
             OrderResponse response = await _ordersRepository.AddOrder(request);
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("Place")]
+        public async Task<IActionResult> AddUpdateOrder(OrderRequest request)
+        {
+            OrderResponse response = await _ordersRepository.AddUpdateOrder(request);
             return Ok(response);
         }
 

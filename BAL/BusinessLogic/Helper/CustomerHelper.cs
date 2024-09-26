@@ -580,6 +580,7 @@ namespace BAL.BusinessLogic.Helper
                     cmd.Parameters.AddWithValue("p_PharmacyLicenseCopy", businessInfo.PharmacyLicenseCopy); // Use S3 path
                     cmd.Parameters.AddWithValue("p_NPI", businessInfo.NPI);
                     cmd.Parameters.AddWithValue("p_NCPDP", businessInfo.NCPDP);
+                    cmd.Parameters.AddWithValue("p_CompanyWebsite", businessInfo.CompanyWebsite);
 
                     var result = await cmd.ExecuteScalarAsync();
                     if (result != null && result.ToString() == "Business Info Updated successfully.")

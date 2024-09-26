@@ -47,7 +47,7 @@ namespace BAL.Common
 
 
         // ORDERS
-        public const string ADD_UPDATE_ORDER = "sp_InsertOrder";
+        public const string ADD_UPDATE_ORDER = "sp_AddUpdateOrder";
 
         public const string GET_ORDERS = "sp_GetOrders";
         public const string GET_ORDERS_BY_SELLER = "sp_GetOrdersByVendorId";

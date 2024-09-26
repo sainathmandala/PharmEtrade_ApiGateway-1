@@ -14,7 +14,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             _orders = orders;
         }
-        public async Task<OrderResponse> AddOrder(OrderRequest orderRequest)
+        public async Task<OrderResponse> AddOrder(TempOrderRequest orderRequest)
         {
             OrderResponse response = await _orders.AddOrder(orderRequest);
             return response;
@@ -33,7 +33,10 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             PaymentResponse response = await _orders.AddPayment(paymentRequest);
             return response;
         }
-       
 
+        public async Task<OrderResponse> AddUpdateOrder(OrderRequest orderRequest)
+        {
+            return await _orders.AddUpdateOrder(orderRequest);
+        }
     }
 }

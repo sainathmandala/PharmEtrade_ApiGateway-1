@@ -36,6 +36,7 @@ namespace BAL.ResponseModels
         public DateTime AvailableFromDate { get; set; }
         public string FormattedAvailableFromDate { get; set; }
         public DateTime ExpiryDate { get; set; }
+        public bool IsFullPack { get; set; }
         public string FormattedExpiryDate { get; set; }
         public int PackQuantity { get; set; }
         public string PackType { get; set; }
@@ -44,6 +45,7 @@ namespace BAL.ResponseModels
         public string AboutTheProduct { get; set; }
         public int CategorySpecificationId { get; set; }
         public int ProductTypeId { get; set; }
+        public string SKU { get; set; }
         public string SellerId { get; set; }
         public string SellerFirstName { get; set; }
         public string SellerLastName { get; set; }

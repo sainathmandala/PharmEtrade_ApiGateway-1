@@ -11,10 +11,11 @@ namespace BAL.BusinessLogic.Interface
 {
     public interface IOrders
     {
-        Task<OrderResponse> AddOrder(OrderRequest orderRequest);
+        Task<OrderResponse> AddOrder(TempOrderRequest orderRequest);
         Task<Response<Order>> GetOrdersByCustomerId(string customerId);
         Task<Response<Order>> GetOrdersBySellerId(string VendorId);
         Task<PaymentResponse> AddPayment(PaymentRequest paymentRequest);
+        Task<OrderResponse> AddUpdateOrder(OrderRequest orderRequest);
 
     }
 }

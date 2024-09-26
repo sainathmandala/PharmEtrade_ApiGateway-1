@@ -29,5 +29,6 @@ namespace BAL.ViewModels
         public string? PharmacyLicenseCopy { get; set; }
         public string? NPI { get; set; }
         public string? NCPDP { get; set; }
+        public string? CompanyWebsite { get; set;}
     }
 }

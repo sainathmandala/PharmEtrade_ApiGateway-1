@@ -15,8 +15,8 @@ using BAL.Models;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-
-
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -34,7 +34,8 @@ namespace BAL.BusinessLogic.Helper
             _connectionString = configuration.GetConnectionString("APIDBConnectionString");
             _emailHelper = emailHelper;
         }
-        public async Task<OrderResponse> AddOrder(OrderRequest orderRequest)
+
+        public async Task<OrderResponse> AddOrder(TempOrderRequest orderRequest)
         {
             OrderResponse response = new OrderResponse();
             using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
@@ -62,23 +63,23 @@ namespace BAL.BusinessLogic.Helper
                         {
                             response.Status = 200;
                             response.CustomerName = tblOrders.Rows[0]["CustomerName"].ToString() ?? "";
-                            response.ProductName = tblOrders.Rows[0]["ProductName"].ToString() ?? "";
+                            //response.ProductName = tblOrders.Rows[0]["ProductName"].ToString() ?? "";
                             response.OrderId = tblOrders.Rows[0]["OrderId"].ToString() ?? "";
-                            response.ImageUrl = orderRequest.ImageUrl;
+                            //response.ImageUrl = orderRequest.ImageUrl;
                             string _customerEmail = tblOrders.Rows[0]["CustomerEmail"].ToString() ?? "";
                             int _quantity = Convert.ToInt32(string.IsNullOrEmpty(tblOrders.Rows[0]["Quantity"].ToString() ?? "") ? 0 : tblOrders.Rows[0]["Quantity"]);
 
                             //response.VendorName = tblOrders.Rows[0][""].ToString();
                             response.Message = "Success";
-                            string _mailBody = string.Format(EmailTemplates.ORDER_TEMPLATE
-                                                                ,1
-                                                                ,orderRequest.ImageUrl
-                                                                ,response.ProductName
-                                                                ,orderRequest.PricePerProduct
-                                                                ,_quantity
-                                                                ,(orderRequest.Quantity * orderRequest.PricePerProduct));
-                            _mailBody.Replace("[[OrderId]]", response.OrderId);
-                            await _emailHelper.SendEmail(_customerEmail, "", "Your Order Has been Placed", _mailBody);
+                            //string _mailBody = string.Format(EmailTemplates.ORDER_TEMPLATE
+                            //                                    , 1
+                            //                                    , orderRequest.ImageUrl
+                            //                                    , response.ProductName
+                            //                                    , orderRequest.PricePerProduct
+                            //                                    , _quantity
+                            //                                    , (orderRequest.Quantity * orderRequest.PricePerProduct));
+                            //_mailBody.Replace("[[OrderId]]", response.OrderId);
+                            //await _emailHelper.SendEmail(_customerEmail, "", "Your Order Has been Placed", _mailBody);
                         }
                         else
                         {
@@ -101,6 +102,85 @@ namespace BAL.BusinessLogic.Helper
                     return response;
                 }
             }
+        }
+
+        public async Task<OrderResponse> AddUpdateOrder(OrderRequest orderRequest)
+        {
+            OrderResponse response = new OrderResponse();
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(StoredProcedures.ADD_UPDATE_ORDER, sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@p_OrderId", orderRequest.OrderId);
+                    cmd.Parameters.AddWithValue("@p_CustomerId", orderRequest.CustomerId);
+                    cmd.Parameters.AddWithValue("@p_TotalAmount", orderRequest.TotalAmount);
+                    cmd.Parameters.AddWithValue("@p_ShippingMethodId", orderRequest.ShippingMethodId);
+                    cmd.Parameters.AddWithValue("@p_OrderStatusId", orderRequest.OrderStatusId);
+                    cmd.Parameters.AddWithValue("@p_TrackingNumber", orderRequest.TrackingNumber);
+                    var productsTable = JsonConvert.SerializeObject(orderRequest.Products);
+                    cmd.Parameters.AddWithValue("@p_ProductsTable", productsTable);
+
+                    try
+                    {
+                        DataTable tblOrders = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
+
+                        if (tblOrders.Rows.Count > 0)
+                        {
+                            response = MapDatatableToOrderResponse(tblOrders);
+                            response.Status = 200;
+                            response.Message = "Success";
+
+                            string _mailBody = EmailTemplates.ORDER_TEMPLATE;
+                            _mailBody = _mailBody.Replace("{{OrderId}}", response.OrderId);
+                            _mailBody = _mailBody.Replace("{{OrderDetailsHTML}}", GetOrderDetailsHTML(response));                            
+                            await _emailHelper.SendEmail(response.CustomerEmail, "", "Your Order Has been Placed", _mailBody);
+                        }
+                        else
+                        {
+                            response.Status = 400;
+                            response.Message = "Failed to add product to cart.";
+                        }
+                    }
+                    catch (MySqlException ex) when (ex.Number == 500)
+                    {
+                        //Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertAddToCartProduct : errormessage:" + ex.Message.ToString()));
+                        response.Status = 500;
+                        response.Message = "ERROR : " + ex.Message;
+                    }
+                    catch (Exception ex)
+                    {
+                        //Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertAddToCartProduct : errormessage:" + ex.Message.ToString()));
+                        response.Status = 500;
+                        response.Message = "ERROR : " + ex.Message;
+                    }
+                    return response;
+                }
+            }
+        }
+
+        private string GetOrderDetailsHTML(OrderResponse response)
+        {
+            string _orderDetailsHTML = "";
+            int sNumber = 1;
+            foreach (var details in response.Products)
+            {
+                _orderDetailsHTML += "<tr>";
+                _orderDetailsHTML += string.Format("<td> {0} </td>", sNumber);
+                _orderDetailsHTML += string.Format("<td> <img src='{0}' width='150px' height='100px' /> </td>", details.ImageUrl);
+                _orderDetailsHTML += string.Format("<td> {0} </td>",details.ProductName);
+                _orderDetailsHTML += string.Format("<td> {0} </td>",details.PricePerProduct);
+                _orderDetailsHTML += string.Format("<td> {0} </td>",details.Quantity);
+                _orderDetailsHTML += string.Format("<td> {0} </td>", (details.PricePerProduct * details.Quantity));
+                _orderDetailsHTML += "</tr>";
+                sNumber++;
+            }
+            _orderDetailsHTML += "<tr style='font-weight:bold'><td colspan='4'></td>";
+            _orderDetailsHTML += string.Format("<td> Total </td>", sNumber);
+            _orderDetailsHTML += string.Format("<td> {0} </td>", response.TotalAmount);
+            _orderDetailsHTML += "</tr>";
+
+            return _orderDetailsHTML;
         }
 
         public async Task<Response<Order>> GetOrdersByCustomerId(string customerId)
@@ -136,7 +216,7 @@ namespace BAL.BusinessLogic.Helper
                                 {
                                     OrderId = row["OrderId"].ToString() ?? "",
                                     CustomerId = row["CustomerId"].ToString(),
-                                    CustomerName = row["CustomerName"].ToString()??"",
+                                    CustomerName = row["CustomerName"].ToString() ?? "",
                                     ProductId = row["ProductId"].ToString(),
                                     ProductName = row["ProductName"].ToString() ?? "",
                                     TotalAmount = Convert.ToDouble(row["TotalAmount"]),
@@ -150,7 +230,7 @@ namespace BAL.BusinessLogic.Helper
                                     ProductDescription = row["ProductDescription"].ToString() ?? "",
                                     //OrderDate = Convert.ToDateTime(row["OrderDate"])
                                     OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue,
-                                    ImageUrl = row["MainImageUrl"].ToString() ?? "" 
+                                    ImageUrl = row["MainImageUrl"].ToString() ?? ""
 
                                 });
                             }
@@ -176,6 +256,7 @@ namespace BAL.BusinessLogic.Helper
                 }
             }
         }
+
         public async Task<Response<Order>> GetOrdersBySellerId(string VendorId)
         {
             var response = new Response<Order>();
@@ -300,13 +381,14 @@ namespace BAL.BusinessLogic.Helper
             }
 
         }
+
         private static List<SpecialOffersResponse> MapDataTableToSpecialOffers(DataTable tbloffers)
         {
             List<SpecialOffersResponse> listspecialoffers = new List<SpecialOffersResponse>();
             foreach (DataRow offers in tbloffers.Rows)
             {
                 SpecialOffersResponse item = new SpecialOffersResponse();
-                item.Discount = Convert.ToInt32(offers["Discount"]!=DBNull.Value ? offers["Discount"]:0);
+                item.Discount = Convert.ToInt32(offers["Discount"] != DBNull.Value ? offers["Discount"] : 0);
                 item.SpecificationName = offers["SpecificationName"].ToString() ?? "";
                 item.CategorySpecificationId = Convert.ToInt32(offers["CategorySpecificationId"] != DBNull.Value ? offers["CategorySpecificationId"] : 0);
 
@@ -314,8 +396,6 @@ namespace BAL.BusinessLogic.Helper
             }
             return listspecialoffers;
         }
-
-
 
         public async Task<Response<SpecialOffersResponse>> GetSpecialOffers()
         {
@@ -335,8 +415,39 @@ namespace BAL.BusinessLogic.Helper
                 response.Message = ex.Message;
                 response.Result = null;
             }
-            return response ;
+            return response;
         }
+
+        #region Mapping Methods
+        private OrderResponse MapDatatableToOrderResponse(DataTable tblData)
+        {
+            var response = new OrderResponse();
+            response.OrderId = tblData.Rows[0]["OrderId"].ToString() ?? "";
+            response.CustomerId = tblData.Rows[0]["CustomerId"].ToString() ?? "";
+            response.CustomerEmail = tblData.Rows[0]["CustomerEmail"].ToString() ?? "";
+            response.CustomerName = tblData.Rows[0]["CustomerName"].ToString() ?? "";
+            response.OrderStatus = tblData.Rows[0]["OrderStatus"].ToString() ?? "";
+            response.TrackingNumber = tblData.Rows[0]["TrackingNumber"].ToString() ?? "";
+            response.ShippingMethod = tblData.Rows[0]["ShippingMethod"].ToString() ?? "";
+            response.OrderDate = tblData.Rows[0]["OrderDate"] != DBNull.Value ? Convert.ToDateTime(tblData.Rows[0]["OrderDate"]) : DateTime.MinValue;
+            response.TotalAmount = 0.0M;
+            response.Products = new List<OrderProductResponse>();
+            foreach (DataRow row in tblData.Rows)
+            {
+                OrderProductResponse pResponse = new OrderProductResponse();
+                pResponse.ProductId = row["ProductId"].ToString() ?? "";
+                pResponse.SellerId = row["SellerId"].ToString() ?? "";
+                pResponse.ProductName = row["ProductName"].ToString() ?? "";
+                pResponse.SellerName = row["SellerName"].ToString() ?? "";
+                pResponse.ImageUrl = row["ImageUrl"].ToString() ?? "";
+                pResponse.Quantity = Convert.ToInt32(Convert.IsDBNull(row["Quantity"]) ? 0 : row["Quantity"]);
+                pResponse.PricePerProduct = Convert.ToDecimal(Convert.IsDBNull(row["PricePerProduct"]) ? 0.0 : row["PricePerProduct"]);
+                response.TotalAmount += (pResponse.PricePerProduct * pResponse.Quantity);
+                response.Products.Add(pResponse);
+            }
+            return response;
+        }
+        #endregion Mapping Methods
 
     }
 }

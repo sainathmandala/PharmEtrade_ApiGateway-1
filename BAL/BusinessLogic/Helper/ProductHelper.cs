@@ -488,6 +488,7 @@ namespace BAL.BusinessLogic.Helper
                 cmdProductInfo.Parameters.AddWithValue("@p_AvailableFromDate", productInfo.AvailableFromDate);
                 cmdProductInfo.Parameters.AddWithValue("@p_LotNumber", productInfo.LotNumber);
                 cmdProductInfo.Parameters.AddWithValue("@p_ExpiryDate", productInfo.ExpiryDate);
+                cmdProductInfo.Parameters.AddWithValue("@p_IsFullPack", productInfo.IsFullPack ? 1 : 0);
                 cmdProductInfo.Parameters.AddWithValue("@p_PackQuantity", productInfo.PackQuantity);
                 cmdProductInfo.Parameters.AddWithValue("@p_PackType", productInfo.PackType);
                 cmdProductInfo.Parameters.AddWithValue("@p_PackCondition", productInfo.PackCondition);
@@ -495,6 +496,7 @@ namespace BAL.BusinessLogic.Helper
                 cmdProductInfo.Parameters.AddWithValue("@p_AboutTheProduct", productInfo.AboutTheProduct);
                 cmdProductInfo.Parameters.AddWithValue("@p_CategorySpecificationId", productInfo.CategorySpecificationId);
                 cmdProductInfo.Parameters.AddWithValue("@p_ProductTypeId", productInfo.ProductTypeId);
+                cmdProductInfo.Parameters.AddWithValue("@p_SKU", productInfo.SKU);
                 cmdProductInfo.Parameters.AddWithValue("@p_SellerId", productInfo.SellerId);
                 cmdProductInfo.Parameters.AddWithValue("@p_States", productInfo.States);
                 cmdProductInfo.Parameters.AddWithValue("@p_Form", productInfo.Form);
@@ -521,6 +523,7 @@ namespace BAL.BusinessLogic.Helper
                     objProductInfo.AvailableFromDate = Convert.IsDBNull(tblProduct.Rows[0]["AvailableFromDate"]) ? null : Convert.ToDateTime(tblProduct.Rows[0]["AvailableFromDate"]); 
                     objProductInfo.LotNumber = tblProduct.Rows[0]["LotNumber"].ToString() ?? "";
                     objProductInfo.ExpiryDate = Convert.IsDBNull(tblProduct.Rows[0]["ExpiryDate"]) ? null : Convert.ToDateTime(tblProduct.Rows[0]["ExpiryDate"]);
+                    objProductInfo.IsFullPack = Convert.ToInt32(Convert.IsDBNull(tblProduct.Rows[0]["IsFullPack"]) ? 0 : tblProduct.Rows[0]["IsFullPack"]) == 1;
                     objProductInfo.PackQuantity = Convert.ToInt32(tblProduct.Rows[0]["PackQuantity"] ?? 0);
                     objProductInfo.PackCondition = tblProduct.Rows[0]["PackCondition"].ToString() ?? "";
                     objProductInfo.PackType = tblProduct.Rows[0]["PackType"].ToString() ?? "";
@@ -528,6 +531,7 @@ namespace BAL.BusinessLogic.Helper
                     objProductInfo.AboutTheProduct = tblProduct.Rows[0]["AboutTheProduct"].ToString() ?? "";
                     objProductInfo.CategorySpecificationId = Convert.ToInt32(tblProduct.Rows[0]["CategorySpecificationId"] ?? 0);
                     objProductInfo.ProductTypeId = Convert.ToInt32(tblProduct.Rows[0]["ProductTypeId"] ?? 0);
+                    objProductInfo.SKU = tblProduct.Rows[0]["SKU"].ToString() ?? "";
                     objProductInfo.SellerId = tblProduct.Rows[0]["SellerId"].ToString() ?? "";
                     objProductInfo.States = tblProduct.Rows[0]["States"].ToString() ?? "";
                     objProductInfo.Form = tblProduct.Rows[0]["Form"].ToString() ?? "";
@@ -1147,6 +1151,68 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
+
+        public async Task<Response<string>> DeactivateProduct(string productId)
+        {
+            Response<string> response = new Response<string>();
+            try
+            {
+                MySqlCommand cmdDeactiveProduct = new MySqlCommand(StoredProcedures.PRODUCT_DEACTIVE);
+                cmdDeactiveProduct.CommandType = CommandType.StoredProcedure;
+
+                cmdDeactiveProduct.Parameters.AddWithValue("@p_ProductId", productId);
+
+                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmdDeactiveProduct.Parameters.Add(outMessageParam);
+
+                await _isqlDataHelper.ExcuteNonQueryasync(cmdDeactiveProduct);
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Command Execution";
+                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
+            }
+            catch (Exception ex)
+            {
+
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<string>> DeleteProduct(string productId)
+        {
+            Response<string> response = new Response<string>();
+            try
+            {
+                MySqlCommand cmdDeactiveProduct = new MySqlCommand(StoredProcedures.PRODUCT_DELETE);
+                cmdDeactiveProduct.CommandType = CommandType.StoredProcedure;
+
+                cmdDeactiveProduct.Parameters.AddWithValue("@p_ProductId", productId);
+
+                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmdDeactiveProduct.Parameters.Add(outMessageParam);
+
+                await _isqlDataHelper.ExcuteNonQueryasync(cmdDeactiveProduct);
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Command Execution";
+                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
+            }
+            catch (Exception ex)
+            {
+
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
         #region Mapper methods
         private List<SpecialOffersResponse> MapDataTableToSpecialOffers(DataTable tbloffers)
         {
@@ -1180,6 +1246,8 @@ namespace BAL.BusinessLogic.Helper
                 item.LotNumber = product["LotNumber"].ToString() ?? "";
                 item.ExpiryDate = Convert.ToDateTime(Convert.IsDBNull(product["ExpiryDate"]) ? DateTime.MinValue : product["ExpiryDate"]);
                 item.FormattedExpiryDate = item.ExpiryDate.ToString("MM/yyyy");
+                item.IsFullPack = Convert.ToInt32(Convert.IsDBNull(product["IsFullPack"]) ? 0 : product["IsFullPack"]) == 1;
+                item.SKU = product["SKU"].ToString() ?? "";
                 item.PackQuantity = Convert.ToInt32(Convert.IsDBNull(product["PackQuantity"]) ? 0 : product["PackQuantity"]);
                 item.PackType = product["PackType"].ToString() ?? "";
                 item.PackCondition = product["PackCondition"].ToString() ?? "";
@@ -1294,77 +1362,7 @@ namespace BAL.BusinessLogic.Helper
                 lstProduct.Add(item);
             }
             return lstProduct;
-        }
-
-        public  async Task<Response<string>> DeactivateProduct(string productId)
-        {
-            Response<string> response = new Response<string>();
-            try
-            {
-                MySqlCommand cmdDeactiveProduct = new MySqlCommand(StoredProcedures.PRODUCT_DEACTIVE);
-                cmdDeactiveProduct.CommandType = CommandType.StoredProcedure;
-
-                cmdDeactiveProduct.Parameters.AddWithValue("@p_ProductId", productId);
-
-                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
-                {
-                    Direction = ParameterDirection.Output
-                };
-                cmdDeactiveProduct.Parameters.Add(outMessageParam);
-
-                await _isqlDataHelper.ExcuteNonQueryasync(cmdDeactiveProduct);
-
-                response.StatusCode = 200;
-                response.Message = "SUCCESS : Command Execution";
-                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
-            }
-            catch (Exception ex)
-            {
-                
-                response.StatusCode = 500;
-                response.Message = ex.Message;
-            }
-            return response;
-        }
-
-
-
-        public async Task<Response<string>> DeleteProduct(string productId)
-        {
-            Response<string> response = new Response<string>();
-            try
-            {
-                MySqlCommand cmdDeactiveProduct = new MySqlCommand(StoredProcedures.PRODUCT_DELETE);
-                cmdDeactiveProduct.CommandType = CommandType.StoredProcedure;
-
-                cmdDeactiveProduct.Parameters.AddWithValue("@p_ProductId", productId);
-
-                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
-                {
-                    Direction = ParameterDirection.Output
-                };
-                cmdDeactiveProduct.Parameters.Add(outMessageParam);
-
-                await _isqlDataHelper.ExcuteNonQueryasync(cmdDeactiveProduct);
-
-                response.StatusCode = 200;
-                response.Message = "SUCCESS : Command Execution";
-                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
-            }
-            catch (Exception ex)
-            {
-
-                response.StatusCode = 500;
-                response.Message = ex.Message;
-            }
-            return response;
-        }
-
-
-
-
-
-
+        }        
         #endregion Mapper methods
     }
 }

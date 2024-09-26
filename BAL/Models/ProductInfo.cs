@@ -19,6 +19,7 @@ namespace BAL.Models
         public string LotNumber { get; set; }
         public DateTime? AvailableFromDate { get; set; }
         public DateTime? ExpiryDate { get; set; }
+        public bool IsFullPack { get; set; }
         public int PackQuantity { get; set; }
         public string PackType { get; set; }
         public string PackCondition { get; set; }
@@ -26,6 +27,7 @@ namespace BAL.Models
         public string AboutTheProduct { get; set; }
         public int CategorySpecificationId { get; set; }
         public int ProductTypeId { get; set; }
+        public string SKU { get; set; }
         public string SellerId { get; set; }        
         public string? States { get; set; }
         public string UnitOfMeasure { get; set; }
