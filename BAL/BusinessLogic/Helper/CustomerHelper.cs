@@ -11,7 +11,6 @@ using BAL.ResponseModels;
 using Microsoft.AspNetCore.Http;
 using BAL.Models;
 using BAL.RequestModels;
-using Azure;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -24,8 +23,6 @@ namespace BAL.BusinessLogic.Helper
         private readonly SmtpSettings _smtpSettings;
         private readonly S3Helper _s3Helper;
         private readonly IEmailHelper _emailHelper;
-
-
 
         public CustomerHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper, SmtpSettings smtpSettings , IEmailHelper emailHelper)
         {
@@ -519,10 +516,10 @@ namespace BAL.BusinessLogic.Helper
                     {
                         reader.Read();
                         return reader["Status"].ToString() ?? "";
-                        string _mailBody = EmailTemplates.CUSTOMER_TEMPLATE;
-                        _mailBody = _mailBody.Replace("{{CustomerId}}", customer.CustomerId);
-                        _mailBody = _mailBody.Replace("{{RegistrationDetailsHTML}}", GetCustomerDetailsHTml(customer));
-                        await _emailHelper.SendEmail(customer.Email, "", " Registration is completed  Successfully ", _mailBody);
+                        //string _mailBody = EmailTemplates.CUSTOMER_TEMPLATE;
+                        //_mailBody = _mailBody.Replace("{{CustomerId}}", customer.CustomerId);
+                        //_mailBody = _mailBody.Replace("{{RegistrationDetailsHTML}}", GetCustomerDetailsHTml(customer));
+                        //await _emailHelper.SendEmail(customer.Email, "", " Registration is completed  Successfully ", _mailBody);
                     }
                     return "";
 
@@ -539,19 +536,18 @@ namespace BAL.BusinessLogic.Helper
         {
             string _GetCustomerDetailsHTml = "";
              int sNumber = 1;
-            foreach (var details in customer.CustomerDetails)
-            {
+           
                 _GetCustomerDetailsHTml += "<tr>";
-                _GetCustomerDetailsHTml += string.Format("<td> {0} </td>", sNumber);
-                _GetCustomerDetailsHTml += string.Format("<td> {0} </td>", details.FirstName);
-                _GetCustomerDetailsHTml += string.Format("<td> {0} </td>", details.Email);
-                _GetCustomerDetailsHTml += string.Format("<td> {0} </td>", details.Password);
-                _GetCustomerDetailsHTml += string.Format("<td> {0} </td>", details.Mobile);
-                _GetCustomerDetailsHTml +=string.Format("<td> {0}</td>",  details.CustomerTypeId);
-                _GetCustomerDetailsHTml += string.Format("<td> {0}</td>", details.AccountTypeId);
+                //_GetCustomerDetailsHTml += string.Format("<td> {0} </td>", sNumber);
+                //_GetCustomerDetailsHTml += string.Format("<td> {0} </td>", customer.FirstName);
+                //_GetCustomerDetailsHTml += string.Format("<td> {0} </td>", customer.Email);
+                //_GetCustomerDetailsHTml += string.Format("<td> {0} </td>", customer.Password);
+                //_GetCustomerDetailsHTml += string.Format("<td> {0} </td>", customer.Mobile);
+                //_GetCustomerDetailsHTml +=string.Format("<td> {0}</td>", customer.CustomerTypeId);
+                //_GetCustomerDetailsHTml += string.Format("<td> {0}</td>", customer.AccountTypeId);
                 _GetCustomerDetailsHTml += "</tr>";
                 sNumber++;
-            }
+           
             _GetCustomerDetailsHTml += "<tr style='font-weight:bold'><td colspan='4'></td>";
             _GetCustomerDetailsHTml += "</tr>";
 
