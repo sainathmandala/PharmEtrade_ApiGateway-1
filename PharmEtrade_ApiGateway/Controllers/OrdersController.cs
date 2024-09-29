@@ -19,13 +19,13 @@ namespace PharmEtrade_ApiGateway.Controllers
             _paymentinfoRepository = paymentinfoRepository;
         }
 
-        [HttpPost]
-        [Route("Add")]
-        public async Task<IActionResult> AddOrder(TempOrderRequest request)
-        {
-            OrderResponse response = await _ordersRepository.AddOrder(request);
-            return Ok(response);
-        }
+        //[HttpPost]
+        //[Route("Add")]
+        //public async Task<IActionResult> AddOrder(TempOrderRequest request)
+        //{
+        //    OrderResponse response = await _ordersRepository.AddOrder(request);
+        //    return Ok(response);
+        //}
 
         [HttpPost]
         [Route("Place")]
@@ -36,19 +36,52 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpGet]
-        [Route("Get")]
+        [Route("GetById")]
+        public async Task<IActionResult> GetOrdersByOrderId(string orderid)
+        {
+            var response = await _ordersRepository.GetOrdersByCustomerId(orderid);
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("Buyer/GetAll")]
         public async Task<IActionResult> GetOrdersByCustomerId(string? customerId)
         {
             var response = await _ordersRepository.GetOrdersByCustomerId(customerId);
             return Ok(response);
         }
+
+        // Seller Endpoints
         [HttpGet]
-        [Route("GetOrdersBySellerId")]
+        [Route("Seller/GetAll")]
         public async Task<IActionResult> GetOrdersBySellerId(string? vendorId)
         {
             var response = await _ordersRepository.GetOrdersBySellerId(vendorId);
             return Ok(response);
         }
+
+        [HttpGet("Seller/Products")]
+        public async Task<IActionResult> GetProductsOrderedForSeller(string vendorId)
+        {
+            var response = await _ordersRepository.GetOrdersBySellerId(vendorId);
+            return Ok(response);
+        }
+
+        [HttpGet("Seller/Customers")]
+        public async Task<IActionResult> GetCustomersOrderedForSeller(string vendorId)
+        {
+            var response = await _ordersRepository.GetOrdersBySellerId(vendorId);
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("Seller/Payments")]
+        public async Task<IActionResult> GetPaymentInfoBySellerId(string sellerId)
+        {
+            var response = await _paymentinfoRepository.GetPaymentInfoByCustmoerId(sellerId);
+            return Ok(response);
+        }
+
         [HttpPost]
         [Route("Payment")]
         public async Task<IActionResult> AddPayMent(PaymentRequest request)
