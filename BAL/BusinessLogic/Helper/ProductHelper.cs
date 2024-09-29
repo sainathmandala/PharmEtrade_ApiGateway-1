@@ -683,6 +683,33 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
+        public async Task<Response<SpecialOffersResponse>> GetSpecialOffersbyproductCategory()
+        {
+            Response<SpecialOffersResponse> response = new Response<SpecialOffersResponse>();
+            try
+            {
+                MySqlCommand command = new MySqlCommand("sp_GetSpecialOffersproductcategory");
+                command.CommandType = CommandType.StoredProcedure;
+                DataTable tbloffers = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(command));
+                response.StatusCode = 200;
+                response.Message = "Successfully Fetched Data.";
+                response.Result = MapDataTableToSpecialOffers(tbloffers);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+            return response;
+        }
+
+
+
+
+
+
+
 
         public async Task<Response<ProductResponse>> GetRelatedProducts(string productId)
         {

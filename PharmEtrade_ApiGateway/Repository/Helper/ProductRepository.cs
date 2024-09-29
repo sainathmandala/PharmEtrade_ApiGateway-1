@@ -91,6 +91,9 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return await _productHelper.GetProductsBySpecification(categorySpecificationId, withDiscount);
         }
 
+
+
+
         public async Task<Response<ProductResponse>> GetRecentSoldProducts(int numberOfProducts)
         {
             return await _productHelper.GetRecentSoldProducts(numberOfProducts);
@@ -149,6 +152,11 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _productHelper.GetSpecialOffers();
         }
+        public async Task<Response<SpecialOffersResponse>> GetSpecialOffersbyproductCategory()
+        {
+            return await _productHelper.GetSpecialOffersbyproductCategory();
+        }
+
 
         public async Task<Response<ProductResponse>> GetRelatedProducts(string productId)
         {

@@ -27,5 +27,25 @@ namespace BAL.Common
                                                     </table>
                                                     </body>
                                                     </html>";
+
+
+        public const string CUSTOMER_TEMPLATE = @"<html>
+                                                     <body>
+                                                      <h1 align='center'>Thank you for registration</h1>
+                                                      <h2 align='center'> please chek you registration details/h2>
+                                                      <h2 align= 'center'>Registraion ID :{{CustomerId}}
+                                                      <table border='2' align='center' width='80%'>
+                                                      <tr>
+                                                      <td> FirstName </td>
+                                                      <td> Email </td>
+                                                      <td> Password </td>
+                                                      <td> Mobile </td>
+                                                      <td> CustomerTypeId </td>
+                                                      <td> AccountTypeId </td>
+                                                      </tr>
+                                                      {{RegistrationDetailsHTML}}
+                                                      </table>
+                                                      </body>
+                                                      </html>";
     }
 }
