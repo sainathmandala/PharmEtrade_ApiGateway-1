@@ -11,7 +11,6 @@ using BAL.ResponseModels;
 using Microsoft.AspNetCore.Http;
 using BAL.Models;
 using BAL.RequestModels;
-using Azure;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -521,7 +520,7 @@ namespace BAL.BusinessLogic.Helper
                         return reader["Status"].ToString() ?? "";
                         string _mailBody = EmailTemplates.CUSTOMER_TEMPLATE;
                         _mailBody = _mailBody.Replace("{{CustomerId}}", customer.CustomerId);
-                        _mailBody = _mailBody.Replace("{{RegistrationDetailsHTML}}", GetCustomerDetailsHTml(customer));
+                       // _mailBody = _mailBody.Replace("{{RegistrationDetailsHTML}}", GetCustomerDetailsHTml(customer));
                         await _emailHelper.SendEmail(customer.Email, "", " Registration is completed  Successfully ", _mailBody);
                     }
                     return "";
@@ -535,29 +534,29 @@ namespace BAL.BusinessLogic.Helper
                 }
             }
         }
-        private string GetCustomerDetailsHTml(CustomerResponse customer)
-        {
-            string _GetCustomerDetailsHTml = "";
-             int sNumber = 1;
-            foreach (var details in customer.CustomerDetails)
-            {
-                _GetCustomerDetailsHTml += "<tr>";
-                _GetCustomerDetailsHTml += string.Format("<td> {0} </td>", sNumber);
-                _GetCustomerDetailsHTml += string.Format("<td> {0} </td>", details.FirstName);
-                _GetCustomerDetailsHTml += string.Format("<td> {0} </td>", details.Email);
-                _GetCustomerDetailsHTml += string.Format("<td> {0} </td>", details.Password);
-                _GetCustomerDetailsHTml += string.Format("<td> {0} </td>", details.Mobile);
-                _GetCustomerDetailsHTml +=string.Format("<td> {0}</td>",  details.CustomerTypeId);
-                _GetCustomerDetailsHTml += string.Format("<td> {0}</td>", details.AccountTypeId);
-                _GetCustomerDetailsHTml += "</tr>";
-                sNumber++;
-            }
-            _GetCustomerDetailsHTml += "<tr style='font-weight:bold'><td colspan='4'></td>";
-            _GetCustomerDetailsHTml += "</tr>";
+        //private string GetCustomerDetailsHTml(CustomerResponse customer)
+        //{
+        //    string _GetCustomerDetailsHTml = "";
+        //     int sNumber = 1;
+        //    foreach (var details in customer.CustomerDetails)
+        //    {
+        //        _GetCustomerDetailsHTml += "<tr>";
+        //        _GetCustomerDetailsHTml += string.Format("<td> {0} </td>", sNumber);
+        //        _GetCustomerDetailsHTml += string.Format("<td> {0} </td>", details.FirstName);
+        //        _GetCustomerDetailsHTml += string.Format("<td> {0} </td>", details.Email);
+        //        _GetCustomerDetailsHTml += string.Format("<td> {0} </td>", details.Password);
+        //        _GetCustomerDetailsHTml += string.Format("<td> {0} </td>", details.Mobile);
+        //        _GetCustomerDetailsHTml +=string.Format("<td> {0}</td>",  details.CustomerTypeId);
+        //        _GetCustomerDetailsHTml += string.Format("<td> {0}</td>", details.AccountTypeId);
+        //        _GetCustomerDetailsHTml += "</tr>";
+        //        sNumber++;
+        //    }
+        //    _GetCustomerDetailsHTml += "<tr style='font-weight:bold'><td colspan='4'></td>";
+        //    _GetCustomerDetailsHTml += "</tr>";
 
-            return _GetCustomerDetailsHTml;
+        //    return _GetCustomerDetailsHTml;
 
-        }
+        //}
 
         public async Task<UploadResponse> UploadImage(IFormFile image)
         {

@@ -39,7 +39,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         [Route("GetById")]
         public async Task<IActionResult> GetOrdersByOrderId(string orderid)
         {
-            var response = await _ordersRepository.GetOrdersByCustomerId(orderid);
+            var response = await _ordersRepository.GetOrdersByOrderId(orderid);
             return Ok(response);
         }
 
@@ -70,7 +70,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         [HttpGet("Seller/Customers")]
         public async Task<IActionResult> GetCustomersOrderedForSeller(string vendorId)
         {
-            var response = await _ordersRepository.GetOrdersBySellerId(vendorId);
+            var response = await _ordersRepository.GetCustomersOrderedForSeller(vendorId);
             return Ok(response);
         }
 

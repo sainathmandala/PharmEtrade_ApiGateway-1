@@ -11,5 +11,8 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<PaymentResponse> AddPayment(PaymentRequest paymentRequest);
         //Task<Response<SpecialOffersResponse>> GetSpecialOffers();
         Task<OrderResponse> AddUpdateOrder(OrderRequest orderRequest);
+        Task<Response<Order>> GetOrdersByOrderId(string OrderId);
+        Task<Response<Order>> GetCustomersOrderedForSeller(string VendorId);
+
     }
 }

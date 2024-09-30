@@ -24,6 +24,8 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _orders.GetOrdersByCustomerId(customerId);
         }
+        
+
         public async Task<Response<Order>> GetOrdersBySellerId(string vendorId)
         {
             return await _orders.GetOrdersBySellerId(vendorId);
@@ -38,5 +40,16 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _orders.AddUpdateOrder(orderRequest);
         }
+
+        public  async Task<Response<Order>> GetOrdersByOrderId(string orderid)
+        {
+            return await _orders.GetOrdersByOrderId(orderid);
+        }
+
+        public async Task<Response<Order>> GetCustomersOrderedForSeller(string VendorId)
+        {
+            return await _orders.GetCustomersOrderedForSeller(VendorId);
+        }
+
     }
 }
