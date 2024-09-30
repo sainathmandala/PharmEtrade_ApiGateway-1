@@ -7,6 +7,9 @@
 
         public string? ProductId { get; set; }
         public string CustomerName { get; set; }
+        public string Email { get; set; }
+        public string Mobile { get; set; }
+        public string Address1 { get; set; }
 
         public string ProductName { get; set; }
 

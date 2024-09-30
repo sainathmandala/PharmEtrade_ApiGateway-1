@@ -303,7 +303,8 @@ namespace BAL.BusinessLogic.Helper
                                     ProductDescription = row["ProductDescription"].ToString(),
                                     //OrderDate = Convert.ToDateTime(row["OrderDate"])
                                     OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue,
-                                    ImageUrl = row["MainImageUrl"].ToString() ?? ""
+                                    ImageUrl = row["MainImageUrl"].ToString() ?? "",
+                                    
 
                                 });
                             }
@@ -376,7 +377,10 @@ namespace BAL.BusinessLogic.Helper
                                     ProductDescription = row["ProductDescription"].ToString(),
                                     //OrderDate = Convert.ToDateTime(row["OrderDate"])
                                     OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue,
-                                    ImageUrl = row["MainImageUrl"].ToString() ?? ""
+                                    ImageUrl = row["MainImageUrl"].ToString() ?? "",
+                                    Email = row["Email"].ToString() ?? "",
+                                    Mobile = row["Mobile"].ToString() ?? "",
+                                    Address1 = row["Address1"].ToString() ?? ""
 
                                 });
                             }
