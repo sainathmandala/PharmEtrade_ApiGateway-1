@@ -24,8 +24,6 @@ namespace BAL.BusinessLogic.Helper
         private readonly S3Helper _s3Helper;
         private readonly IEmailHelper _emailHelper;
 
-
-
         public CustomerHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper, SmtpSettings smtpSettings , IEmailHelper emailHelper)
         {
             _isqlDataHelper = isqlDataHelper;
@@ -518,10 +516,17 @@ namespace BAL.BusinessLogic.Helper
                     {
                         reader.Read();
                         return reader["Status"].ToString() ?? "";
+<<<<<<< HEAD
                         string _mailBody = EmailTemplates.CUSTOMER_TEMPLATE;
                         _mailBody = _mailBody.Replace("{{CustomerId}}", customer.CustomerId);
                        // _mailBody = _mailBody.Replace("{{RegistrationDetailsHTML}}", GetCustomerDetailsHTml(customer));
                         await _emailHelper.SendEmail(customer.Email, "", " Registration is completed  Successfully ", _mailBody);
+=======
+                        //string _mailBody = EmailTemplates.CUSTOMER_TEMPLATE;
+                        //_mailBody = _mailBody.Replace("{{CustomerId}}", customer.CustomerId);
+                        //_mailBody = _mailBody.Replace("{{RegistrationDetailsHTML}}", GetCustomerDetailsHTml(customer));
+                        //await _emailHelper.SendEmail(customer.Email, "", " Registration is completed  Successfully ", _mailBody);
+>>>>>>> 36849daee67800059ebcbe2538db8a0f3cf6cd72
                     }
                     return "";
 
@@ -534,6 +539,7 @@ namespace BAL.BusinessLogic.Helper
                 }
             }
         }
+<<<<<<< HEAD
         //private string GetCustomerDetailsHTml(CustomerResponse customer)
         //{
         //    string _GetCustomerDetailsHTml = "";
@@ -553,6 +559,26 @@ namespace BAL.BusinessLogic.Helper
         //    }
         //    _GetCustomerDetailsHTml += "<tr style='font-weight:bold'><td colspan='4'></td>";
         //    _GetCustomerDetailsHTml += "</tr>";
+=======
+        private string GetCustomerDetailsHTml(CustomerResponse customer)
+        {
+            string _GetCustomerDetailsHTml = "";
+             int sNumber = 1;
+           
+                _GetCustomerDetailsHTml += "<tr>";
+                //_GetCustomerDetailsHTml += string.Format("<td> {0} </td>", sNumber);
+                //_GetCustomerDetailsHTml += string.Format("<td> {0} </td>", customer.FirstName);
+                //_GetCustomerDetailsHTml += string.Format("<td> {0} </td>", customer.Email);
+                //_GetCustomerDetailsHTml += string.Format("<td> {0} </td>", customer.Password);
+                //_GetCustomerDetailsHTml += string.Format("<td> {0} </td>", customer.Mobile);
+                //_GetCustomerDetailsHTml +=string.Format("<td> {0}</td>", customer.CustomerTypeId);
+                //_GetCustomerDetailsHTml += string.Format("<td> {0}</td>", customer.AccountTypeId);
+                _GetCustomerDetailsHTml += "</tr>";
+                sNumber++;
+           
+            _GetCustomerDetailsHTml += "<tr style='font-weight:bold'><td colspan='4'></td>";
+            _GetCustomerDetailsHTml += "</tr>";
+>>>>>>> 36849daee67800059ebcbe2538db8a0f3cf6cd72
 
         //    return _GetCustomerDetailsHTml;
 
