@@ -114,6 +114,7 @@ namespace BAL.BusinessLogic.Helper
                 item.Product.UriKey = cartItem["UriKey"].ToString();
                 item.Product.ImageUrl = cartItem["ImageUrl"].ToString() ?? "";
                 item.Product.Caption = cartItem["Caption"].ToString() ?? "";
+                item.Product.UnitPrice = Convert.ToDecimal(cartItem["UnitPrice"] != DBNull.Value ? cartItem["UnitPrice"] : 0.0);
 
                 lstCart.Add(item);
             }
