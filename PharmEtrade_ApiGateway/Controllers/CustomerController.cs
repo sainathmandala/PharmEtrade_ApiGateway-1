@@ -21,26 +21,36 @@ namespace PharmEtrade_ApiGateway.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private readonly IcustomerRepo _icustomerRepo;
+        private readonly ICustomerRepo _icustomerRepo;
         private readonly JwtAuthenticationExtensions _jwtTokenService;
         private readonly IConfiguration _configuration;
 
-        public CustomerController(IcustomerRepo icustomerRepo, JwtAuthenticationExtensions jwtTokenService, IConfiguration configuration)
+        public CustomerController(ICustomerRepo icustomerRepo, JwtAuthenticationExtensions jwtTokenService, IConfiguration configuration)
         {
             _icustomerRepo = icustomerRepo;
             _jwtTokenService = jwtTokenService;
             _configuration = configuration;
         }
-
-        // Author: [Shiva]
-        // Created Date: [29/06/2024]
-        // Description: Method for Customer login
+        
         [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> CustomerLogin(string UserName, string Password)
         {
             var response = await _icustomerRepo.CustomerLogin(UserName, Password);
             if (response != null && response.LoginStatus == "Success")
+            {
+                return Ok(response);
+            }
+
+            return Unauthorized();
+        }
+
+        [HttpPost]
+        [Route("AdminLogin")]
+        public async Task<IActionResult> AdminLogin(string adminId, string Password)
+        {
+            var response = await _icustomerRepo.AdminLogin(adminId, Password);
+            if (response != null && response.StatusCode == 200)
             {
                 return Ok(response);
             }

@@ -98,8 +98,8 @@ builder.Services.AddAuthorization(options =>
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<SmtpSettings>>().Value);
 builder.Services.AddSingleton<JwtAuthenticationExtensions>();
-builder.Services.AddSingleton<IcustomerRepo, CustomerRepository>();
-builder.Services.AddTransient<IcustomerHelper, CustomerHelper>();
+builder.Services.AddSingleton<ICustomerRepo, CustomerRepository>();
+builder.Services.AddTransient<ICustomerHelper, CustomerHelper>();
 builder.Services.AddSingleton<IsqlDataHelper, SqlDataHelper>();
 builder.Services.AddSingleton<IProductsRepo, ProductRepository>();
 builder.Services.AddTransient<IProductHelper, ProductHelper>();
@@ -127,6 +127,7 @@ builder.Services.AddSingleton<IDashboardRepository, DashboardRepository>();
 builder.Services.AddSingleton<IEmailHelper, EmailHelper>();
 builder.Services.AddSingleton<IAdminRepository, AdminRepository>();
 builder.Services.AddSingleton<IAdminHelper, AdminHelper>();
+builder.Services.AddSingleton<IJwtHelper, JwtHelper>();
 
 
 builder.Services.AddCors(options =>

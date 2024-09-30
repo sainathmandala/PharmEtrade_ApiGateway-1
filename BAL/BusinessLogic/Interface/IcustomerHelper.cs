@@ -11,26 +11,15 @@ using System.Threading.Tasks;
 
 namespace BAL.BusinessLogic.Interface
 {
-    public interface IcustomerHelper
+    public interface ICustomerHelper
     {
         Task<DataTable> CustomerLogin(string username, string password);
-        Task<int> AddToCart(int userId, int imageId, int productId);
-        Task<int> dummy(int userId, int imageId, int productId);
-        Task<string> SaveCustomerData(UserViewModel userView);
-        Task<DataTable> GetUserDetailsById(int userId);
-        Task<string> UpdatePassword(int userId, string password);
-        Task<DataTable> GetUserDetailsByEmail(string email);
-        Task<string> UpdatePasswordByEmail(string email, string password);
-        Task<string> SendOTPEmail(string email);
-        Task<DataTable> OtpLogin(string email, string otp);
-        Task<string> SaveBusinessInfoData(BusinessInfoViewModel businessInfo);
+        Task<LoginResponse> AdminLogin(string adminId, string password);        
         Task<string> AddUpdateCustomer(Customer customer);
         Task<string> AddUpdateBusinessInfo(CustomerBusinessInfo businessInfo);
         Task<UploadResponse> UploadImage(IFormFile image);
-
         Task<Response<CustomerResponse>> GetCustomerByCustomerId(string customerId);
         Task<Response<Customer>> GetCustomers(string? customerId, string? email, string? mobile);
-
         Task<Response<Address>> GetByCustomerId(string customerId);
         Task<Response<Address>> GetAddressById(string addressId);
         Task<Response<Address>> AddUpdateAddress(Address customerAddress);

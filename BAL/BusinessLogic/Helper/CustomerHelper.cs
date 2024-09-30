@@ -14,7 +14,7 @@ using BAL.RequestModels;
 
 namespace BAL.BusinessLogic.Helper
 {
-    public class CustomerHelper : IcustomerHelper
+    public class CustomerHelper : ICustomerHelper
     {
         private readonly IsqlDataHelper _isqlDataHelper;
         private readonly string _connectionString;
@@ -23,21 +23,19 @@ namespace BAL.BusinessLogic.Helper
         private readonly SmtpSettings _smtpSettings;
         private readonly S3Helper _s3Helper;
         private readonly IEmailHelper _emailHelper;
+        private readonly IJwtHelper _jwtHelper;
 
-        public CustomerHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper, SmtpSettings smtpSettings , IEmailHelper emailHelper)
+        public CustomerHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper, SmtpSettings smtpSettings , IJwtHelper jwtHelper, IEmailHelper emailHelper)
         {
             _isqlDataHelper = isqlDataHelper;
             _connectionString = configuration.GetConnectionString("APIDBConnectionString") ?? "";
             exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), exFolder);
             _smtpSettings = smtpSettings;
             _s3Helper = new S3Helper(configuration);
+            _jwtHelper = jwtHelper;
             _emailHelper = emailHelper;
-
         }
-
-        // Author: [Shiva]
-        // Created Date: [29/06/2024]
-        // Description: Method for Customer login
+                
         public async Task<DataTable> CustomerLogin(string username, string password)
         {
             MySqlConnection sqlcon = new MySqlConnection(_connectionString);
@@ -58,436 +56,44 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
-        public async Task<int> AddToCart(int userId, int imageId, int productId)
+        public async Task<LoginResponse> AdminLogin(string adminId, string password)
         {
-            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
-            MySqlCommand cmd = new MySqlCommand();
-            try
+            var response = new LoginResponse();
+            using (MySqlCommand command = new MySqlCommand(StoredProcedures.CUSTOMER_ADMIN_LOGIN))
             {
-                cmd = new MySqlCommand("InsertAddtoCartProduct", sqlcon);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@Userid", userId);
-                cmd.Parameters.AddWithValue("@Imageid", imageId);
-                cmd.Parameters.AddWithValue("@ProductId", productId);
-                return await Task.Run(() => _isqlDataHelper.ExcuteNonQueryasync(cmd));
-            }
-            catch (Exception ex)
-            {
-                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "AddToCart_SP :  errormessage:" + ex.Message.ToString()));
-                throw ex;
-            }
-        }
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("p_AdminId", adminId);
+                command.Parameters.AddWithValue("p_Password", password);
 
-        public Task<int> dummy(int userId, int imageId, int productId)
-        {
-            throw new NotImplementedException();
-        }
-
-        // Author: [Shiva]
-        // Created Date: [02/07/2024]
-        // Description: Method for registration of User 
-        public async Task<string> SaveCustomerData(UserViewModel userViewModel)
-        {
-            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
-            MySqlCommand cmd = new MySqlCommand();
-            try
-            {
-                cmd = new MySqlCommand("SP_InsertUser", sqlcon);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("p_firstname", userViewModel.firstname);
-                cmd.Parameters.AddWithValue("p_lastname", userViewModel.lastname);
-                cmd.Parameters.AddWithValue("p_Email", userViewModel.Email);
-                cmd.Parameters.AddWithValue("p_Password", userViewModel.Password);
-                cmd.Parameters.AddWithValue("p_PhoneNumber", userViewModel.PhoneNumber);
-                cmd.Parameters.AddWithValue("p_usertypeid", userViewModel.UsertypeId);
-                cmd.Parameters.AddWithValue("p_accounttype", userViewModel.Accounttype);
-                cmd.Parameters.AddWithValue("p_upnmember", userViewModel.UpnMember);
-                cmd.Parameters.AddWithValue("p_otp", null);
-                cmd.Parameters.AddWithValue("p_otp_expiration", null);
-
-                await sqlcon.OpenAsync();
-                await _isqlDataHelper.ExcuteNonQueryasync(cmd);
-                return "Success";
-            }
-            catch (Exception ex)
-            {
-                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "SaveUser :  errormessage:" + ex.Message.ToString()));
-
-                throw ex;
-            }
-        }
-
-
-        // Author: [Shiva]
-        // Created Date: [02/07/2024]
-        // Description: Method for Get the data of  User based on UserId
-        public async Task<DataTable> GetUserDetailsById(int userId)
-        {
-
-            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
-            MySqlCommand cmd = new MySqlCommand();
-            try
-            {
-                cmd = new MySqlCommand("Sp_GetUserById", sqlcon);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("p_user_id", userId);
-
-
-                return await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
-            }
-            catch (Exception ex)
-            {
-                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "GetusersdataById_sp :  errormessage:" + ex.Message.ToString()));
-
-                throw ex;
-            }
-        }
-
-        // Author: [Shiva]
-        // Created Date: [03/07/2024]
-        // Description: Method for update password
-        public async Task<string> UpdatePassword(int id, string newPassword)
-        {
-            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
-            MySqlCommand cmd = new MySqlCommand();
-            try
-            {
-                cmd = new MySqlCommand("Sp_UpdatePassword", sqlcon);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("p_UserId", id);
-                cmd.Parameters.AddWithValue("p_NewPassword", newPassword);
-
-
-                await sqlcon.OpenAsync();
-                string result = await cmd.ExecuteScalarAsync() as string;
-                return "Success";
-            }
-            catch (Exception ex)
-            {
-                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "UpdatePassword: ErrorMessage - " + ex.Message.ToString()));
-                throw ex;
-            }
-        }
-
-
-        // Author: [Shiva]
-        // Created Date: [04/07/2024]
-        // Description: Method for Get the data of  User based on Email
-        public async Task<DataTable> GetUserDetailsByEmail(string email)
-        {
-
-            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
-            MySqlCommand cmd = new MySqlCommand();
-            try
-            {
-                cmd = new MySqlCommand("Sp_GetUserByEmail", sqlcon);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("p_Email", email);
-
-
-                return await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
-            }
-            catch (Exception ex)
-            {
-                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "GetusersdataByEmail_sp :  errormessage:" + ex.Message.ToString()));
-
-                throw ex;
-            }
-        }
-
-        // Author: [Shiva]
-        // Created Date: [08/07/2024]
-        // Description: Method for update password by email(reset Password)
-        public async Task<string> UpdatePasswordByEmail(string email, string newPassword)
-        {
-            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
-            MySqlCommand cmd = new MySqlCommand();
-            try
-            {
-                cmd = new MySqlCommand("Sp_UpdatePasswordByEmail", sqlcon);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("p_Email", email);
-                cmd.Parameters.AddWithValue("p_NewPassword", newPassword);
-
-
-                await sqlcon.OpenAsync();
-                string result = await cmd.ExecuteScalarAsync() as string;
-                return "Success";
-            }
-            catch (Exception ex)
-            {
-                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "UpdatePasswordBymail: ErrorMessage - " + ex.Message.ToString()));
-                throw ex;
-            }
-        }
-
-        // Author: [Shiva]
-        // Created Date: [10/07/2024]
-        // Description: Method for Send Otp
-        public async Task<string> SendOTPEmail(string email)
-        {
-            var otp = GenerateOTP();
-            var otpExpiration = DateTime.Now.AddMinutes(5);
-            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
-            MySqlCommand cmd = new MySqlCommand();
-            try
-            {
-                cmd = new MySqlCommand("sp_GenerateAndStoreOTP", sqlcon);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("p_Email", email);
-                cmd.Parameters.AddWithValue("p_OTP", otp);
-                cmd.Parameters.AddWithValue("p_OTPExpiration", otpExpiration);
-
-                await sqlcon.OpenAsync();
-                string result = await cmd.ExecuteScalarAsync() as string;
-                await SendEmailAsync(email, otp);
-                return "Success";
-            }
-            catch (Exception ex)
-            {
-                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "SendOTPEmail: ErrorMessage - " + ex.Message.ToString()));
-                throw ex;
-            }
-        }
-
-        private string GenerateOTP()
-        {
-            var random = new Random();
-            return random.Next(100000, 999999).ToString();
-        }
-        public async Task SendEmailAsync(string toEmail, string Otp)
-        {
-            try
-            {
-                if (_smtpSettings == null)
+                try
                 {
-                    throw new InvalidOperationException("SMTP settings are not configured.");
-                }
-
-                if (string.IsNullOrEmpty(_smtpSettings.Host) || _smtpSettings.Port == 0 ||
-                    string.IsNullOrEmpty(_smtpSettings.Username) || string.IsNullOrEmpty(_smtpSettings.Password))
-                {
-                    throw new InvalidOperationException("One or more SMTP settings are not configured properly.");
-                }
-                var subject = "Otp Request";
-                var message = $@"<!DOCTYPE html>
-<html lang=""en"">
-<head>
-    <meta charset=""UTF-8"">
-    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
-    <title>OTP Code</title>
-    <style>
-        body {{
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }}
-        .container {{
-            max-width: 600px;
-            margin: 20px auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }}
-        .header, .footer {{
-            background-color: #007BFF;
-            color: #ffffff;
-            text-align: center;
-            padding: 10px 0;
-            border-radius: 8px 8px 0 0;
-        }}
-        .footer {{
-            border-radius: 0 0 8px 8px;
-            font-size: 12px;
-            margin-top: 20px;
-            border-top: none;
-        }}
-        .logo img {{
-            max-width: 100px;
-            height: auto;
-        }}
-        .content {{
-            text-align: left;
-            padding: 20px 0;
-        }}
-        .otp-code {{
-            font-size: 24px;
-            font-weight: bold;
-            color: #333333;
-            margin-bottom: 10px;
-        }}
-        .message {{
-            margin-bottom: 20px;
-        }}
-        .footer p {{
-            margin: 0;
-        }}
-        @media only screen and (max-width: 600px) {{
-            .container {{
-                padding: 10px;
-            }}
-            .header, .footer {{
-                padding: 15px 5px;
-            }}
-            .logo img {{
-                max-width: 80px;
-            }}
-        }}
-    </style>
-</head>
-<body>
-    <div class=""container"">
-        <div class=""header"">
-            <div class=""logo"">
-                <img src=""https://your-company-logo-url.png"" alt=""Company Logo"">
-            </div>
-        </div>
-        <div class=""content"">
-            <p>Dear User,</p>
-            <p>Your OTP code for verification is:</p>
-            <p class=""otp-code"">{Otp}</p>
-            <p class=""message"">Please use this code within the next 5 minutes to complete your login process.</p>
-            <p>Thank you,</p>
-            <p>PharmETrade</p>
-        </div>
-        <div class=""footer"">
-            <p>This email was sent automatically. Please do not reply.</p>
-        </div>
-    </div>
-</body>
-</html>
-
-";
-                using (var client = new SmtpClient(_smtpSettings.Host, _smtpSettings.Port))
-                {
-                    client.Credentials = new NetworkCredential(_smtpSettings.Username, _smtpSettings.Password);
-                    client.EnableSsl = _smtpSettings.EnableSsl;
-
-                    var mailMessage = new MailMessage
+                    DataTable tblResult = await _isqlDataHelper.ExecuteDataTableAsync(command);
+                    if (tblResult != null && tblResult.Rows.Count > 0)
                     {
-                        From = new MailAddress(_smtpSettings.Username),
-                        Subject = subject,
-                        Body = message,
-                        IsBodyHtml = true
-                    };
-                    mailMessage.To.Add(toEmail);
-
-                    await client.SendMailAsync(mailMessage);
-                }
-            }
-            catch (Exception ex)
-            {
-                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "SendEmailAsync_helper: ErrorMessage - " + ex.Message));
-                throw;
-            }
-        }
-
-        // Author: [Shiva]
-        // Created Date: [10/07/2024]
-        // Description: Method for Otp login
-        public async Task<DataTable> OtpLogin(string email, string otp)
-        {
-            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
-            MySqlCommand cmd = new MySqlCommand();
-            try
-            {
-                cmd = new MySqlCommand("sp_ValidateOTP", sqlcon);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("p_Email", email);
-                cmd.Parameters.AddWithValue("p_OTP", otp);
-                return await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
-            }
-            catch (Exception ex)
-            {
-                Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "OtpLogin :  errormessage:" + ex.Message.ToString()));
-
-                throw ex;
-            }
-        }
-
-
-        // Author: [Shiva]
-        // Created Date: [04/08/2024]
-        // Description: Method for Save the data of Business Info Of User
-        public async Task<string> SaveBusinessInfoData(BusinessInfoViewModel businessInfo)
-        {
-            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
-            MySqlCommand cmd = new MySqlCommand();
-            string deaLicenseS3Path = null;
-            string pharmacyLicenseS3Path = null;
-            string folderName = "User_BusinessInfo";
-            try
-            {
-                // Upload files to S3
-                if (businessInfo.DEAlicenseCopy != null)
-                {
-                    deaLicenseS3Path = await _s3Helper.UploadFileAsync(businessInfo.DEAlicenseCopy, folderName);
-                }
-
-                if (businessInfo.PharmacyLicenseCopy != null)
-                {
-                    pharmacyLicenseS3Path = await _s3Helper.UploadFileAsync(businessInfo.PharmacyLicenseCopy, folderName);
-                }
-
-                await sqlcon.OpenAsync();
-                using (var transaction = await sqlcon.BeginTransactionAsync())
-                {
-                    cmd = new MySqlCommand("SP_InsertBusinessInfo", sqlcon, transaction);
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_user_id", businessInfo.UserId);
-                    cmd.Parameters.AddWithValue("p_shop_name", businessInfo.ShopName);
-                    cmd.Parameters.AddWithValue("p_dba", businessInfo.DBA);
-                    cmd.Parameters.AddWithValue("p_legal_business_name", businessInfo.LegalBusinessName);
-                    cmd.Parameters.AddWithValue("p_address", businessInfo.Address);
-                    cmd.Parameters.AddWithValue("p_city", businessInfo.City);
-                    cmd.Parameters.AddWithValue("p_state", businessInfo.State);
-                    cmd.Parameters.AddWithValue("p_zip", businessInfo.Zip);
-                    cmd.Parameters.AddWithValue("p_business_phone", businessInfo.BusinessPhone);
-                    cmd.Parameters.AddWithValue("p_business_fax", businessInfo.BusinessFax);
-                    cmd.Parameters.AddWithValue("p_business_email", businessInfo.BusinessEmail);
-                    cmd.Parameters.AddWithValue("p_federal_tax_id", businessInfo.FederalTaxId);
-                    cmd.Parameters.AddWithValue("p_dea", businessInfo.DEA);
-                    cmd.Parameters.AddWithValue("p_pharmacy_licence", businessInfo.PharmacyLicence);
-                    cmd.Parameters.AddWithValue("p_dea_expiration_date", businessInfo.DEAExpirationDate);
-                    cmd.Parameters.AddWithValue("p_pharmacy_license_expiration_date", businessInfo.PharmacyLicenseExpirationDate);
-                    cmd.Parameters.AddWithValue("p_dea_license_copy", deaLicenseS3Path); // Use S3 path
-                    cmd.Parameters.AddWithValue("p_pharmacy_license_copy", pharmacyLicenseS3Path); // Use S3 path
-                    cmd.Parameters.AddWithValue("p_npi", businessInfo.NPI);
-                    cmd.Parameters.AddWithValue("p_ncpdp", businessInfo.NCPDP);
-
-                    var result = await cmd.ExecuteScalarAsync();
-                    if (result != null && result.ToString() == "Business info inserted successfully.")
-                    {
-                        await transaction.CommitAsync();
-                        return "Success";
+                        response.StatusCode = "SUCCESS".Equals(tblResult.Rows[0]["LoginStatus"].ToString() ?? "") ? 200 : 500;
+                        response.Message = tblResult.Rows[0]["Message"].ToString() ?? "";
+                        response.UserId = tblResult.Rows[0]["UserId"].ToString() ?? "";
+                        response.Email = tblResult.Rows[0]["Email"].ToString() ?? "";
+                        response.Firstname = tblResult.Rows[0]["Firstname"].ToString() ?? "";
+                        response.Lastname = tblResult.Rows[0]["Lastname"].ToString() ?? "";
+                        response.UserType = tblResult.Rows[0]["UserType"].ToString() ?? "";
+                        response.UserTypeId = Convert.ToInt32(tblResult.Rows[0]["UserTypeId"] != DBNull.Value ? tblResult.Rows[0]["UserTypeId"] : 0);
+                        response.Token = _jwtHelper.GenerateToken(response.Email, response.UserType);
                     }
                     else
                     {
-                        await transaction.RollbackAsync();
-                        throw new Exception("Stored procedure execution failed.");
+                        response.StatusCode = 500;
+                        response.Message = "No records found for the Buyer";
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "SaveBusinessInfoData: errormessage:" + ex.Message.ToString()));
-
-                //Delete files from S3 if stored procedure fails
-                if (!string.IsNullOrEmpty(deaLicenseS3Path))
+                catch (Exception ex)
                 {
-                    await _s3Helper.DeleteFileAsync($"User_BusinessInfo/{businessInfo.DEAlicenseCopy.FileName}");
+                    response.StatusCode = 500;
+                    response.Message = "ERROR : " + ex.Message;
                 }
-
-                if (!string.IsNullOrEmpty(pharmacyLicenseS3Path))
-                {
-                    await _s3Helper.DeleteFileAsync($"User_BusinessInfo/{businessInfo.PharmacyLicenseCopy.FileName}");
-                }
-
-                throw ex;
             }
+
+            return response;
         }
 
         public async Task<string> AddUpdateCustomer(ViewModels.Customer customer)
