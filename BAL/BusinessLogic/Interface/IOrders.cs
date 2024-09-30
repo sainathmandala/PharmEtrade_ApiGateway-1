@@ -18,6 +18,7 @@ namespace BAL.BusinessLogic.Interface
         Task<OrderResponse> AddUpdateOrder(OrderRequest orderRequest);
         Task<Response<Order>> GetOrdersByOrderId(string orderId);
         Task<Response<Order>> GetCustomersOrderedForSeller(string VendorId);
-
+        Task<MemoryStream> DownloadInvoice(string orderId);
+        Task<OrderResponse> SendInvoiceByMail(string orderId);
     }
 }

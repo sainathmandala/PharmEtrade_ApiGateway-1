@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PharmEtrade_ApiGateway.Repository.Interface;
 using BAL.Models;
+using System.IO;
 
 namespace PharmEtrade_ApiGateway.Controllers
 {
@@ -27,10 +28,17 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
-        [HttpGet("Invoice")]
+        [HttpGet("DownloadInvoice")]
+        public async Task<IActionResult> DownInvoice(string orderId)
+        {
+            var invoiceStream = await _ordersRepository.DownloadInvoice(orderId);
+            return File(invoiceStream.GetBuffer(), "application/pdf", "Invoice_" + orderId + ".pdf");
+        }
+
+        [HttpGet("SendInvoice")]
         public async Task<IActionResult> SendInvoice(string orderId)
         {
-            var response = await _ordersRepository.GetOrdersByOrderId(orderId);
+            var response = await _ordersRepository.SendInvoiceByMail(orderId);
             return Ok(response);
         }
 

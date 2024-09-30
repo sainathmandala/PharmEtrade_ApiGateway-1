@@ -9,5 +9,6 @@ namespace BAL.BusinessLogic.Interface
     public interface IEmailHelper
     {
         Task SendEmail(string toMailAddress, string ccMailAddress, string mailSubject, string mailBody);
+        Task SendEmail(string toMailAddress, string ccMailAddress, string mailSubject, string mailBody, MemoryStream attachementStream);
     }
 }

@@ -121,11 +121,12 @@ namespace BAL.BusinessLogic.Helper
                     if (reader.HasRows)
                     {
                         reader.Read();
-                        return reader["Status"].ToString() ?? "";
-                        //string _mailBody = EmailTemplates.CUSTOMER_TEMPLATE;
-                        //_mailBody = _mailBody.Replace("{{CustomerId}}", customer.CustomerId);
-                        //_mailBody = _mailBody.Replace("{{RegistrationDetailsHTML}}", GetCustomerDetailsHTml(customer));
-                        //await _emailHelper.SendEmail(customer.Email, "", " Registration is completed  Successfully ", _mailBody);
+                        var registraionMailBody = EmailTemplates.CUSTOMER_TEMPLATE;
+                        registraionMailBody = registraionMailBody.Replace("{{CustomerId}}", customer.Email);
+                        registraionMailBody = registraionMailBody.Replace("{{CUST_EMAIL}}", customer.Email);
+                        registraionMailBody = registraionMailBody.Replace("{{CUST_FULL_NAME}}", customer.FirstName + ' ' + customer.LastName);
+                        await _emailHelper.SendEmail(customer.Email, "", "Your registration is successfull.", registraionMailBody);
+                        return reader["Status"].ToString() ?? "";                        
                     }
                     return "";
 

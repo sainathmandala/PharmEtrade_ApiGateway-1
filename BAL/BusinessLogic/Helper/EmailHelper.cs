@@ -57,5 +57,36 @@ namespace BAL.BusinessLogic.Helper
 
             }
         }
+
+        public async Task SendEmail(string toMailAddress, string ccMailAddress, string mailSubject, string mailBody, MemoryStream attachementStream)
+        {
+            try
+            {
+                MailMessage message = new MailMessage();
+                SmtpClient smtp = new SmtpClient();
+
+                string emailAddress = _senderEmail;
+                string password = _Password;
+                message.From = new MailAddress(emailAddress);
+                message.To.Add(toMailAddress);
+                if (!string.IsNullOrEmpty(ccMailAddress))
+                    message.CC.Add(ccMailAddress);
+                else
+                    message.CC.Add(_defaultEmail);
+                message.Subject = mailSubject;
+                message.Attachments.Add(new Attachment(attachementStream, "Invoice.pdf"));
+                message.IsBodyHtml = true; //to make message body as html
+                message.Body = mailBody;
+                smtp.Port = _portNumber;
+                smtp.Host = _hostName;
+                smtp.Credentials = new NetworkCredential(emailAddress, password); //new NetworkCredential("email address", "password");//
+                smtp.EnableSsl = true;
+                await Task.Run(() => smtp.Send(message));
+            }
+            catch (Exception)
+            {
+
+            }
+        }
     }
 }

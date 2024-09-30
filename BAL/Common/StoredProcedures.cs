@@ -53,7 +53,9 @@ namespace BAL.Common
         public const string GET_ORDERS_BY_SELLER = "sp_GetOrdersByVendorId";
         public const string ADD_PAYMENT = "sp_AddPayment";
         public const string GET_ORDERS_BY_ORDERID = "Sp_GetOrdersByOrderId";
-        public const string GETCUSTOMERORDEREDFORSELLER = "sp_GetCustomersOrderedForSeller"; 
+        public const string GETCUSTOMERORDEREDFORSELLER = "sp_GetCustomersOrderedForSeller";
+        public const string GET_ORDER_INVOICE = "sp_OrderInvoice";
+
         //Cart
         public const string DELETE_CART = "sp_DeleteCart";
 
