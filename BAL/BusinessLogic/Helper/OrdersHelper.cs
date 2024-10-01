@@ -415,9 +415,9 @@ namespace BAL.BusinessLogic.Helper
                                     //OrderDate = Convert.ToDateTime(row["OrderDate"])
                                     OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue,
                                     ImageUrl = row["MainImageUrl"].ToString() ?? "",
-                                    //Email = row["Email"].ToString() ?? "",
-                                    //Mobile = row["Mobile"].ToString() ?? "",
-                                    //Address1 = row["Address1"].ToString() ?? ""
+                                    Email = row["Email"].ToString() ?? "",
+                                    Mobile = row["Mobile"].ToString() ?? "",
+                                    Address1 = row["Address1"].ToString() ?? ""
 
                                 });
                             }
