@@ -17,7 +17,12 @@ using DAL.Models;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
-using SelectPdf;
+using PdfSharpCore;
+using System.Net.Http;
+//using SelectPdf;
+using PdfSharpCore;
+using PdfSharpCore.Pdf;
+using TheArtOfDev.HtmlRenderer.PdfSharp;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -176,7 +181,7 @@ namespace BAL.BusinessLogic.Helper
                 _orderDetailsHTML += "</tr>";
                 sNumber++;
             }
-            _orderDetailsHTML += "<tr style='font-weight:bold'><td colspan='4'></td>";
+            _orderDetailsHTML += "<tr><td colspan='4'></td>";
             _orderDetailsHTML += string.Format("<td> Total </td>", sNumber);
             _orderDetailsHTML += string.Format("<td> {0} </td>", response.TotalAmount);
             _orderDetailsHTML += "</tr>";
@@ -186,7 +191,7 @@ namespace BAL.BusinessLogic.Helper
 
         private string GetInvoiceOrderDetailsHTML(OrderResponse response)
         {
-            string _orderDetailsHTML = @"<table align='center' width='100%' border='0' cellspacing='5'><tr style='background-color:lightgrey;font-weight:bold;'>
+            string _orderDetailsHTML = @"<table align='center' width='100%' border='0' cellspacing='5'><tr style='background-color:lightblue;'>
                                                     <td> S.No </td>
                                                     <td> Product </td>
                                                     <td> Product Name </td>
@@ -197,7 +202,7 @@ namespace BAL.BusinessLogic.Helper
             int sNumber = 1;
             foreach (var details in response.Products)
             {
-                _orderDetailsHTML += "<tr style='background-color:lightgrey;font-weight:bold;'>";
+                _orderDetailsHTML += "<tr>";
                 _orderDetailsHTML += string.Format("<td> {0} </td>", sNumber);
                 _orderDetailsHTML += string.Format("<td> <img src='{0}' width='75px' height='50px' /> </td>", details.ImageUrl);
                 _orderDetailsHTML += string.Format("<td> {0} </td>", details.ProductName);
@@ -207,7 +212,7 @@ namespace BAL.BusinessLogic.Helper
                 _orderDetailsHTML += "</tr>";
                 sNumber++;
             }
-            _orderDetailsHTML += "<tr style='font-weight:bold'><td colspan='4'></td>";
+            _orderDetailsHTML += "<tr><td colspan='4'></td>";
             _orderDetailsHTML += string.Format("<td> Total </td>", sNumber);
             _orderDetailsHTML += string.Format("<td> {0} </td>", response.TotalAmount);
             _orderDetailsHTML += "</tr></table>";
@@ -667,14 +672,24 @@ namespace BAL.BusinessLogic.Helper
                             _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString());
                             _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString());
                             _mailBody = _mailBody.Replace("{{PRODUCTS_DETAILS}}", GetInvoiceOrderDetailsHTML(response));
-                            var invoiceDocument = new PdfDocument();
-                            var sourceDoc = GetPdfFrom(_mailBody);
-                            foreach (PdfPage page in sourceDoc.Pages)
-                            {
-                                invoiceDocument.AddPage(page);
-                            }
-                            invoiceDocument.Save(invoiceStream);
+                            //var invoiceDocument = new PdfDocument();
+                            //var sourceDoc = GetPdfFrom(_mailBody);
+                            //foreach (PdfPage page in sourceDoc.Pages)
+                            //{
+                            //    invoiceDocument.AddPage(page);
+                            //}
+                            //invoiceDocument.Save(invoiceStream);
+                            //invoiceStream.Position = 0;
+
+                            //var invoiceDocument = new PdfDocument();
+                            //PdfGenerator.AddPdfPages(invoiceDocument, _mailBody, PageSize.Legal);
+                            //invoiceDocument.Save(invoiceStream);
+                            //invoiceStream.Position = 0; 
+
+
+                            invoiceStream = new MemoryStream(Encoding.ASCII.GetBytes(_mailBody));
                             invoiceStream.Position = 0;
+
                             // await _emailHelper.SendEmail(response.CustomerEmail, "", "Invoice for your Order #" + response.OrderId, _mailBody);
                         }                       
                     }
@@ -695,22 +710,22 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
-        private PdfDocument GetPdfFrom(string htmlString)
-        {
-            var pdfDoc = new HtmlToPdf();
-            pdfDoc.Options.PdfPageSize = PdfPageSize.Legal;
-            pdfDoc.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
-            pdfDoc.Options.WebPageFixedSize = true;
-            pdfDoc.Options.WebPageWidth = 1024;
-            pdfDoc.Options.WebPageHeight = 768;
-            pdfDoc.Options.MarginLeft = 0;
-            pdfDoc.Options.MarginRight = 0;
-            pdfDoc.Options.MarginTop = 0;
-            pdfDoc.Options.MarginBottom = 0;
-            pdfDoc.Options.RenderingEngine = RenderingEngine.WebKitRestricted;
-            var doc = pdfDoc.ConvertHtmlString(htmlString);
-            return doc;
-        }
+        //private PdfDocument GetPdfFrom(string htmlString)
+        //{
+        //    var pdfDoc = new HtmlToPdf();
+        //    pdfDoc.Options.PdfPageSize = PdfPageSize.Legal;
+        //    pdfDoc.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
+        //    pdfDoc.Options.WebPageFixedSize = true;
+        //    pdfDoc.Options.WebPageWidth = 1024;
+        //    pdfDoc.Options.WebPageHeight = 768;
+        //    pdfDoc.Options.MarginLeft = 0;
+        //    pdfDoc.Options.MarginRight = 0;
+        //    pdfDoc.Options.MarginTop = 0;
+        //    pdfDoc.Options.MarginBottom = 0;
+        //    pdfDoc.Options.RenderingEngine = RenderingEngine.WebKitRestricted;
+        //    var doc = pdfDoc.ConvertHtmlString(htmlString);
+        //    return doc;
+        //}
 
         public async Task<OrderResponse> SendInvoiceByMail(string orderId)
         {
@@ -744,14 +759,20 @@ namespace BAL.BusinessLogic.Helper
                             _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString());
                             _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString());
                             _mailBody = _mailBody.Replace("{{PRODUCTS_DETAILS}}", GetInvoiceOrderDetailsHTML(response));
-                            var invoiceDocument = new PdfDocument();
-                            var sourceDoc = GetPdfFrom(_mailBody);
-                            foreach (PdfPage page in sourceDoc.Pages)
-                            {
-                                invoiceDocument.AddPage(page);
-                            }
-                            invoiceDocument.Save(invoiceStream);
-                            invoiceStream.Position = 0;                            
+                            //var invoiceDocument = new PdfDocument();
+                            //var sourceDoc = GetPdfFrom(_mailBody);
+                            //foreach (PdfPage page in sourceDoc.Pages)
+                            //{
+                            //    invoiceDocument.AddPage(page);
+                            //}
+                            //invoiceDocument.Save(invoiceStream);
+                            //invoiceStream.Position = 0;
+
+                            //var invoiceDocument = new PdfDocument();
+                            //PdfGenerator.AddPdfPages(invoiceDocument, _mailBody, PageSize.A4);
+                            //invoiceDocument.Save(invoiceStream);
+                            //invoiceStream.Position = 0;
+
                             await _emailHelper.SendEmail(response.CustomerEmail, "", "Invoice for your Order #" + response.OrderId, _mailBody, invoiceStream);                           
                         }
                     }

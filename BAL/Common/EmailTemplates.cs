@@ -30,7 +30,7 @@ namespace BAL.Common
 
 
         public const string CUSTOMER_TEMPLATE = @"<html>
-                                                     <body style='font-family:Calibri'>
+                                                     <body>
                                                       <h1 align='center'>Thank you for registering with us</h1>
                                                       <h2 align='center'> please chek you registration details</h2>
                                                       <h2 align= 'center'>Registraion ID :{{CustomerId}}
@@ -56,8 +56,8 @@ namespace BAL.Common
                                                       </html>";
 
         public const string CUSTOMER_INVOICE = @"<html>
-                                                    <body style='font-family:Calibri'>
-                                                    <table border='1' align='center' width='80%'>
+                                                    <body>
+                                                    <table border='1' align='center' width='90%'>
                                                     <tr>
                                                     <td>
                                                     <table border='0' align='center' width='95%'>
@@ -115,7 +115,8 @@ namespace BAL.Common
                                                     <tr>
                                                     <td align='center' colspan='2'>
                                                     <p>
-                                                    Powered by Headway Data Systems <br />
+<img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='100px' height='25px' /> <br />
+                                                    Powered by PharmETrade <br />
                                                     This invoice is a system generated and doesn't require any signature
                                                     </p>
                                                     </td>

@@ -73,6 +73,9 @@ namespace BAL.BusinessLogic.Helper
                         response.Message = tblBuyerDashboard.Rows[0]["Message"].ToString() ?? "";
                         response.ProductsOrdered = Convert.ToInt32(tblBuyerDashboard.Rows[0]["ProductsOrdered"] == DBNull.Value ? 0 : tblBuyerDashboard.Rows[0]["ProductsOrdered"]);
                         response.TotalOrders = Convert.ToInt32(tblBuyerDashboard.Rows[0]["TotalOrders"] == DBNull.Value ? 0 : tblBuyerDashboard.Rows[0]["TotalOrders"]);
+                        response.UpcomingOrders = Convert.ToInt32(tblBuyerDashboard.Rows[0]["UpcomingOrders"] == DBNull.Value ? 0 : tblBuyerDashboard.Rows[0]["UpcomingOrders"]);
+                        response.ReceivedOrders = Convert.ToInt32(tblBuyerDashboard.Rows[0]["ReceivedOrders"] == DBNull.Value ? 0 : tblBuyerDashboard.Rows[0]["ReceivedOrders"]);
+                        response.CancelledOrders = Convert.ToInt32(tblBuyerDashboard.Rows[0]["CancelledOrders"] == DBNull.Value ? 0 : tblBuyerDashboard.Rows[0]["CancelledOrders"]);
                         response.WishList = Convert.ToInt32(tblBuyerDashboard.Rows[0]["WishList"] == DBNull.Value ? 0 : tblBuyerDashboard.Rows[0]["WishList"]);
                         response.TotalPurchaseValue = Convert.ToDecimal(tblBuyerDashboard.Rows[0]["TotalPurchaseValue"] == DBNull.Value ? 0.0 : tblBuyerDashboard.Rows[0]["TotalPurchaseValue"]);
                     }
