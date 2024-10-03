@@ -1,4 +1,5 @@
 ﻿using BAL.Models;
+using BAL.RequestModels;
 using BAL.ResponseModels;
 using BAL.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -20,6 +21,7 @@ namespace BAL.BusinessLogic.Interface
         Task<UploadResponse> UploadImage(IFormFile image);
         Task<Response<CustomerResponse>> GetCustomerByCustomerId(string customerId);
         Task<Response<Customer>> GetCustomers(string? customerId, string? email, string? mobile);
+        Task<Response<Customer>> GetByFilterCriteria(CustomerFilterCriteria filterCriteria);
         Task<Response<Address>> GetByCustomerId(string customerId);
         Task<Response<Address>> GetAddressById(string addressId);
         Task<Response<Address>> AddUpdateAddress(Address customerAddress);

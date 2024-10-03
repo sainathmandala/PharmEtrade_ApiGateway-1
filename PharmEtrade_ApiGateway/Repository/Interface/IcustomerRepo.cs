@@ -1,4 +1,5 @@
 ﻿using BAL.Models;
+using BAL.RequestModels;
 using BAL.ResponseModels;
 using BAL.ViewModels;
 
@@ -13,6 +14,7 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<BusinessInfoResponse> AddUpdateBusinessInfo(CustomerBusinessInfo businessInfo);
         Task<Response<CustomerResponse>> GetCustomerByCustomerId(string customerId);
         Task<Response<Customer>> GetCustomers(string? customerId, string? email, string? mobile);
+        Task<Response<Customer>> GetByFilterCriteria(CustomerFilterCriteria filterCriteria);
         Task<Response<Address>> GetByCustomerId(string customerId);
         Task<Response<Address>> GetAddressById(string addressId);
         Task<Response<Address>> AddUpdateAddress(Address customerAddress);

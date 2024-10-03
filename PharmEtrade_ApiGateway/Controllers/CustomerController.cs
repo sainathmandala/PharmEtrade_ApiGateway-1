@@ -1,4 +1,5 @@
 ﻿using BAL.Models;
+using BAL.RequestModels;
 using BAL.ResponseModels;
 using BAL.ViewModels;
 using DAL.Models;
@@ -121,6 +122,21 @@ namespace PharmEtrade_ApiGateway.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving customer details.");
             }
         }
+        
+        [HttpPost("GetByCriteria")]
+        public async Task<IActionResult> GetByCriteria(CustomerFilterCriteria filterCriteria)
+        {
+            try
+            {
+                var response = await _icustomerRepo.GetByFilterCriteria(filterCriteria);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while retrieving customer details.");
+            }
+        }
+
 
         [HttpGet("Address/GetByCustomerId")]
         public async Task<IActionResult> GetByCustomerId(string customerId)

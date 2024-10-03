@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BAL.RequestModels
 {
-    public class CustomerBusinessInfo
+    public class CustomerBusinessInfo1
     {
         public int CustomerBusinessInfoId { get; set; } // Auto-increment primary key
         public string CustomerId { get; set; } // Foreign key to Customers table

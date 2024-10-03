@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BAL.RequestModels
 {
-    public class Customer
+    public class Customer1
     {
 
         public string CustomerId { get; set; }

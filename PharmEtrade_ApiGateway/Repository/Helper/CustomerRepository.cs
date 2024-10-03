@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 using BAL.ResponseModels;
 using BAL.Models;
 using ZstdSharp.Unsafe;
+using BAL.RequestModels;
 
 namespace PharmEtrade_ApiGateway.Repository.Helper
 {
@@ -186,6 +187,11 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         public async Task<Response<Address>> DeleteAddress(string addressId)
         {
             return await _icustomerHelper.DeleteAddress(addressId);
-        }       
+        }
+
+        public async Task<Response<Customer>> GetByFilterCriteria(CustomerFilterCriteria filterCriteria)
+        {
+            return await _icustomerHelper.GetByFilterCriteria(filterCriteria);
+        }
     }
 }
