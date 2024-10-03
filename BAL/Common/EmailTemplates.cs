@@ -32,8 +32,8 @@ namespace BAL.Common
         public const string CUSTOMER_TEMPLATE = @"<html>
                                                      <body>
                                                       <h1 align='center'>Thank you for registering with us</h1>
-                                                      <h2 align='center'> please chek you registration details</h2>
-                                                      <h2 align= 'center'>Registraion ID :{{CustomerId}}
+                                                      <h2 align='center'> please check your registration details</h2>
+                                                      <h2 align= 'center'>Registration ID :{{CustomerId}}
                                                       <br /><br />
                                                       <table border='0'>
                                                       <tr>

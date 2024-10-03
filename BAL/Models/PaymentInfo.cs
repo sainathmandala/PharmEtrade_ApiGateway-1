@@ -21,6 +21,7 @@ namespace BAL.Models
         public decimal PaymentAmount { get; set; }
         public bool IsCreditCard { get; set; }
         public int StatusId { get; set; }
+        public string PaymentStatus { get; set; }
         public DateTime PaymentDate { get; set; }
 
 

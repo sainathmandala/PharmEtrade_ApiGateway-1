@@ -214,6 +214,7 @@ namespace BAL.BusinessLogic.Helper
                 item.IsCreditCard= Convert.ToInt32(Convert.IsDBNull(paymentinfo["IsCreditCard"]) ? 0 : paymentinfo["IsCreditCard"]) == 1 ? true : false;
                 item.StatusId = Convert.ToInt32(Convert.IsDBNull(paymentinfo["StatusId"]) ? 0 : paymentinfo["StatusId"]);
                 item.PaymentDate = Convert.ToDateTime(Convert.IsDBNull(paymentinfo["PaymentDate"]) ? DateTime.MinValue : paymentinfo["PaymentDate"]);
+                item.PaymentStatus = paymentinfo["PaymentStatus"].ToString() ?? "";
 
                 listpaymentinfo.Add(item);
             }

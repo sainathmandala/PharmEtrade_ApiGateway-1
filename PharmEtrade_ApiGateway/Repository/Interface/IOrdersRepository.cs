@@ -15,6 +15,6 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<MemoryStream> DownloadInvoice(string orderId);
         Task<OrderResponse> SendInvoiceByMail(string orderId);
         Task<Response<Order>> GetCustomersOrderedForSeller(string VendorId);
-
+        Task<string> DownloadInvoiceHtml(string orderId);
     }
 }

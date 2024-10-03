@@ -33,5 +33,19 @@ namespace PharmEtrade_ApiGateway.Controllers
             var response = await _dashboardRepository.GetBuyerDashboard(buyerId);
             return Ok(response);
         }
+
+        [HttpGet("Seller/Earnings")]
+        public async Task<IActionResult> GetSellerEarnings(string sellerId)
+        {
+            var response = await _dashboardRepository.GetSellerDashboard(sellerId);
+            return Ok(response);
+        }
+
+        [HttpGet("Seller/Returns")]
+        public async Task<IActionResult> GetSellerReturns(string sellerId)
+        {
+            var response = await _dashboardRepository.GetSellerDashboard(sellerId);
+            return Ok(response);
+        }
     }
 }

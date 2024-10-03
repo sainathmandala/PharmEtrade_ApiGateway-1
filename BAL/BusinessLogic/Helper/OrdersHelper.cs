@@ -19,10 +19,10 @@ using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 using PdfSharpCore;
 using System.Net.Http;
-//using SelectPdf;
-using PdfSharpCore;
-using PdfSharpCore.Pdf;
-using TheArtOfDev.HtmlRenderer.PdfSharp;
+using SelectPdf;
+//using PdfSharpCore;
+//using PdfSharpCore.Pdf;
+//using TheArtOfDev.HtmlRenderer.PdfSharp;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -519,10 +519,6 @@ namespace BAL.BusinessLogic.Helper
 
         }
 
-
-
-
-
         public async Task<PaymentResponse> AddPayment(PaymentRequest paymentRequest)
         {
             PaymentResponse response = new PaymentResponse();
@@ -672,14 +668,14 @@ namespace BAL.BusinessLogic.Helper
                             _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString());
                             _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString());
                             _mailBody = _mailBody.Replace("{{PRODUCTS_DETAILS}}", GetInvoiceOrderDetailsHTML(response));
-                            //var invoiceDocument = new PdfDocument();
-                            //var sourceDoc = GetPdfFrom(_mailBody);
-                            //foreach (PdfPage page in sourceDoc.Pages)
-                            //{
-                            //    invoiceDocument.AddPage(page);
-                            //}
-                            //invoiceDocument.Save(invoiceStream);
-                            //invoiceStream.Position = 0;
+                            var invoiceDocument = new PdfDocument();
+                            var sourceDoc = GetPdfFrom(_mailBody);
+                            foreach (PdfPage page in sourceDoc.Pages)
+                            {
+                                invoiceDocument.AddPage(page);
+                            }
+                            invoiceDocument.Save(invoiceStream);
+                            invoiceStream.Position = 0;
 
                             //var invoiceDocument = new PdfDocument();
                             //PdfGenerator.AddPdfPages(invoiceDocument, _mailBody, PageSize.Legal);
@@ -687,8 +683,8 @@ namespace BAL.BusinessLogic.Helper
                             //invoiceStream.Position = 0; 
 
 
-                            invoiceStream = new MemoryStream(Encoding.ASCII.GetBytes(_mailBody));
-                            invoiceStream.Position = 0;
+                            //invoiceStream = new MemoryStream(Encoding.ASCII.GetBytes(_mailBody));
+                            //invoiceStream.Position = 0;
 
                             // await _emailHelper.SendEmail(response.CustomerEmail, "", "Invoice for your Order #" + response.OrderId, _mailBody);
                         }                       
@@ -710,22 +706,74 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
-        //private PdfDocument GetPdfFrom(string htmlString)
-        //{
-        //    var pdfDoc = new HtmlToPdf();
-        //    pdfDoc.Options.PdfPageSize = PdfPageSize.Legal;
-        //    pdfDoc.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
-        //    pdfDoc.Options.WebPageFixedSize = true;
-        //    pdfDoc.Options.WebPageWidth = 1024;
-        //    pdfDoc.Options.WebPageHeight = 768;
-        //    pdfDoc.Options.MarginLeft = 0;
-        //    pdfDoc.Options.MarginRight = 0;
-        //    pdfDoc.Options.MarginTop = 0;
-        //    pdfDoc.Options.MarginBottom = 0;
-        //    pdfDoc.Options.RenderingEngine = RenderingEngine.WebKitRestricted;
-        //    var doc = pdfDoc.ConvertHtmlString(htmlString);
-        //    return doc;
-        //}
+        public async Task<string> DownloadInvoiceHtml(string orderId)
+        {
+            OrderResponse response = new OrderResponse();
+            string invoiceHtml = "";
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(StoredProcedures.GET_ORDER_INVOICE, sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@p_OrderId", orderId);
+
+                    try
+                    {
+                        DataTable tblOrders = await _isqlDataHelper.ExecuteDataTableAsync(cmd);
+
+                        if (tblOrders.Rows.Count > 0)
+                        {
+                            response = MapDatatableToOrderResponse(tblOrders);
+                            response.Status = 200;
+                            response.Message = "Success";
+
+                            string _mailBody = EmailTemplates.CUSTOMER_INVOICE;
+                            _mailBody = _mailBody.Replace("{{CUST_NAME}}", response.CustomerName);
+                            _mailBody = _mailBody.Replace("{{CUST_ADDRESS1}}", response.CustomerId);
+                            _mailBody = _mailBody.Replace("{{CUST_ADDRESS2}}", response.CustomerEmail);
+                            _mailBody = _mailBody.Replace("{{CUST_COUNTRY}}", response.CustomerId);
+                            _mailBody = _mailBody.Replace("{{CUST_PINCODE}}", response.CustomerEmail);
+                            _mailBody = _mailBody.Replace("{{INVOICE_NUMBER}}", Guid.NewGuid().ToString());
+                            _mailBody = _mailBody.Replace("{{INVOICE_DATE}}", response.OrderDate.ToString());
+                            _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString());
+                            _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString());
+                            _mailBody = _mailBody.Replace("{{PRODUCTS_DETAILS}}", GetInvoiceOrderDetailsHTML(response));
+                            invoiceHtml = _mailBody;
+                        }
+                    }
+                    catch (MySqlException ex) when (ex.Number == 500)
+                    {
+                        //Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertAddToCartProduct : errormessage:" + ex.Message.ToString()));
+                        response.Status = 500;
+                        response.Message = "ERROR : " + ex.Message;
+                    }
+                    catch (Exception ex)
+                    {
+                        //Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertAddToCartProduct : errormessage:" + ex.Message.ToString()));
+                        response.Status = 500;
+                        response.Message = "ERROR : " + ex.Message;
+                    }
+                    return invoiceHtml;
+                }
+            }
+        }
+
+        private PdfDocument GetPdfFrom(string htmlString)
+        {
+            var pdfDoc = new HtmlToPdf();
+            pdfDoc.Options.PdfPageSize = PdfPageSize.Legal;
+            pdfDoc.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
+            pdfDoc.Options.WebPageFixedSize = true;
+            pdfDoc.Options.WebPageWidth = 1024;
+            pdfDoc.Options.WebPageHeight = 768;
+            pdfDoc.Options.MarginLeft = 0;
+            pdfDoc.Options.MarginRight = 0;
+            pdfDoc.Options.MarginTop = 0;
+            pdfDoc.Options.MarginBottom = 0;
+            pdfDoc.Options.RenderingEngine = RenderingEngine.WebKitRestricted;
+            var doc = pdfDoc.ConvertHtmlString(htmlString);
+            return doc;
+        }
 
         public async Task<OrderResponse> SendInvoiceByMail(string orderId)
         {

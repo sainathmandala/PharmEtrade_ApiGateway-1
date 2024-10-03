@@ -116,6 +116,8 @@ namespace BAL.BusinessLogic.Helper
                         response.TotalSaleValue = Convert.ToDecimal(tblSellerDashboard.Rows[0]["TotalSaleValue"] == DBNull.Value ? 0.0 : tblSellerDashboard.Rows[0]["TotalSaleValue"]);
                         response.TotalProducts = Convert.ToInt32(tblSellerDashboard.Rows[0]["TotalProducts"] == DBNull.Value ? 0 : tblSellerDashboard.Rows[0]["TotalProducts"]);
                         response.ActiveProducts = Convert.ToInt32(tblSellerDashboard.Rows[0]["ActiveProducts"] == DBNull.Value ? 0 : tblSellerDashboard.Rows[0]["ActiveProducts"]);
+                        response.OutgoingOrdersCount = Convert.ToInt32(tblSellerDashboard.Rows[0]["OutgoingOrdersCount"] == DBNull.Value ? 0 : tblSellerDashboard.Rows[0]["OutgoingOrdersCount"]);
+                        response.TotalPurchaseValue = Convert.ToDecimal(tblSellerDashboard.Rows[0]["TotalPurchaseValue"] == DBNull.Value ? 0.0 : tblSellerDashboard.Rows[0]["TotalPurchaseValue"]);
                     }
                     else
                     {

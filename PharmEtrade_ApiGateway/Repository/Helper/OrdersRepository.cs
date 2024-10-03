@@ -55,6 +55,10 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _orders.DownloadInvoice(orderId);
         }
+        public async Task<string> DownloadInvoiceHtml(string orderId)
+        {
+            return await _orders.DownloadInvoiceHtml(orderId);
+        }
 
         public async Task<OrderResponse> SendInvoiceByMail(string orderId)
         {

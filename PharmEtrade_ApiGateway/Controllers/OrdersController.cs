@@ -35,6 +35,13 @@ namespace PharmEtrade_ApiGateway.Controllers
             return File(invoiceStream.GetBuffer(), "application/pdf", "Invoice_" + orderId + ".pdf");
         }
 
+        [HttpGet("DownloadInvoiceHtml")]
+        public async Task<IActionResult> DownloadInvoiceHtml(string orderId)
+        {
+            var invoiceStream = await _ordersRepository.DownloadInvoiceHtml(orderId);
+            return Ok(invoiceStream);
+        }
+
         [HttpGet("SendInvoice")]
         public async Task<IActionResult> SendInvoice(string orderId)
         {
