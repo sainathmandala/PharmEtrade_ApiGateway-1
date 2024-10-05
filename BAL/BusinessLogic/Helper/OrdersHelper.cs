@@ -20,6 +20,7 @@ using Newtonsoft.Json;
 using PdfSharpCore;
 using System.Net.Http;
 using SelectPdf;
+using BAL.ViewModels;
 //using PdfSharpCore;
 //using PdfSharpCore.Pdf;
 //using TheArtOfDev.HtmlRenderer.PdfSharp;
@@ -294,6 +295,74 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
+        public async Task<Response<Order>> GetCustomerOrdersByDate(BuyerOrderCriteria orderCriteria)
+        {
+            var response = new Response<Order>();
+
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(StoredProcedures.GET_ORDERS_BY_BUYER_CRITERIA, sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@p_BuyerId", orderCriteria.BuyerId);
+                    cmd.Parameters.AddWithValue("@p_OrderFromDate", orderCriteria.OrderFromDate);
+                    cmd.Parameters.AddWithValue("@p_OrderToDate", orderCriteria.OrderToDate);
+
+                    try
+                    {
+                        // Execute the stored procedure and fill the DataTable
+                        DataTable tblOrders = await Task.Run(() => _isqlDataHelper.ExecuteDataTableAsync(cmd));
+                        List<Order> ordersList = new List<Order>();
+                        if (tblOrders.Rows.Count > 0)
+                        {
+                            foreach (DataRow row in tblOrders.Rows)
+                            {
+                                ordersList.Add(new Order
+                                {
+                                    OrderId = row["OrderId"].ToString() ?? "",
+                                    CustomerId = row["CustomerId"].ToString(),
+                                    CustomerName = row["CustomerName"].ToString() ?? "",
+                                    ProductId = row["ProductId"].ToString(),
+                                    ProductName = row["ProductName"].ToString() ?? "",
+                                    TotalAmount = Convert.ToDouble(row["TotalAmount"]),
+                                    ShippingMethodId = Convert.ToInt32(row["ShippingMethodId"]),
+                                    OrderStatusId = Convert.ToInt32(row["OrderStatusId"]),
+                                    TrackingNumber = row["TrackingNumber"].ToString() ?? "",
+                                    OrderDetailId = row["OrderDetailId"].ToString() ?? "",
+                                    Quantity = Convert.ToInt32(row["Quantity"]),
+                                    PricePerProduct = Convert.ToDouble(row["PricePerProduct"]),
+                                    VendorId = row["VendorId"].ToString() ?? "",
+                                    ProductDescription = row["ProductDescription"].ToString() ?? "",
+                                    //OrderDate = Convert.ToDateTime(row["OrderDate"])
+                                    OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue,
+                                    ImageUrl = row["MainImageUrl"].ToString() ?? ""
+
+                                });
+                            }
+                            response.StatusCode = 200;
+                            response.Message = "Successfully Feched data.";
+                            response.Result = ordersList;
+                        }
+                    }
+                    catch (MySqlException ex)
+                    {
+                        response.StatusCode = 500;
+                        response.Message = ex.Message;
+                        response.Result = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        response.StatusCode = 500;
+                        response.Message = ex.Message;
+                        response.Result = null;
+                    }
+
+                    return response;
+                }
+            }
+        }       
+
         public async Task<Response<Order>> GetOrdersBySellerId(string VendorId)
         {
             var response = new Response<Order>();
@@ -368,6 +437,75 @@ namespace BAL.BusinessLogic.Helper
             }
 
         }
+
+        public async Task<Response<Order>> GetSellerOrdersByDate(SellerOrderCriteria orderCriteria)
+        {
+            var response = new Response<Order>();
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(StoredProcedures.GET_ORDERS_BY_SELLER_CRITERIA, sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@p_VendorId", orderCriteria.SellerId);
+                    cmd.Parameters.AddWithValue("@p_OrderFromDate", orderCriteria.OrderFromDate);
+                    cmd.Parameters.AddWithValue("@p_OrderToDate", orderCriteria.OrderToDate);
+
+                    try
+                    {
+                        // Execute the stored procedure and fill the DataTable
+                        DataTable tblOrders = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
+                        List<Order> ordersList = new List<Order>();
+                        if (tblOrders.Rows.Count > 0)
+                        {
+                            foreach (DataRow row in tblOrders.Rows)
+                            {
+                                ordersList.Add(new Order
+                                {
+                                    OrderId = row["OrderId"].ToString() ?? "",
+                                    CustomerId = row["CustomerId"].ToString(),
+                                    CustomerName = row["CustomerName"].ToString() ?? "",
+                                    ProductId = row["ProductId"].ToString(),
+                                    ProductName = row["ProductName"].ToString() ?? "",
+                                    TotalAmount = Convert.ToDouble(row["TotalAmount"]),
+                                    ShippingMethodId = Convert.ToInt32(row["ShippingMethodId"]),
+                                    OrderStatusId = Convert.ToInt32(row["OrderStatusId"]),
+                                    TrackingNumber = row["TrackingNumber"].ToString() ?? "",
+                                    OrderDetailId = row["OrderDetailId"].ToString() ?? "",
+                                    Quantity = Convert.ToInt32(row["Quantity"]),
+                                    PricePerProduct = Convert.ToDouble(row["PricePerProduct"]),
+                                    VendorId = row["VendorId"].ToString(),
+                                    ProductDescription = row["ProductDescription"].ToString(),
+                                    //OrderDate = Convert.ToDateTime(row["OrderDate"])
+                                    OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue,
+                                    ImageUrl = row["MainImageUrl"].ToString() ?? "",
+
+
+                                });
+                            }
+                            response.StatusCode = 200;
+                            response.Message = "Successfully Feched data.";
+                            response.Result = ordersList;
+                        }
+                    }
+                    catch (MySqlException ex)
+                    {
+                        response.StatusCode = 500;
+                        response.Message = ex.Message;
+                        response.Result = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        response.StatusCode = 500;
+                        response.Message = ex.Message;
+                        response.Result = null;
+                    }
+
+                    return response;
+                }
+            }
+        }
+
         public async Task<Response<Order>> GetCustomersOrderedForSeller(string VendorId)
         {
             var response = new Response<Order>();
@@ -517,6 +655,73 @@ namespace BAL.BusinessLogic.Helper
                 }
             }
 
+        }
+
+        public async Task<Response<Order>> GetOrdersByDate(OrderCriteria orderCriteria)
+        {
+            var response = new Response<Order>();
+
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(StoredProcedures.GET_ORDERS_BY_DATE, sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@p_OrderFromDate", orderCriteria.OrderFromDate);
+                    cmd.Parameters.AddWithValue("@p_OrderToDate", orderCriteria.OrderToDate);
+
+                    try
+                    {
+                        // Execute the stored procedure and fill the DataTable
+                        DataTable tblOrders = await Task.Run(() => _isqlDataHelper.ExecuteDataTableAsync(cmd));
+                        List<Order> ordersList = new List<Order>();
+                        if (tblOrders.Rows.Count > 0)
+                        {
+                            foreach (DataRow row in tblOrders.Rows)
+                            {
+                                ordersList.Add(new Order
+                                {
+                                    OrderId = row["OrderId"].ToString() ?? "",
+                                    CustomerId = row["CustomerId"].ToString(),
+                                    CustomerName = row["CustomerName"].ToString() ?? "",
+                                    ProductId = row["ProductId"].ToString(),
+                                    ProductName = row["ProductName"].ToString() ?? "",
+                                    TotalAmount = Convert.ToDouble(row["TotalAmount"]),
+                                    ShippingMethodId = Convert.ToInt32(row["ShippingMethodId"]),
+                                    OrderStatusId = Convert.ToInt32(row["OrderStatusId"]),
+                                    TrackingNumber = row["TrackingNumber"].ToString() ?? "",
+                                    OrderDetailId = row["OrderDetailId"].ToString() ?? "",
+                                    Quantity = Convert.ToInt32(row["Quantity"]),
+                                    PricePerProduct = Convert.ToDouble(row["PricePerProduct"]),
+                                    VendorId = row["VendorId"].ToString() ?? "",
+                                    ProductDescription = row["ProductDescription"].ToString() ?? "",
+                                    //OrderDate = Convert.ToDateTime(row["OrderDate"])
+                                    OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue,
+                                    ImageUrl = row["MainImageUrl"].ToString() ?? ""
+
+                                });
+                            }
+                            response.StatusCode = 200;
+                            response.Message = "Successfully Feched data.";
+                            response.Result = ordersList;
+                        }
+                    }
+                    catch (MySqlException ex)
+                    {
+                        response.StatusCode = 500;
+                        response.Message = ex.Message;
+                        response.Result = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        response.StatusCode = 500;
+                        response.Message = ex.Message;
+                        response.Result = null;
+                    }
+
+                    return response;
+                }
+            }
         }
 
         public async Task<PaymentResponse> AddPayment(PaymentRequest paymentRequest)
@@ -837,8 +1042,7 @@ namespace BAL.BusinessLogic.Helper
                     return response;
                 }
             }
-        }
+        }       
         #endregion Mapping Methods
-
     }
 }

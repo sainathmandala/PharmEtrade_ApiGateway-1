@@ -14,6 +14,7 @@ using BAL.Common;
 using System.Data;
 using BAL.ResponseModels;
 using MySql.Data.MySqlClient;
+using BAL.ViewModels;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -221,6 +222,53 @@ namespace BAL.BusinessLogic.Helper
             return listpaymentinfo;
         }
 
-        
+        public async Task<Response<PaymentInfo>> GetAllPayments()
+        {
+            Response<PaymentInfo> response = new Response<PaymentInfo>();
+            try
+            {
+                MySqlCommand cmdPaymentinfo = new MySqlCommand(StoredProcedures.GET_ALL_PAYMENTS);
+                cmdPaymentinfo.CommandType = CommandType.StoredProcedure;
+
+                DataTable tblPaymentinfo = await Task.Run(() => _isqlDataHelper.ExecuteDataTableAsync(cmdPaymentinfo));
+                response.StatusCode = 200;
+                response.Message = "Successfully Fetched Data.";
+                response.Result = MapDataTableToPaymentInfo(tblPaymentinfo);
+            }
+            catch (Exception ex)
+            {
+
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+            return response;
+        }
+
+        public async Task<Response<PaymentInfo>> GetAllPayments(PaymentCriteria criteria)
+        {
+            Response<PaymentInfo> response = new Response<PaymentInfo>();
+            try
+            {
+                MySqlCommand cmdPaymentinfo = new MySqlCommand(StoredProcedures.GET_PAYMENTS_BY_DATE);
+                cmdPaymentinfo.CommandType = CommandType.StoredProcedure;
+
+                cmdPaymentinfo.Parameters.AddWithValue("@p_FromDate", criteria.FromDate);
+                cmdPaymentinfo.Parameters.AddWithValue("@p_ToDate", criteria.ToDate);
+
+                DataTable tblPaymentinfo = await Task.Run(() => _isqlDataHelper.ExecuteDataTableAsync(cmdPaymentinfo));
+                response.StatusCode = 200;
+                response.Message = "Successfully Fetched Data.";
+                response.Result = MapDataTableToPaymentInfo(tblPaymentinfo);
+            }
+            catch (Exception ex)
+            {
+
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+            return response;
+        }
     }
 }

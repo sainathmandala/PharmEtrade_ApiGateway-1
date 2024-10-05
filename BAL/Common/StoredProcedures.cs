@@ -55,7 +55,9 @@ namespace BAL.Common
         public const string GET_ORDERS_BY_ORDERID = "Sp_GetOrdersByOrderId";
         public const string GETCUSTOMERORDEREDFORSELLER = "sp_GetCustomersOrderedForSeller";
         public const string GET_ORDER_INVOICE = "sp_OrderInvoice";
-        public const string GET_ORDERS_BY_CRITERIA = "sp_GetOrdersByCriteria";
+        public const string GET_ORDERS_BY_BUYER_CRITERIA = "sp_GetOrdersByBuyerCriteria";
+        public const string GET_ORDERS_BY_SELLER_CRITERIA = "sp_GetOrdersBySellerCriteria";
+        public const string GET_ORDERS_BY_DATE = "sp_GetOrdersByDate";
 
         //Cart
         public const string DELETE_CART = "sp_DeleteCart";
@@ -102,6 +104,8 @@ namespace BAL.Common
         public const string ADD_UPDATE_PAYMENTINFO = "sp_AddUpdatePaymentInfo";
         public const string GET_PAYMENTINFO_BY_ORDERID = "SP_GetPaymentInfoByOrderId";
         public const string GET_PAYMENTINFO_BY_CUSTOMERID = "SP_GetPaymentInfoByCustomerId";
+        public const string GET_ALL_PAYMENTS = "sp_GetAllPayments";
+        public const string GET_PAYMENTS_BY_DATE = "sp_GetPaymentsByDate";
 
         // DASHBOARDS
         public const string DASHBOARD_GET_BY_SELLER = "sp_GetSellerDashboard";

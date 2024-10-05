@@ -4,8 +4,7 @@ using BAL.BusinessLogic.Interface;
 using BAL.Models;
 using BAL.BusinessLogic.Helper;
 using Mysqlx.Crud;
-
-
+using BAL.RequestModels;
 
 namespace PharmEtrade_ApiGateway.Repository.Helper
 {
@@ -25,7 +24,16 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return await _paymentInfohelper.AddPayment(paymentInfo);
         }
 
-       
+        public async Task<Response<PaymentInfo>> GetAllPayments()
+        {
+            return await _paymentInfohelper.GetAllPayments();
+        }
+
+        public async Task<Response<PaymentInfo>> GetAllPayments(PaymentCriteria criteria)
+        {
+            return await _paymentInfohelper.GetAllPayments(criteria);
+        }
+
         public async  Task<Response<PaymentInfo>> GetPaymentInfoByCustmoerId(string CustomerId)
         {
 
@@ -38,7 +46,6 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return await _paymentInfohelper.GetPaymentInfoByOrderId(OrderId);
 
         }
-
         
         public async Task<Response<PaymentInfo>> UpdatePayment(PaymentInfo paymentInfo)
         {

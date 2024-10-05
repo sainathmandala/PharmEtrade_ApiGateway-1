@@ -1,4 +1,5 @@
 ﻿using BAL.Models;
+using BAL.RequestModels;
 using BAL.ResponseModels;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace BAL.BusinessLogic.Interface
         Task<BAL.ResponseModels.Response<PaymentInfo>>UpdatePayment(PaymentInfo paymentInfo);
         Task<Response<PaymentInfo>> GetPaymentInfoByOrderId(string OrderId);
         Task<Response<PaymentInfo>> GetPaymentInfoByCustmoerId(string CustomerId);
-
-
+        Task<Response<PaymentInfo>> GetAllPayments();
+        Task<Response<PaymentInfo>> GetAllPayments(PaymentCriteria criteria);
     }
 }

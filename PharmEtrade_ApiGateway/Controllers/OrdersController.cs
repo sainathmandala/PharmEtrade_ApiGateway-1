@@ -20,8 +20,7 @@ namespace PharmEtrade_ApiGateway.Controllers
             _paymentinfoRepository = paymentinfoRepository;
         }
 
-        [HttpPost]
-        [Route("Place")]
+        [HttpPost("Place")]
         public async Task<IActionResult> AddUpdateOrder(OrderRequest request)
         {
             OrderResponse response = await _ordersRepository.AddUpdateOrder(request);
@@ -49,52 +48,53 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
-        [HttpGet]
-        [Route("GetById")]
+        [HttpGet("GetById")]
         public async Task<IActionResult> GetOrdersByOrderId(string orderid)
         {
             var response = await _ordersRepository.GetOrdersByOrderId(orderid);
             return Ok(response);
         }
 
-        [HttpGet]
-        [Route("Buyer/GetAll")]
+        [HttpPost("GetAllByDate")]
+        public async Task<IActionResult> GetSellerOrdersByDate(OrderCriteria orderCriteria)
+        {
+            var response = await _ordersRepository.GetOrdersByDate(orderCriteria);
+            return Ok(response);
+        }
+
+        [HttpGet("Buyer/GetAll")]
         public async Task<IActionResult> GetOrdersByCustomerId(string? customerId)
         {
             var response = await _ordersRepository.GetOrdersByCustomerId(customerId);
             return Ok(response);
         }
 
-        [HttpGet]
-        [Route("Buyer/Products")]
+        [HttpPost("Buyer/GetAllByDate")]
+        public async Task<IActionResult> GetCustomerOrdersByDate(BuyerOrderCriteria orderCriteria)
+        {
+            var response = await _ordersRepository.GetCustomerOrdersByDate(orderCriteria);
+            return Ok(response);
+        }
+
+        [HttpGet("Buyer/Products")]
         public async Task<IActionResult> GetProductsByCustomerId(string? customerId)
         {
             var response = await _ordersRepository.GetOrdersByCustomerId(customerId);
             return Ok(response);
-        }
-
-        [HttpGet]
-        [Route("Buyer/GetByDate")]
-        public async Task<IActionResult> GetCustomerOrdersByDate(string? customerId, DateTime orderDate)
-        {
-            var response = await _ordersRepository.GetOrdersByCustomerId(customerId);
-            return Ok(response);
-        }
+        }       
 
         // Seller Endpoints
-        [HttpGet]
-        [Route("Seller/GetAll")]
+        [HttpGet("Seller/GetAll")]
         public async Task<IActionResult> GetOrdersBySellerId(string? vendorId)
         {
             var response = await _ordersRepository.GetOrdersBySellerId(vendorId);
             return Ok(response);
         }
-
-        [HttpGet]
-        [Route("Seller/GetByDate")]
-        public async Task<IActionResult> GetSellerOrdersByDate(string? sellerId, DateTime orderDate)
+        
+        [HttpPost("Seller/GetAllByDate")]
+        public async Task<IActionResult> GetSellerOrdersByDate(SellerOrderCriteria orderCriteria)
         {
-            var response = await _ordersRepository.GetOrdersByCustomerId(sellerId);
+            var response = await _ordersRepository.GetSellerOrdersByDate(orderCriteria);
             return Ok(response);
         }
 
@@ -112,50 +112,60 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
-        [HttpGet]
-        [Route("Seller/Payments")]
+        [HttpGet("Seller/Payments")]
         public async Task<IActionResult> GetPaymentInfoBySellerId(string sellerId)
         {
             var response = await _paymentinfoRepository.GetPaymentInfoByCustmoerId(sellerId);
             return Ok(response);
         }
 
-        [HttpPost]
-        [Route("Payment")]
+        [HttpPost("Payment")]
         public async Task<IActionResult> AddPayMent(PaymentRequest request)
         {
             PaymentResponse response = await _ordersRepository.AddPayment(request);
             return Ok(response);
         }
-        [HttpPost]
-        [Route("AddPayment")]
+
+        [HttpPost("AddPayment")]
         public async Task<IActionResult> AddPaymentInfo(PaymentInfo paymentInfo)
         {
             var response = await _paymentinfoRepository.AddPayment(paymentInfo);
             return Ok(response);
         }
-        [HttpPost]
-        [Route("UpdatePayment")]
+
+        [HttpPost("UpdatePayment")]
         public async Task<IActionResult> UpdatePaymentInfo(PaymentInfo paymentInfo)
         {
             var response = await _paymentinfoRepository.UpdatePayment(paymentInfo);
             return Ok(response);
         }
-        [HttpGet]
-        [Route("GetPaymentByOrderId")]
+
+        [HttpGet("GetPaymentByOrderId")]
         public async Task<IActionResult> GetPaymentInfoByOrderId(string OrderId)
         {
             var response = await _paymentinfoRepository.GetPaymentInfoByOrderId(OrderId);
             return Ok(response);
         }
 
-        [HttpGet]
-        [Route("GetPaymentByCustomerId")]
+        [HttpGet("GetPaymentByCustomerId")]
         public async Task<IActionResult> GetPaymentInfoByCustomerId(string CustomerId)
         {
             var response = await _paymentinfoRepository.GetPaymentInfoByCustmoerId(CustomerId);
             return Ok(response);
         }
 
+        [HttpGet("GetAllPayments")]
+        public async Task<IActionResult> GetAllPayments()
+        {
+            var response = await _paymentinfoRepository.GetAllPayments();
+            return Ok(response);
+        }
+
+        [HttpPost("GetPaymentsByDate")]
+        public async Task<IActionResult> GetPaymentsByDate(PaymentCriteria criteria)
+        {
+            var response = await _paymentinfoRepository.GetAllPayments(criteria);
+            return Ok(response);
+        }
     }
 }

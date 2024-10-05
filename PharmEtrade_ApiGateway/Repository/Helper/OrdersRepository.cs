@@ -4,6 +4,7 @@ using BAL.ResponseModels;
 using PharmEtrade_ApiGateway.Repository.Interface;
 using BAL.Models;
 using BAL.BusinessLogic.Helper;
+using Amazon.S3.Model.Internal.MarshallTransformations;
 
 namespace PharmEtrade_ApiGateway.Repository.Helper
 {
@@ -63,6 +64,21 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         public async Task<OrderResponse> SendInvoiceByMail(string orderId)
         {
             return await _orders.SendInvoiceByMail(orderId);
+        }
+
+        public async Task<Response<Order>> GetCustomerOrdersByDate(BuyerOrderCriteria orderCriteria)
+        {
+            return await _orders.GetCustomerOrdersByDate(orderCriteria); 
+        }
+
+        public async Task<Response<Order>> GetSellerOrdersByDate(SellerOrderCriteria orderCriteria)
+        {
+            return await _orders.GetSellerOrdersByDate(orderCriteria);
+        }
+
+        public async Task<Response<Order>> GetOrdersByDate(OrderCriteria orderCriteria)
+        {
+            return await _orders.GetOrdersByDate(orderCriteria);
         }
     }
 }

@@ -13,10 +13,13 @@ namespace BAL.BusinessLogic.Interface
     {
         Task<OrderResponse> AddOrder(TempOrderRequest orderRequest);
         Task<Response<Order>> GetOrdersByCustomerId(string customerId);
+        Task<Response<Order>> GetCustomerOrdersByDate(BuyerOrderCriteria orderCriteria);
         Task<Response<Order>> GetOrdersBySellerId(string VendorId);
+        Task<Response<Order>> GetSellerOrdersByDate(SellerOrderCriteria orderCriteria);
         Task<PaymentResponse> AddPayment(PaymentRequest paymentRequest);
         Task<OrderResponse> AddUpdateOrder(OrderRequest orderRequest);
         Task<Response<Order>> GetOrdersByOrderId(string orderId);
+        Task<Response<Order>> GetOrdersByDate(OrderCriteria orderCriteria);
         Task<Response<Order>> GetCustomersOrderedForSeller(string VendorId);
         Task<MemoryStream> DownloadInvoice(string orderId);
         Task<string> DownloadInvoiceHtml(string orderId);
