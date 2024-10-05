@@ -206,15 +206,15 @@ namespace BAL.BusinessLogic.Helper
                 _orderDetailsHTML += string.Format("<td> {0} </td>", sNumber);
                 _orderDetailsHTML += string.Format("<td> <img src='{0}' width='75px' height='50px' /> </td>", details.ImageUrl);
                 _orderDetailsHTML += string.Format("<td> {0} </td>", details.ProductName);
-                _orderDetailsHTML += string.Format("<td> {0} </td>", details.PricePerProduct);
+                _orderDetailsHTML += string.Format("<td> ${0} </td>", details.PricePerProduct);
                 _orderDetailsHTML += string.Format("<td> {0} </td>", details.Quantity);
-                _orderDetailsHTML += string.Format("<td> {0} </td>", (details.PricePerProduct * details.Quantity));
+                _orderDetailsHTML += string.Format("<td align='right'> ${0} </td>", Math.Round(details.PricePerProduct * details.Quantity,2));
                 _orderDetailsHTML += "</tr>";
                 sNumber++;
             }
             _orderDetailsHTML += "<tr><td colspan='4'></td>";
             _orderDetailsHTML += string.Format("<td> Total </td>", sNumber);
-            _orderDetailsHTML += string.Format("<td> {0} </td>", response.TotalAmount);
+            _orderDetailsHTML += string.Format("<td align='right'> ${0} </td>", response.TotalAmount);
             _orderDetailsHTML += "</tr></table>";
 
             return _orderDetailsHTML;
@@ -664,9 +664,9 @@ namespace BAL.BusinessLogic.Helper
                             _mailBody = _mailBody.Replace("{{CUST_COUNTRY}}", response.CustomerId);
                             _mailBody = _mailBody.Replace("{{CUST_PINCODE}}", response.CustomerEmail);
                             _mailBody = _mailBody.Replace("{{INVOICE_NUMBER}}", Guid.NewGuid().ToString());
-                            _mailBody = _mailBody.Replace("{{INVOICE_DATE}}", response.OrderDate.ToString());
-                            _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString());
-                            _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString());
+                            _mailBody = _mailBody.Replace("{{INVOICE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
+                            _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
+                            //_mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
                             _mailBody = _mailBody.Replace("{{PRODUCTS_DETAILS}}", GetInvoiceOrderDetailsHTML(response));
                             var invoiceDocument = new PdfDocument();
                             var sourceDoc = GetPdfFrom(_mailBody);
@@ -734,9 +734,8 @@ namespace BAL.BusinessLogic.Helper
                             _mailBody = _mailBody.Replace("{{CUST_COUNTRY}}", response.CustomerId);
                             _mailBody = _mailBody.Replace("{{CUST_PINCODE}}", response.CustomerEmail);
                             _mailBody = _mailBody.Replace("{{INVOICE_NUMBER}}", Guid.NewGuid().ToString());
-                            _mailBody = _mailBody.Replace("{{INVOICE_DATE}}", response.OrderDate.ToString());
-                            _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString());
-                            _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString());
+                            _mailBody = _mailBody.Replace("{{INVOICE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));                            
+                            _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
                             _mailBody = _mailBody.Replace("{{PRODUCTS_DETAILS}}", GetInvoiceOrderDetailsHTML(response));
                             invoiceHtml = _mailBody;
                         }
@@ -803,9 +802,8 @@ namespace BAL.BusinessLogic.Helper
                             _mailBody = _mailBody.Replace("{{CUST_COUNTRY}}", response.CustomerId);
                             _mailBody = _mailBody.Replace("{{CUST_PINCODE}}", response.CustomerEmail);
                             _mailBody = _mailBody.Replace("{{INVOICE_NUMBER}}", Guid.NewGuid().ToString());
-                            _mailBody = _mailBody.Replace("{{INVOICE_DATE}}", response.OrderDate.ToString());
-                            _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString());
-                            _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString());
+                            _mailBody = _mailBody.Replace("{{INVOICE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
+                            _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
                             _mailBody = _mailBody.Replace("{{PRODUCTS_DETAILS}}", GetInvoiceOrderDetailsHTML(response));
                             //var invoiceDocument = new PdfDocument();
                             //var sourceDoc = GetPdfFrom(_mailBody);

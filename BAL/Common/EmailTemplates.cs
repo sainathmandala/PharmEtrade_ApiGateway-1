@@ -62,9 +62,11 @@ namespace BAL.Common
                                                     <td>
                                                     <table border='0' align='center' width='95%'>
                                                     <tr>
-                                                    <td align='left' margin='10'> <h1> INVOICE </h1>  </td>
-                                                    <td align='right'>  
-	                                                    <h3> PharmETrade </h3>
+                                                    <td align='left' margin='10'> 
+<img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='150px' height='50px' /> <br />
+<h1> INVOICE </h1>  </td>
+                                                    <td align='right'> <br /> <br />  
+	                                                    <h3> PharmEtrade </h3>
 	                                                    <h5> 36 Roremond </h5>
 	                                                    <h5> WAYNE, USA </h5>
 	                                                    <h5> 99887 </h5>
@@ -88,7 +90,7 @@ namespace BAL.Common
 	                                                    </td> 
 	                                                    <td align='right'> 
 		                                                    <b> 
-			                                                    <u>INVOICE NUMBER :<br />
+			                                                    <u>INVOICE NUMBER : </u><br />
 		                                                    </b>
 			                                                    <span>{{INVOICE_NUMBER}}</span> <br />
 			                                                    <span>DATE :</span> <br />

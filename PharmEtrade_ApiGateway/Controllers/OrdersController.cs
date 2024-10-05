@@ -65,12 +65,36 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
+        [HttpGet]
+        [Route("Buyer/Products")]
+        public async Task<IActionResult> GetProductsByCustomerId(string? customerId)
+        {
+            var response = await _ordersRepository.GetOrdersByCustomerId(customerId);
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("Buyer/GetByDate")]
+        public async Task<IActionResult> GetCustomerOrdersByDate(string? customerId, DateTime orderDate)
+        {
+            var response = await _ordersRepository.GetOrdersByCustomerId(customerId);
+            return Ok(response);
+        }
+
         // Seller Endpoints
         [HttpGet]
         [Route("Seller/GetAll")]
         public async Task<IActionResult> GetOrdersBySellerId(string? vendorId)
         {
             var response = await _ordersRepository.GetOrdersBySellerId(vendorId);
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("Seller/GetByDate")]
+        public async Task<IActionResult> GetSellerOrdersByDate(string? sellerId, DateTime orderDate)
+        {
+            var response = await _ordersRepository.GetOrdersByCustomerId(sellerId);
             return Ok(response);
         }
 
