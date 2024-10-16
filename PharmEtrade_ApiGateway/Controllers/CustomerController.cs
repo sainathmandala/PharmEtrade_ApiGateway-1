@@ -202,5 +202,23 @@ namespace PharmEtrade_ApiGateway.Controllers
             Response<Address> response = await _icustomerRepo.DeleteAddress(customerId);
             return Ok(response);
         }
+
+        [HttpPost("BeneficiaryAdd")]
+        public async Task<IActionResult> AddBeneficiary(BeneficiaryDetails beneficiaryDetails)
+        {
+            if (string.IsNullOrEmpty(beneficiaryDetails.CustomerId))
+                return BadRequest("Customer Id is required.");
+            Response<BeneficiaryDetails> response = await _icustomerRepo.AddUpdateBeneficiaryDetail(beneficiaryDetails);
+            return Ok(response);
+        }
+
+        [HttpGet("Beneficiary/GetByCustomerId")]
+        public async Task<IActionResult> GetBeneficiaryByCustomerId(string customerId)
+        {
+            if (string.IsNullOrEmpty(customerId))
+                return BadRequest("Customer Id is required.");
+            Response<BeneficiaryDetails> response = await _icustomerRepo.GetBeneficiaryByCustomerId(customerId);
+            return Ok(response);
+        }
     }
 }

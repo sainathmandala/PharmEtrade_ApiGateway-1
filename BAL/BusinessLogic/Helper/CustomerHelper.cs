@@ -651,5 +651,94 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
+
+        public async Task<Response<BeneficiaryDetails>> AddUpdateBeneficiaryDetail(BeneficiaryDetails beneficiaryDetails)
+        {
+            Response<BeneficiaryDetails> response = new Response<BeneficiaryDetails>();
+            try
+            {
+                MySqlCommand cmdBeneficiary = new MySqlCommand(StoredProcedures.CUSTOMER_ADD_UPDATE_BENEFICIARYDETAILS);
+                cmdBeneficiary.CommandType = CommandType.StoredProcedure;
+                cmdBeneficiary.Parameters.AddWithValue("@p_BeneficiaryId", beneficiaryDetails.Id);
+                cmdBeneficiary.Parameters.AddWithValue("@p_CustomerId", beneficiaryDetails.CustomerId);
+                cmdBeneficiary.Parameters.AddWithValue("@p_BankName", beneficiaryDetails.BankName);
+                cmdBeneficiary.Parameters.AddWithValue("@p_BankAddress", beneficiaryDetails.BankAddress);
+                cmdBeneficiary.Parameters.AddWithValue("@p_RoutingNumber", beneficiaryDetails.RoutingNumber);
+                cmdBeneficiary.Parameters.AddWithValue("@p_AccountNumber", beneficiaryDetails.AccountNumber);
+                cmdBeneficiary.Parameters.AddWithValue("@p_AccountType", beneficiaryDetails.AccountType);
+                cmdBeneficiary.Parameters.AddWithValue("@p_CheckPayableTo", beneficiaryDetails.CheckPayableTo);
+                cmdBeneficiary.Parameters.AddWithValue("@p_FirstName", beneficiaryDetails.FirstName);
+                cmdBeneficiary.Parameters.AddWithValue("@p_LastName", beneficiaryDetails.LastName);
+                cmdBeneficiary.Parameters.AddWithValue("@p_AddressLine1", beneficiaryDetails.AddressLine1);
+                cmdBeneficiary.Parameters.AddWithValue("@p_AddressLine2", beneficiaryDetails.AddressLine2);
+                cmdBeneficiary.Parameters.AddWithValue("@p_City", beneficiaryDetails.City);
+                cmdBeneficiary.Parameters.AddWithValue("@p_State", beneficiaryDetails.State);
+                cmdBeneficiary.Parameters.AddWithValue("@p_Zip", beneficiaryDetails.Zip);
+       
+                DataTable tblBeneficiary = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdBeneficiary));
+
+                response.StatusCode = 200;
+                response.Message = "Beneficiary Added/Updated Successfully.";
+                response.Result = MapDataTableToBeneficiaryList(tblBeneficiary);
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+        private List<BeneficiaryDetails> MapDataTableToBeneficiaryList(DataTable tblBeneficiary)
+        {
+            List<BeneficiaryDetails> lstBeneficiary = new List<BeneficiaryDetails>();
+            foreach (DataRow aItem in tblBeneficiary.Rows)
+            {
+                BeneficiaryDetails beneficiary = new BeneficiaryDetails();
+                beneficiary.Id = aItem["Id"].ToString() ?? "";
+                beneficiary.CustomerId = aItem["CustomerId"].ToString() ?? "";
+                beneficiary.BankName = aItem["BankName"].ToString() ?? "";
+                beneficiary.BankAddress = aItem["BankAddress"].ToString() ?? "";
+                beneficiary.RoutingNumber = aItem["RoutingNumber"].ToString() ?? "";
+                beneficiary.AccountNumber = aItem["AccountNumber"].ToString() ?? "";
+                beneficiary.AccountType = aItem["AccountType"].ToString() ?? "";
+                beneficiary.CheckPayableTo = aItem["CheckPayableTo"].ToString() ?? "";
+                beneficiary.FirstName = aItem["FirstName"].ToString() ?? "";
+                beneficiary.LastName = aItem["LastName"].ToString() ?? "";
+                beneficiary.AddressLine1 = aItem["AddressLine1"].ToString() ?? "";
+                beneficiary.AddressLine2 = aItem["AddressLine2"].ToString() ?? "";
+                beneficiary.City = aItem["City"].ToString() ?? "";
+                beneficiary.State = aItem["State"].ToString() ?? "";
+                beneficiary.Zip = Convert.ToInt32(Convert.IsDBNull(aItem["Zip"]) ? 0 : aItem["Zip"]);
+                lstBeneficiary.Add(beneficiary);
+            }
+            return lstBeneficiary;
+        }
+        public async Task<Response<BeneficiaryDetails>> GetBeneficiaryByCustomerId(string customerId)
+        {
+            Response<BeneficiaryDetails> response = new Response<BeneficiaryDetails>();
+            try
+            {
+                MySqlCommand cmdBeneficiary = new MySqlCommand(StoredProcedures.CUSTOMER_GET_ALL_BENEFICIARIES);
+                cmdBeneficiary.CommandType = CommandType.StoredProcedure;
+
+                cmdBeneficiary.Parameters.AddWithValue("@p_CustomerId", customerId);
+
+                DataTable tblBeneficairies = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdBeneficiary));
+
+                response.StatusCode = 200;
+                response.Message = "Beneficiari(es) fetched Successfully.";
+                response.Result = MapDataTableToBeneficiaryList(tblBeneficairies);
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
     }
 }

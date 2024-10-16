@@ -112,5 +112,10 @@ namespace BAL.Common
         public const string DASHBOARD_GET_BY_SELLER = "sp_GetSellerDashboard";
         public const string DASHBOARD_GET_BY_BUYER = "sp_GetBuyerDashboard";
         public const string DASHBOARD_GET_BY_ADMIN = "sp_GetAdminDashboard";
+
+        //BeneficiaryDetails
+        public const string CUSTOMER_ADD_UPDATE_BENEFICIARYDETAILS = "sp_AddUpdateBeneficiary";
+        public const string CUSTOMER_DELETE_BENEFICIARY = "sp_DeleteBeneficiary";
+        public const string CUSTOMER_GET_ALL_BENEFICIARIES = "sp_GetBeneficiaryByCustomerId";
     }
 }
