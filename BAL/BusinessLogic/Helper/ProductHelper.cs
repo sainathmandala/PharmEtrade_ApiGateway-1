@@ -1295,7 +1295,8 @@ namespace BAL.BusinessLogic.Helper
                 item.Height = Convert.ToDecimal(Convert.IsDBNull(product["Height"]) ? 0.0 : product["Height"]);
                 item.Length = Convert.ToDecimal(Convert.IsDBNull(product["Length"]) ? 0.0 : product["Length"]);
                 item.Weight = Convert.ToDecimal(Convert.IsDBNull(product["Weight"]) ? 0.0 : product["Weight"]);
-                item.IsActive = Convert.ToDecimal(Convert.IsDBNull(product["IsActive"]) ? 0 : product["IsActive"]) == 1;
+                // item.IsActive = Convert.ToDecimal(Convert.IsDBNull(product["IsActive"]) ? 0 : product["IsActive"]) == 1;
+                item.IsActive = true;
                 item.CreatedDate = Convert.ToDateTime(Convert.IsDBNull(product["CreatedDate"]) ? (DateTime?)null : product["CreatedDate"]);
 
                 item.ProductPriceId = product["ProductPriceId"].ToString() ?? "";
