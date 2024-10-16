@@ -203,5 +203,13 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _icustomerHelper.Deactivate(customerId, comments);
         }
+        public async Task<Response<BeneficiaryDetails>> AddUpdateBeneficiaryDetail(BeneficiaryDetails beneficiaryDetails)
+        {
+            return await _icustomerHelper.AddUpdateBeneficiaryDetail(beneficiaryDetails);
+        }
+        public async Task<Response<BeneficiaryDetails>> GetBeneficiaryByCustomerId(string customerId)
+        {
+            return await _icustomerHelper.GetBeneficiaryByCustomerId(customerId);
+        }
     }
 }
