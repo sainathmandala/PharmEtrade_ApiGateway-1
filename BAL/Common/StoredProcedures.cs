@@ -66,6 +66,7 @@ namespace BAL.Common
         public const string CUSTOMER_ADMIN_LOGIN = "sp_AdminLogin";
         public const string CUSTOMER_ADD_UPDATE_ADDRESS = "sp_AddUpdateAddress";
         public const string CUSTOMER_DELETE_ADDRESS = "sp_DeleteAddress";
+        public const string CUSTOMER_ACTIVATE_DEACTIVATE = "sp_CustomerActivateDeActivate";
 
         public const string CUSTOMER_GET_ALL_ADDRESSES = "sp_GetAddressByCustomerId";
         public const string CUSTOMER_GET_ADDRESS = "sp_GetAddress";

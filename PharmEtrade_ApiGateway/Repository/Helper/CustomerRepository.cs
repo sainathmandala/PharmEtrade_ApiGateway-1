@@ -193,5 +193,15 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _icustomerHelper.GetByFilterCriteria(filterCriteria);
         }
+
+        public async Task<Response<string>> Activate(string customerId, string? comments)
+        {
+            return await _icustomerHelper.Activate(customerId, comments);
+        }
+
+        public async Task<Response<string>> Deactivate(string customerId, string? comments)
+        {
+            return await _icustomerHelper.Deactivate(customerId, comments);
+        }
     }
 }

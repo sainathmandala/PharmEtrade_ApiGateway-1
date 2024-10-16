@@ -184,5 +184,23 @@ namespace PharmEtrade_ApiGateway.Controllers
             Response<Address> response = await _icustomerRepo.DeleteAddress(addressId);
             return Ok(response);
         }
+
+        [HttpPost("Activate")]
+        public async Task<IActionResult> Activate(string customerId, string? comments)
+        {
+            if (string.IsNullOrEmpty(customerId))
+                return BadRequest("Customer Id is required.");
+            Response<Address> response = await _icustomerRepo.DeleteAddress(customerId);
+            return Ok(response);
+        }
+
+        [HttpPost("Deactivate")]
+        public async Task<IActionResult> Deactivate(string customerId, string? comments)
+        {
+            if (string.IsNullOrEmpty(customerId))
+                return BadRequest("Customer Id is required.");
+            Response<Address> response = await _icustomerRepo.DeleteAddress(customerId);
+            return Ok(response);
+        }
     }
 }

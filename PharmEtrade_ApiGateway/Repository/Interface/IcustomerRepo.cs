@@ -19,5 +19,8 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<Response<Address>> GetAddressById(string addressId);
         Task<Response<Address>> AddUpdateAddress(Address customerAddress);
         Task<Response<Address>> DeleteAddress(string addressId);
+        Task<Response<string>> Activate(string customerId, string? comments);
+        Task<Response<string>> Deactivate(string customerId, string? comments);
+
     }
 }

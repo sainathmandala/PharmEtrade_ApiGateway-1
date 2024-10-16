@@ -99,19 +99,19 @@ namespace BAL.BusinessLogic.Helper
                 item.Customer.LastName = cartItem["LastName"].ToString();
                 item.Customer.Email = cartItem["Email"].ToString();
                 item.Customer.Mobile = cartItem["Mobile"].ToString();
-                item.Customer.CustomerTypeId = Convert.ToInt32(cartItem["CustomerTypeId"]);
-                item.Customer.AccountTypeId = Convert.ToInt32(cartItem["AccountTypeId"]);
+                item.Customer.CustomerTypeId = Convert.ToInt32(cartItem["CustomerTypeId"] != DBNull.Value ? cartItem["CustomerTypeId"] : 0);
+                item.Customer.AccountTypeId = Convert.ToInt32(cartItem["AccountTypeId"] != DBNull.Value ? cartItem["AccountTypeId"] : 0);
                 item.Customer.IsUPNMember = Convert.ToInt32(cartItem["IsUPNMember"] != DBNull.Value ? cartItem["IsUPNMember"] : 0);
 
                 //Add Basic Product Details
-                item.Product.ProductID = cartItem["ProductID"].ToString();
-                item.Product.ProductCategoryId = Convert.ToInt32(cartItem["ProductCategoryId"]);
+                item.Product.ProductID = cartItem["ProductID"].ToString() ?? "";
+                item.Product.ProductCategoryId = Convert.ToInt32(cartItem["ProductCategoryId"] != DBNull.Value ? cartItem["ProductCategoryId"] : 0);
                 item.Product.ProductGalleryId = cartItem["ProductGalleryId"].ToString() ?? "";
-                item.Product.ProductName = cartItem["ProductName"].ToString();
+                item.Product.ProductName = cartItem["ProductName"].ToString() ?? "";
                 item.Product.SalePrice = Convert.ToDecimal(cartItem["SalePrice"] != DBNull.Value ? cartItem["SalePrice"] : 0.0);
                 item.Product.BrandName = cartItem["BrandName"].ToString() ?? "";
                 item.Product.Manufacturer = cartItem["Manufacturer"].ToString() ?? "";
-                item.Product.UriKey = cartItem["UriKey"].ToString();
+                item.Product.UriKey = cartItem["UriKey"].ToString() ?? "";
                 item.Product.ImageUrl = cartItem["ImageUrl"].ToString() ?? "";
                 item.Product.Caption = cartItem["Caption"].ToString() ?? "";
                 item.Product.UnitPrice = Convert.ToDecimal(cartItem["UnitPrice"] != DBNull.Value ? cartItem["UnitPrice"] : 0.0);

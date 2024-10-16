@@ -540,6 +540,9 @@ namespace BAL.BusinessLogic.Helper
                     objProductInfo.Length = Convert.ToDecimal(tblProduct.Rows[0]["Length"] ?? 0.0);
                     objProductInfo.Weight = Convert.ToDecimal(tblProduct.Rows[0]["Weight"] ?? 0.0);
                     objProductInfo.MainImageUrl = tblProduct.Rows[0]["MainImageUrl"].ToString() ?? "";
+                    objProductInfo.IsActive = Convert.ToDecimal(Convert.IsDBNull(tblProduct.Rows[0]["IsActive"]) ? 0 : tblProduct.Rows[0]["IsActive"]) == 1;
+                    objProductInfo.CreatedDate = Convert.ToDateTime(Convert.IsDBNull(tblProduct.Rows[0]["CreatedDate"]) ? (DateTime?)null : tblProduct.Rows[0]["CreatedDate"]);
+
                 }
 
                 response.StatusCode = 200;
@@ -1269,10 +1272,10 @@ namespace BAL.BusinessLogic.Helper
                 item.Manufacturer = product["Manufacturer"].ToString() ?? "";
                 item.Strength = product["Strength"].ToString() ?? "";
                 item.AvailableFromDate = Convert.ToDateTime(Convert.IsDBNull(product["AvailableFromDate"]) ? DateTime.MinValue : product["AvailableFromDate"]);
-                item.FormattedAvailableFromDate = item.AvailableFromDate.ToString("MM/yyyy");
+                item.FormattedAvailableFromDate = item.AvailableFromDate.Value.ToString("MM/yyyy");
                 item.LotNumber = product["LotNumber"].ToString() ?? "";
                 item.ExpiryDate = Convert.ToDateTime(Convert.IsDBNull(product["ExpiryDate"]) ? DateTime.MinValue : product["ExpiryDate"]);
-                item.FormattedExpiryDate = item.ExpiryDate.ToString("MM/yyyy");
+                item.FormattedExpiryDate = item.ExpiryDate.Value.ToString("MM/yyyy");
                 item.IsFullPack = Convert.ToInt32(Convert.IsDBNull(product["IsFullPack"]) ? 0 : product["IsFullPack"]) == 1;
                 item.SKU = product["SKU"].ToString() ?? "";
                 item.PackQuantity = Convert.ToInt32(Convert.IsDBNull(product["PackQuantity"]) ? 0 : product["PackQuantity"]);
@@ -1292,6 +1295,8 @@ namespace BAL.BusinessLogic.Helper
                 item.Height = Convert.ToDecimal(Convert.IsDBNull(product["Height"]) ? 0.0 : product["Height"]);
                 item.Length = Convert.ToDecimal(Convert.IsDBNull(product["Length"]) ? 0.0 : product["Length"]);
                 item.Weight = Convert.ToDecimal(Convert.IsDBNull(product["Weight"]) ? 0.0 : product["Weight"]);
+                item.IsActive = Convert.ToDecimal(Convert.IsDBNull(product["IsActive"]) ? 0 : product["IsActive"]) == 1;
+                item.CreatedDate = Convert.ToDateTime(Convert.IsDBNull(product["CreatedDate"]) ? (DateTime?)null : product["CreatedDate"]);
 
                 item.ProductPriceId = product["ProductPriceId"].ToString() ?? "";
                 //item.ProductId = product["ProductId"].ToString() ?? "";
@@ -1299,8 +1304,8 @@ namespace BAL.BusinessLogic.Helper
                 item.UPNMemberPrice = Convert.ToDecimal(Convert.IsDBNull(product["UPNMemberPrice"]) ? 0.0 : product["UPNMemberPrice"]);
                 item.Discount = Convert.ToDecimal(Convert.IsDBNull(product["Discount"]) ? 0.0 : product["Discount"]);
                 item.SalePrice = Convert.ToDecimal(Convert.IsDBNull(product["SalePrice"]) ? 0.0 : product["SalePrice"]);
-                item.SalePriceValidFrom = Convert.ToDateTime(Convert.IsDBNull(product["SalePriceValidFrom"]) ? DateTime.MinValue : product["SalePriceValidFrom"]);
-                item.SalePriceValidTo = Convert.ToDateTime(Convert.IsDBNull(product["SalePriceValidTo"]) ? DateTime.MinValue : product["SalePriceValidTo"]);
+                item.SalePriceValidFrom = Convert.ToDateTime(Convert.IsDBNull(product["SalePriceValidFrom"]) ? (DateTime?)null : product["SalePriceValidFrom"]);
+                item.SalePriceValidTo = Convert.ToDateTime(Convert.IsDBNull(product["SalePriceValidTo"]) ? (DateTime?)null : product["SalePriceValidTo"]);
                 item.Taxable = Convert.ToInt32(Convert.IsDBNull(product["Taxable"]) ? 0 : product["Taxable"]) == 1 ? true : false;
                 item.ShippingCostApplicable = Convert.ToInt32(Convert.IsDBNull(product["ShippingCostApplicable"]) ? 0 : product["ShippingCostApplicable"]) == 1 ? true : false;
                 item.ShippingCost = Convert.ToDecimal(Convert.IsDBNull(product["ShippingCost"]) ? 0.0 : product["ShippingCost"]);

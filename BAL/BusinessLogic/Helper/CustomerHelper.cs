@@ -256,6 +256,10 @@ namespace BAL.BusinessLogic.Helper
                             customer.IsUPNMember = row["IsUPNMember"] != DBNull.Value ? Convert.ToInt32(row["IsUPNMember"]) : default;  // Use Convert.ToBoolean
                             customer.LoginOTP = row["LoginOTP"] != DBNull.Value ? row["LoginOTP"].ToString() : null;
                             customer.OTPExpiryDate = row["OTPExpiryDate"] != DBNull.Value ? Convert.ToDateTime(row["OTPExpiryDate"]) : (DateTime?)null;
+                            customer.CreatedDate= row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : (DateTime?)null;
+                            customer.ModifiedDate = row["ModifiedDate"] != DBNull.Value ? Convert.ToDateTime(row["ModifiedDate"]) : (DateTime?)null;
+                            customer.ActivationDate = row["ActivationDate"] != DBNull.Value ? Convert.ToDateTime(row["ActivationDate"]) : (DateTime?)null;
+                            customer.ShopName = row["ShopName"] != DBNull.Value ? row["ShopName"].ToString() : null;
 
                             // Map data to BusinessInfoResponse
                             businessInfoResponse.CustomerBusinessInfoId = row["CustomerBusinessInfoId"] != DBNull.Value ? Convert.ToInt32(row["CustomerBusinessInfoId"]) : default;
@@ -346,6 +350,10 @@ namespace BAL.BusinessLogic.Helper
                             customer.IsUPNMember = row["IsUPNMember"] != DBNull.Value ? Convert.ToInt32(row["IsUPNMember"]) : default;  // Use Convert.ToBoolean
                             customer.LoginOTP = row["LoginOTP"] != DBNull.Value ? row["LoginOTP"].ToString() : null;
                             customer.OTPExpiryDate = row["OTPExpiryDate"] != DBNull.Value ? Convert.ToDateTime(row["OTPExpiryDate"]) : (DateTime?)null;
+                            customer.CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : (DateTime?)null;
+                            customer.ModifiedDate = row["ModifiedDate"] != DBNull.Value ? Convert.ToDateTime(row["ModifiedDate"]) : (DateTime?)null;
+                            customer.ActivationDate = row["ActivationDate"] != DBNull.Value ? Convert.ToDateTime(row["ActivationDate"]) : (DateTime?)null;
+                            customer.ShopName = row["ShopName"] != DBNull.Value ? row["ShopName"].ToString() : null;
                             lstCustomers.Add(customer);
                         }
 
@@ -404,6 +412,10 @@ namespace BAL.BusinessLogic.Helper
                             customer.IsUPNMember = row["IsUPNMember"] != DBNull.Value ? Convert.ToInt32(row["IsUPNMember"]) : default;  // Use Convert.ToBoolean
                             customer.LoginOTP = row["LoginOTP"] != DBNull.Value ? row["LoginOTP"].ToString() : null;
                             customer.OTPExpiryDate = row["OTPExpiryDate"] != DBNull.Value ? Convert.ToDateTime(row["OTPExpiryDate"]) : (DateTime?)null;
+                            customer.CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : (DateTime?)null;
+                            customer.ModifiedDate = row["ModifiedDate"] != DBNull.Value ? Convert.ToDateTime(row["ModifiedDate"]) : (DateTime?)null;
+                            customer.ActivationDate = row["ActivationDate"] != DBNull.Value ? Convert.ToDateTime(row["ActivationDate"]) : (DateTime?)null;
+                            customer.ShopName = row["ShopName"] != DBNull.Value ? row["ShopName"].ToString() : null;
                             lstCustomers.Add(customer);
                         }
 
@@ -553,7 +565,7 @@ namespace BAL.BusinessLogic.Helper
             Response<Address> response = new Response<Address>();
             try
             {
-                MySqlCommand cmdAddress = new MySqlCommand(StoredProcedures.CUSTOMER_ADD_UPDATE_ADDRESS);
+                MySqlCommand cmdAddress = new MySqlCommand(StoredProcedures.CUSTOMER_DELETE_ADDRESS);
                 cmdAddress.CommandType = CommandType.StoredProcedure;
 
                 cmdAddress.Parameters.AddWithValue("@p_AddressId", addressId);
@@ -568,6 +580,72 @@ namespace BAL.BusinessLogic.Helper
             {
                 //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
                 // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<string>> Activate(string customerId, string? comments)
+        {
+            Response<string> response = new Response<string>();
+            try
+            {
+                MySqlCommand command = new MySqlCommand(StoredProcedures.CUSTOMER_ACTIVATE_DEACTIVATE);
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@p_CustomerId", customerId);
+                command.Parameters.AddWithValue("@p_Comments", comments);
+                command.Parameters.AddWithValue("@p_IsActive", 1);
+
+                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                command.Parameters.Add(outMessageParam);
+
+                await _isqlDataHelper.ExcuteNonQueryasync(command);
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Command Execution";
+                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
+            }
+            catch (Exception ex)
+            {
+
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<string>> Deactivate(string customerId, string? comments)
+        {
+            Response<string> response = new Response<string>();
+            try
+            {
+                MySqlCommand command = new MySqlCommand(StoredProcedures.CUSTOMER_ACTIVATE_DEACTIVATE);
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@p_CustomerId", customerId);
+                command.Parameters.AddWithValue("@p_Comments", comments);
+                command.Parameters.AddWithValue("@p_IsActive", 0);
+
+                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                command.Parameters.Add(outMessageParam);
+
+                await _isqlDataHelper.ExcuteNonQueryasync(command);
+
+                response.StatusCode = 200;
+                response.Message = "SUCCESS : Command Execution";
+                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
+            }
+            catch (Exception ex)
+            {
+
                 response.StatusCode = 500;
                 response.Message = ex.Message;
             }

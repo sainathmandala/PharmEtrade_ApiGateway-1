@@ -20,5 +20,10 @@ namespace BAL.ViewModels
         public string? LoginOTP { get; set; }
         public DateTime? OTPExpiryDate { get; set; }
 
+        public DateTime? CreatedDate { get;set; }
+        public DateTime? ModifiedDate { get; set; }
+        public DateTime? ActivationDate { get; set; }
+        public string? ShopName { get; set; }
+        public int IsActive { get; set; }
     }
 }

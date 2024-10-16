@@ -33,9 +33,9 @@ namespace BAL.ResponseModels
         public string Manufacturer { get; set; }
         public string Strength { get; set; }
         public string LotNumber { get; set; }
-        public DateTime AvailableFromDate { get; set; }
+        public DateTime? AvailableFromDate { get; set; }
         public string FormattedAvailableFromDate { get; set; }
-        public DateTime ExpiryDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
         public bool IsFullPack { get; set; }
         public string FormattedExpiryDate { get; set; }
         public int PackQuantity { get; set; }
@@ -57,7 +57,8 @@ namespace BAL.ResponseModels
         public decimal Length { get; set; }
         public decimal Weight { get; set; }
         public string? MainImageUrl { get; set; }
-
+        public bool IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
 
         // Price
         public string ProductPriceId { get; set; }
@@ -65,8 +66,8 @@ namespace BAL.ResponseModels
         public decimal UPNMemberPrice { get; set; }
         public decimal Discount { get; set; }
         public decimal SalePrice { get; set; }
-        public DateTime SalePriceValidFrom { get; set; }
-        public DateTime SalePriceValidTo { get; set; }
+        public DateTime? SalePriceValidFrom { get; set; }
+        public DateTime? SalePriceValidTo { get; set; }
         public bool Taxable { get; set; }
         public bool ShippingCostApplicable { get; set; }
         public decimal ShippingCost { get; set; }

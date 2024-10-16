@@ -37,5 +37,7 @@ namespace BAL.Models
         public decimal Length { get;set;}
         public decimal Weight { get;set;}
         public string? MainImageUrl { get;set;}
+        public bool IsActive { get; set; }
+        public DateTime? CreatedDate { get; set; }
     }
 }
