@@ -21,6 +21,7 @@ using PdfSharpCore;
 using System.Net.Http;
 using SelectPdf;
 using BAL.ViewModels;
+using Org.BouncyCastle.Crypto.Macs;
 //using PdfSharpCore;
 //using PdfSharpCore.Pdf;
 //using TheArtOfDev.HtmlRenderer.PdfSharp;
@@ -811,6 +812,69 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
+        public async Task<Response<Shipments>> AddUpdateShipmentDetail(Shipments shipmentsDetails)
+        {
+            Response<Shipments> response = new Response<Shipments>();
+            try
+            {
+                MySqlCommand cmdShipments = new MySqlCommand(StoredProcedures.CUSTOMER_ADD_UPDATE_SHIPMENTSDETAILS);
+                cmdShipments.CommandType = CommandType.StoredProcedure;
+                cmdShipments.Parameters.AddWithValue("@p_ShipmentId", shipmentsDetails.ShipmentID);
+                cmdShipments.Parameters.AddWithValue("@p_CustomerId", shipmentsDetails.CustomerId);
+                cmdShipments.Parameters.AddWithValue("@p_ShipmentTypeId", shipmentsDetails.ShipmentTypeId);
+                cmdShipments.Parameters.AddWithValue("@p_AccessLicenseNumber", shipmentsDetails.AccessLicenseNumber);
+                cmdShipments.Parameters.AddWithValue("@p_UserID", shipmentsDetails.UserID);
+                cmdShipments.Parameters.AddWithValue("@p_Password", shipmentsDetails.Password);
+                cmdShipments.Parameters.AddWithValue("@p_ShipperNumber", shipmentsDetails.ShipperNumber);
+                cmdShipments.Parameters.AddWithValue("@p_AccountID", shipmentsDetails.AccountID);
+                cmdShipments.Parameters.AddWithValue("@p_MeterNumber", shipmentsDetails.MeterNumber);
+                cmdShipments.Parameters.AddWithValue("@p_IsActive", shipmentsDetails.IsActive);
+                cmdShipments.Parameters.AddWithValue("@p_CreatedDate", shipmentsDetails.CreatedDate);
+
+              
+
+                DataTable tblShipments = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdShipments));
+
+                response.StatusCode = 200;
+                response.Message = "Shipments Added/Updated Successfully.";
+                response.Result = MapDataTableToShipmentsList(tblShipments);
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<Response<Shipments>> GetShipmentsByCustomerId(string customerId)
+        {
+            Response<Shipments> response = new Response<Shipments>();
+            try
+            {
+                MySqlCommand cmdShipments = new MySqlCommand(StoredProcedures.CUSTOMER_GET_ALL_SHIPMENTS);
+                cmdShipments.CommandType = CommandType.StoredProcedure;
+
+                cmdShipments.Parameters.AddWithValue("@p_CustomerId", customerId);
+
+                DataTable tblShipments = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdShipments));
+
+                response.StatusCode = 200;
+                response.Message = "Shipments fetched Successfully.";
+                response.Result = MapDataTableToShipmentsList(tblShipments);
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
         #region Mapping Methods
         private OrderResponse MapDatatableToOrderResponse(DataTable tblData)
         {
@@ -1042,7 +1106,29 @@ namespace BAL.BusinessLogic.Helper
                     return response;
                 }
             }
-        }       
+        }
+
+        private List<Shipments> MapDataTableToShipmentsList(DataTable tblShipments)
+        {
+            List<Shipments> lstShipments = new List<Shipments>();
+            foreach (DataRow aItem in tblShipments.Rows)
+            {
+                Shipments shipment = new Shipments();
+                shipment.ShipmentID = aItem["ShipmentID"].ToString() ?? "";
+                shipment.ShipmentTypeId = Convert.ToInt32(Convert.IsDBNull(aItem["ShipmentTypeId"]) ? 0 : aItem["ShipmentTypeId"]);
+                shipment.CustomerId = aItem["CustomerId"].ToString() ?? "";
+                shipment.AccessLicenseNumber = aItem["AccessLicenseNumber"].ToString() ?? "";
+                shipment.UserID = aItem["UserID"].ToString() ?? "";
+                shipment.Password = aItem["Password"].ToString() ?? "";
+                shipment.ShipperNumber = aItem["ShipperNumber"].ToString() ?? "";
+                shipment.AccountID = aItem["AccountID"].ToString() ?? "";
+                shipment.MeterNumber = aItem["MeterNumber"].ToString() ?? "";
+                shipment.IsActive = Convert.ToDecimal(Convert.IsDBNull(aItem["IsActive"]) ? 0 : aItem["IsActive"]) == 1;
+                shipment.CreatedDate = Convert.ToDateTime(Convert.IsDBNull(aItem["CreatedDate"]) ? (DateTime?)null : aItem["CreatedDate"]);
+                lstShipments.Add(shipment);
+            }
+            return lstShipments;
+        }
         #endregion Mapping Methods
     }
 }

@@ -167,5 +167,24 @@ namespace PharmEtrade_ApiGateway.Controllers
             var response = await _paymentinfoRepository.GetAllPayments(criteria);
             return Ok(response);
         }
+
+        [HttpPost("AddShipment")]
+        public async Task<IActionResult> AddShipment(Shipments shipments)
+        {
+            if (string.IsNullOrEmpty(shipments.ShipmentID))
+                return BadRequest("Customer Id is required.");
+            Response<Shipments> response = await _ordersRepository.AddUpdateShipmentDetail(shipments);
+            return Ok(response);
+        }
+
+
+        [HttpGet("Shipments/GetByCustomerId")]
+        public async Task<IActionResult> GetShipmentsByCustomerId(string customerId)
+        {
+            if (string.IsNullOrEmpty(customerId))
+                return BadRequest("Customer Id is required.");
+            Response<Shipments> response = await _ordersRepository.GetShipmentsByCustomerId(customerId);
+            return Ok(response);
+        }
     }
 }

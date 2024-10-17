@@ -80,5 +80,16 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _orders.GetOrdersByDate(orderCriteria);
         }
+        public async Task<Response<Shipments>> AddUpdateShipmentDetail(Shipments shipments)
+        {
+            return await _orders.AddUpdateShipmentDetail(shipments);
+        }
+        public async Task<Response<Shipments>> GetShipmentsByCustomerId(string customerId)
+        {
+            return await _orders.GetShipmentsByCustomerId(customerId);
+        }
+
+
+
     }
 }

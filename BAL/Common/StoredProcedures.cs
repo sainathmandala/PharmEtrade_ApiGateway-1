@@ -117,5 +117,9 @@ namespace BAL.Common
         public const string CUSTOMER_ADD_UPDATE_BENEFICIARYDETAILS = "sp_AddUpdateBeneficiary";
         public const string CUSTOMER_DELETE_BENEFICIARY = "sp_DeleteBeneficiary";
         public const string CUSTOMER_GET_ALL_BENEFICIARIES = "sp_GetBeneficiaryByCustomerId";
+
+        //ShipmentsDetails
+        public const string CUSTOMER_ADD_UPDATE_SHIPMENTSDETAILS = "sp_AddUpdateShipmentDetails";
+        public const string CUSTOMER_GET_ALL_SHIPMENTS = "sp_GetShipmentDetailsByCustomerId";
     }
 }
