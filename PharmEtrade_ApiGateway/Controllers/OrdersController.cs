@@ -171,7 +171,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         [HttpPost("AddShipment")]
         public async Task<IActionResult> AddShipment(Shipments shipments)
         {
-            if (string.IsNullOrEmpty(shipments.ShipmentID))
+            if (string.IsNullOrEmpty(shipments.CustomerId))
                 return BadRequest("Customer Id is required.");
             Response<Shipments> response = await _ordersRepository.AddUpdateShipmentDetail(shipments);
             return Ok(response);
