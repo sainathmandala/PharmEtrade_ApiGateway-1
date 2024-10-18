@@ -21,5 +21,9 @@ namespace BAL.Models
         public bool ShippingCostApplicable { get; set; }
         public decimal ShippingCost { get; set; }
         public int AmountInStock { get; set; }
+        public int MaxOrderQuantity { get; set; }
+        public int MinOrderQuantity { get; set; }
+        public bool IsReturnable { get; set; }
+
     }
 }

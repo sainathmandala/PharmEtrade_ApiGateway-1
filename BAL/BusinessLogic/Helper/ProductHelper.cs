@@ -266,7 +266,7 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-        public async Task<Response<ProductResponse>> GetAllProducts(string productId = null)
+        public async Task<Response<ProductResponse>> GetAllProducts(string productId = null, string customerId = null)
         {
             Response<ProductResponse> response = new Response<ProductResponse>();
             try
@@ -274,6 +274,7 @@ namespace BAL.BusinessLogic.Helper
                 MySqlCommand cmdProduct = new MySqlCommand(StoredProcedures.GET_ALL_PRODUCTS);
                 cmdProduct.CommandType = CommandType.StoredProcedure;
                 cmdProduct.Parameters.AddWithValue("@p_ProductId", productId);
+                cmdProduct.Parameters.AddWithValue("@p_CustomerId", customerId);
 
                 DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProduct));
                 response.StatusCode = 200;
@@ -579,6 +580,9 @@ namespace BAL.BusinessLogic.Helper
                 cmdProductPrice.Parameters.AddWithValue("@p_ShippingCostApplicable", productPrice.ShippingCostApplicable);
                 cmdProductPrice.Parameters.AddWithValue("@p_ShippingCost", productPrice.ShippingCost);
                 cmdProductPrice.Parameters.AddWithValue("@p_AmountInStock", productPrice.AmountInStock);
+                cmdProductPrice.Parameters.AddWithValue("@p_IsReturnable", productPrice.IsReturnable ? 1 : 0);
+                cmdProductPrice.Parameters.AddWithValue("@p_MaxOrderQuantity", productPrice.MaxOrderQuantity);
+                cmdProductPrice.Parameters.AddWithValue("@p_MinOrderQuantity", productPrice.MinOrderQuantity);
 
                 DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProductPrice));
 
@@ -597,6 +601,9 @@ namespace BAL.BusinessLogic.Helper
                     objProductPrice.ShippingCostApplicable = Convert.ToInt32(tblProduct.Rows[0]["ShippingCostApplicable"] ?? 0) == 1 ? true : false;
                     objProductPrice.ShippingCost = Convert.ToDecimal(tblProduct.Rows[0]["ShippingCost"] ?? 0.0);
                     objProductPrice.AmountInStock = Convert.ToInt32(tblProduct.Rows[0]["AmountInStock"] ?? 0);
+                    objProductPrice.IsReturnable = Convert.ToInt32(tblProduct.Rows[0]["IsReturnable"] ?? 0) == 1 ? true : false;
+                    objProductPrice.MaxOrderQuantity = Convert.ToInt32(tblProduct.Rows[0]["MaxOrderQuantity"] ?? 0);
+                    objProductPrice.MinOrderQuantity = Convert.ToInt32(tblProduct.Rows[0]["MinOrderQuantity"] ?? 0);
                 }
 
                 response.StatusCode = 200;
@@ -1291,12 +1298,12 @@ namespace BAL.BusinessLogic.Helper
                 item.UnitOfMeasure = product["UnitOfMeasure"].ToString() ?? "";
                 item.Form = product["Form"].ToString() ?? "";
                 item.MainImageUrl = product["MainImageUrl"].ToString() ?? "";
-                item.Width = Convert.ToDecimal(Convert.IsDBNull(product["Width"]) ? 0.0 : product["Width"]);
-                item.Height = Convert.ToDecimal(Convert.IsDBNull(product["Height"]) ? 0.0 : product["Height"]);
-                item.Length = Convert.ToDecimal(Convert.IsDBNull(product["Length"]) ? 0.0 : product["Length"]);
-                item.Weight = Convert.ToDecimal(Convert.IsDBNull(product["Weight"]) ? 0.0 : product["Weight"]);
-                // item.IsActive = Convert.ToDecimal(Convert.IsDBNull(product["IsActive"]) ? 0 : product["IsActive"]) == 1;
-                item.IsActive = true;
+                item.Width = Convert.ToDecimal(product["Width"] == DBNull.Value ? 0.0 : product["Width"]);
+                item.Height = Convert.ToDecimal(product["Height"] == DBNull.Value ? 0.0 : product["Height"]);
+                item.Length = Convert.ToDecimal(product["Length"] == DBNull.Value ? 0.0 : product["Length"]);
+                item.Weight = Convert.ToDecimal(product["Weight"] == DBNull.Value ? 0.0 : product["Weight"]);
+                item.IsActive = Convert.ToDecimal(product["IsActive"] == DBNull.Value ? 0 : product["IsActive"]) == 1;
+                // item.IsActive = true;
                 item.CreatedDate = Convert.ToDateTime(Convert.IsDBNull(product["CreatedDate"]) ? (DateTime?)null : product["CreatedDate"]);
 
                 item.ProductPriceId = product["ProductPriceId"].ToString() ?? "";
@@ -1311,6 +1318,9 @@ namespace BAL.BusinessLogic.Helper
                 item.ShippingCostApplicable = Convert.ToInt32(Convert.IsDBNull(product["ShippingCostApplicable"]) ? 0 : product["ShippingCostApplicable"]) == 1 ? true : false;
                 item.ShippingCost = Convert.ToDecimal(Convert.IsDBNull(product["ShippingCost"]) ? 0.0 : product["ShippingCost"]);
                 item.AmountInStock = Convert.ToInt32(Convert.IsDBNull(product["AmountInStock"]) ? 0 : product["AmountInStock"]);
+                item.IsReturnable = Convert.ToInt32(Convert.IsDBNull(product["IsReturnable"]) ? 0 : product["IsReturnable"]) == 1 ? true : false;
+                item.MaxOrderQuantity = Convert.ToInt32(Convert.IsDBNull(product["MaxOrderQuantity"]) ? 0 : product["MaxOrderQuantity"]);
+                item.MinOrderQuantity = Convert.ToInt32(Convert.IsDBNull(product["MinOrderQuantity"]) ? 0 : product["MinOrderQuantity"]);
 
                 item.ProductCategory.ProductCategoryId = Convert.ToInt32(product["ProductCategoryId"] != DBNull.Value ? product["ProductCategoryId"] : 0);
                 item.ProductCategory.CategoryName = product["CategoryName"].ToString() ?? "";

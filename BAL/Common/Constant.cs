@@ -10,6 +10,7 @@ namespace BAL.Common
     {
         public const string LoginSuccessMsg = "Login Successfully";
         public const string UserCreationSuccessMsg = "User Created Successfully";
+        public const string UserUpdationSuccessMsg = "Profile Updated Successfully";
         public const string GetUserBYUserIdSuccessMsg = "User Info Successfully Fetched";
         public const string GetProductSuccessMsg = "Product Info Successfully Fetched";
         public const string GetProductsByIdSuccessMsg = "ProductById info Successfully Fetched";
