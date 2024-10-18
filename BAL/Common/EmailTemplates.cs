@@ -54,6 +54,30 @@ namespace BAL.Common
                                                       </table>
                                                       </body>
                                                       </html>";
+        public const string CUSTOMER_EDIT_TEMPLATE = @"<html>
+                                                     <body>
+                                                      <h1 align='center'>Profile updated Successfully</h1>
+                                                      <h2 align= 'center'>Registration ID :{{CustomerId}}
+                                                      <br /><br />
+                                                      <table border='0'>
+                                                      <tr>
+                                                      <td> <b>User Id</b> </td>
+                                                      <td> {{CUST_EMAIL}} </td>
+                                                      </tr>
+                                                      <tr>
+                                                      <td> <b>Full Name</b> </td>
+                                                      <td> {{CUST_FULL_NAME}} </td>                                                      
+                                                      </tr>
+                                                      <tr>
+                                                      <td colspan='4'>
+                                                      <br /><br /><br /><br /><br /><br /><br /><br /><br />
+                                                      <img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='200px' height='45px' /> <br />
+                                                      <h3>Team - PharmETrade</h3>
+                                                      </td>
+                                                      </tr>
+                                                      </table>
+                                                      </body>
+                                                      </html>";
 
         public const string CUSTOMER_INVOICE = @"<html>
                                                     <body>

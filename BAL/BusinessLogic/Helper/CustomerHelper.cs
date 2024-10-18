@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using BAL.Models;
 using BAL.RequestModels;
 using System.Reflection;
+using BAL.RequestModels.Customer;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -97,7 +98,7 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-        public async Task<string> AddUpdateCustomer(ViewModels.Customer customer)
+        public async Task<string> AddCustomer(CustomerAddRequest customer)
         {
             using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
@@ -135,7 +136,47 @@ namespace BAL.BusinessLogic.Helper
                 }
                 catch (Exception ex)
                 {
-                    Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "AddUpdate Customer :  errormessage:" + ex.Message.ToString()));
+                    //Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "AddUpdate Customer :  errormessage:" + ex.Message.ToString()));
+                    return "ERROR : " + ex.Message;
+                }
+            }
+        }
+
+        public async Task<string> EditCustomer(CustomerEditRequest customer)
+        {
+            using (MySqlCommand cmd = new MySqlCommand(StoredProcedures.CUSTOMER_EDIT_PROFILE))
+            {   
+                try
+                {                    
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("p_CustomerId", customer.CustomerId);
+                    cmd.Parameters.AddWithValue("p_FirstName", customer.FirstName);
+                    cmd.Parameters.AddWithValue("p_LastName", customer.LastName);
+                    cmd.Parameters.AddWithValue("p_Email", customer.Email);
+                    cmd.Parameters.AddWithValue("p_Password", customer.Password);
+                    cmd.Parameters.AddWithValue("p_Mobile", customer.Mobile);
+                    cmd.Parameters.AddWithValue("p_CustomerTypeId", customer.CustomerTypeId);
+                    cmd.Parameters.AddWithValue("p_AccountTypeId", customer.AccountTypeId);
+                    cmd.Parameters.AddWithValue("p_IsUPNMember", customer.IsUPNMember);
+
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        var registraionMailBody = EmailTemplates.CUSTOMER_EDIT_TEMPLATE;
+                        registraionMailBody = registraionMailBody.Replace("{{CustomerId}}", customer.Email);
+                        registraionMailBody = registraionMailBody.Replace("{{CUST_EMAIL}}", customer.Email);
+                        registraionMailBody = registraionMailBody.Replace("{{CUST_FULL_NAME}}", customer.FirstName + ' ' + customer.LastName);
+                        await _emailHelper.SendEmail(customer.Email, "", "Your registration is successfull.", registraionMailBody);
+                        return reader["Status"].ToString() ?? "";
+                    }
+                    return "";
+
+
+                }
+                catch (Exception ex)
+                {
+                    //Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "AddUpdate Customer :  errormessage:" + ex.Message.ToString()));
                     return "ERROR : " + ex.Message;
                 }
             }
@@ -157,7 +198,7 @@ namespace BAL.BusinessLogic.Helper
             }
             catch (Exception ex)
             {
-                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "SaveBusinessInfoData: errormessage:" + ex.Message.ToString()));
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "SaveBusinessInfoData: errormessage:" + ex.Message.ToString()));
 
                 response.Status = 500;
                 response.Message = ex.Message;

@@ -1,5 +1,6 @@
 ﻿using BAL.Models;
 using BAL.RequestModels;
+using BAL.RequestModels.Customer;
 using BAL.ResponseModels;
 using BAL.ViewModels;
 using DAL.Models;
@@ -66,7 +67,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("Register")]
-        public async Task<IActionResult> RegisterCustomer(Customer customer)
+        public async Task<IActionResult> RegisterCustomer(CustomerAddRequest customer)
         {
             RegistrationResponse response = await _icustomerRepo.RegisterCustomer(customer);
             return Ok(response);

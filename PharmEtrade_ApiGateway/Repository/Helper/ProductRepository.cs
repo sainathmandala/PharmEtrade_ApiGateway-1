@@ -81,9 +81,9 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return response;
         }
 
-        public async Task<Response<ProductResponse>> GetAllProducts(string productId = null)
+        public async Task<Response<ProductResponse>> GetAllProducts(string productId = null, string customerId = null)
         {
-            return await _productHelper.GetAllProducts(productId);
+            return await _productHelper.GetAllProducts(productId, customerId);
         }
 
         public async Task<Response<ProductResponse>> GetProductsBySpecification(int categorySpecificationId, bool withDiscount = false)

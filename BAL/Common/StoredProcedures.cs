@@ -11,7 +11,7 @@ namespace BAL.Common
         // PRODUCTS
         public const string ADD_UPDATE_PRODUCT = "sp_AddUpdateProduct";
         public const string ADD_UPDATE_PRODUCT_INFO = "sp_AddUpdateProductInfo";
-        public const string ADD_UPDATE_PRODUCT_PRICE = "sp_AddUpdateProductPrice";
+        public const string ADD_UPDATE_PRODUCT_PRICE = "sp_AddUpdateProductPrice1";
         public const string ADD_UPDATE_PRODUCT_GALLERY = "sp_AddUpdateProductGallery";
         public const string ADD_UPDATE_PRODUCTSIZE = "sp_AddUpdateProductSize";
         public const string ADD_RELATED_PRODUCT = "sp_AddRelatedproduct";
@@ -67,9 +67,19 @@ namespace BAL.Common
         public const string CUSTOMER_ADD_UPDATE_ADDRESS = "sp_AddUpdateAddress";
         public const string CUSTOMER_DELETE_ADDRESS = "sp_DeleteAddress";
         public const string CUSTOMER_ACTIVATE_DEACTIVATE = "sp_CustomerActivateDeActivate";
+        public const string CUSTOMER_EDIT_PROFILE = "sp_EditCustomer";
 
         public const string CUSTOMER_GET_ALL_ADDRESSES = "sp_GetAddressByCustomerId";
         public const string CUSTOMER_GET_ADDRESS = "sp_GetAddress";
+
+        //BeneficiaryDetails
+        public const string CUSTOMER_ADD_UPDATE_BENEFICIARYDETAILS = "sp_AddUpdateBeneficiary";
+        public const string CUSTOMER_DELETE_BENEFICIARY = "sp_DeleteBeneficiary";
+        public const string CUSTOMER_GET_ALL_BENEFICIARIES = "sp_GetBeneficiaryByCustomerId";
+
+        //ShipmentsDetails
+        public const string CUSTOMER_ADD_UPDATE_SHIPMENTSDETAILS = "sp_AddUpdateShipmentDetails";
+        public const string CUSTOMER_GET_ALL_SHIPMENTS = "sp_GetShipmentDetailsByCustomerId";
 
         // WISHLIST
         public const string DELETE_WishList = "sp_RemoveWishlist";
@@ -112,14 +122,5 @@ namespace BAL.Common
         public const string DASHBOARD_GET_BY_SELLER = "sp_GetSellerDashboard";
         public const string DASHBOARD_GET_BY_BUYER = "sp_GetBuyerDashboard";
         public const string DASHBOARD_GET_BY_ADMIN = "sp_GetAdminDashboard";
-
-        //BeneficiaryDetails
-        public const string CUSTOMER_ADD_UPDATE_BENEFICIARYDETAILS = "sp_AddUpdateBeneficiary";
-        public const string CUSTOMER_DELETE_BENEFICIARY = "sp_DeleteBeneficiary";
-        public const string CUSTOMER_GET_ALL_BENEFICIARIES = "sp_GetBeneficiaryByCustomerId";
-
-        //ShipmentsDetails
-        public const string CUSTOMER_ADD_UPDATE_SHIPMENTSDETAILS = "sp_AddUpdateShipmentDetails";
-        public const string CUSTOMER_GET_ALL_SHIPMENTS = "sp_GetShipmentDetailsByCustomerId";
     }
 }

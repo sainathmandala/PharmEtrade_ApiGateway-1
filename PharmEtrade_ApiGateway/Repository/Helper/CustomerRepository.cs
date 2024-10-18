@@ -17,6 +17,7 @@ using BAL.ResponseModels;
 using BAL.Models;
 using ZstdSharp.Unsafe;
 using BAL.RequestModels;
+using BAL.RequestModels.Customer;
 
 namespace PharmEtrade_ApiGateway.Repository.Helper
 {
@@ -93,12 +94,12 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return await _icustomerHelper.AdminLogin(adminId, password);
         }
 
-        public async Task<RegistrationResponse> RegisterCustomer(Customer customer)
+        public async Task<RegistrationResponse> RegisterCustomer(CustomerAddRequest customer)
         {
             RegistrationResponse response = new RegistrationResponse();
             try
             {
-                string result = await _icustomerHelper.AddUpdateCustomer(customer);
+                string result = await _icustomerHelper.AddCustomer(customer);
                 if (!result.StartsWith("ERROR"))
                 {
                     response.Status = 200;

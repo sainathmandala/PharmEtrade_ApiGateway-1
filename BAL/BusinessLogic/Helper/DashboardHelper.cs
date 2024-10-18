@@ -1,4 +1,5 @@
-﻿using BAL.BusinessLogic.Interface;
+﻿using Amazon.Runtime.Internal.Transform;
+using BAL.BusinessLogic.Interface;
 using BAL.Common;
 using BAL.ResponseModels;
 using DAL;
@@ -39,6 +40,13 @@ namespace BAL.BusinessLogic.Helper
                         response.TotalOrders = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalOrders"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalOrders"]);
                         response.TotalProducts = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalProducts"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalProducts"]);
                         response.TotalActiveProducts = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalActiveProducts"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalActiveProducts"]);
+                        var CustomerCountsPerType = tblAdminDashboard.Rows[0]["CustomerCountsPerType"].ToString() ?? "";
+                        response.CountsPerTypes = new Dictionary<string, string>();
+                        foreach (var item in CustomerCountsPerType.Split("|"))
+                        {
+                            if(string.IsNullOrEmpty(item)) continue;
+                            response.CountsPerTypes.Add(item.Split(":")[0], item.Split(":")[1]);
+                        }
                     }
                     else
                     {

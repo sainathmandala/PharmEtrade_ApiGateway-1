@@ -1,5 +1,6 @@
 ﻿using BAL.Models;
 using BAL.RequestModels;
+using BAL.RequestModels.Customer;
 using BAL.ResponseModels;
 using BAL.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -16,7 +17,8 @@ namespace BAL.BusinessLogic.Interface
     {
         Task<DataTable> CustomerLogin(string username, string password);
         Task<LoginResponse> AdminLogin(string adminId, string password);        
-        Task<string> AddUpdateCustomer(Customer customer);
+        Task<string> AddCustomer(CustomerAddRequest customer);
+        Task<string> EditCustomer(CustomerEditRequest customer);
         Task<string> AddUpdateBusinessInfo(CustomerBusinessInfo businessInfo);
         Task<UploadResponse> UploadImage(IFormFile image);
         Task<Response<CustomerResponse>> GetCustomerByCustomerId(string customerId);

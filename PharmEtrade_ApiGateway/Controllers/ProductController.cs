@@ -94,9 +94,9 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<IActionResult> GetAllProducts(string? customerId)
         {
-            var response = await _productRepo.GetAllProducts();
+            var response = await _productRepo.GetAllProducts(null, customerId);
             return Ok(response);
         }
         [HttpGet("GetById")]
