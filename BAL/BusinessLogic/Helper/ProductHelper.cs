@@ -1298,12 +1298,12 @@ namespace BAL.BusinessLogic.Helper
                 item.UnitOfMeasure = product["UnitOfMeasure"].ToString() ?? "";
                 item.Form = product["Form"].ToString() ?? "";
                 item.MainImageUrl = product["MainImageUrl"].ToString() ?? "";
-                item.Width = Convert.ToDecimal(Convert.IsDBNull(product["Width"]) ? 0.0 : product["Width"]);
-                item.Height = Convert.ToDecimal(Convert.IsDBNull(product["Height"]) ? 0.0 : product["Height"]);
-                item.Length = Convert.ToDecimal(Convert.IsDBNull(product["Length"]) ? 0.0 : product["Length"]);
-                item.Weight = Convert.ToDecimal(Convert.IsDBNull(product["Weight"]) ? 0.0 : product["Weight"]);
-                // item.IsActive = Convert.ToDecimal(Convert.IsDBNull(product["IsActive"]) ? 0 : product["IsActive"]) == 1;
-                item.IsActive = true;
+                item.Width = Convert.ToDecimal(product["Width"] == DBNull.Value ? 0.0 : product["Width"]);
+                item.Height = Convert.ToDecimal(product["Height"] == DBNull.Value ? 0.0 : product["Height"]);
+                item.Length = Convert.ToDecimal(product["Length"] == DBNull.Value ? 0.0 : product["Length"]);
+                item.Weight = Convert.ToDecimal(product["Weight"] == DBNull.Value ? 0.0 : product["Weight"]);
+                item.IsActive = Convert.ToDecimal(product["IsActive"] == DBNull.Value ? 0 : product["IsActive"]) == 1;
+                // item.IsActive = true;
                 item.CreatedDate = Convert.ToDateTime(Convert.IsDBNull(product["CreatedDate"]) ? (DateTime?)null : product["CreatedDate"]);
 
                 item.ProductPriceId = product["ProductPriceId"].ToString() ?? "";

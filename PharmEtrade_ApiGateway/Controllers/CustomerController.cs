@@ -73,6 +73,14 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
+        [HttpPost]
+        [Route("Edit")]
+        public async Task<IActionResult> EditCustomer(CustomerEditRequest customer)
+        {
+            RegistrationResponse response = await _icustomerRepo.EditCustomer(customer);
+            return Ok(response);
+        }
+
         /// <summary>
         /// Uploads an Image to AWS S3 bucket and return the url
         /// </summary>

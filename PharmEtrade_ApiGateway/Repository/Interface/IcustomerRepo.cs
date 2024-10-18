@@ -11,6 +11,7 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<LoginViewModel> CustomerLogin(string username, string password);
         Task<LoginResponse> AdminLogin(string adminId, string password);        
         Task<RegistrationResponse> RegisterCustomer(CustomerAddRequest customer);
+        Task<RegistrationResponse> EditCustomer(CustomerEditRequest customer);
         Task<UploadResponse> UploadImage(IFormFile image);
         Task<BusinessInfoResponse> AddUpdateBusinessInfo(CustomerBusinessInfo businessInfo);
         Task<Response<CustomerResponse>> GetCustomerByCustomerId(string customerId);

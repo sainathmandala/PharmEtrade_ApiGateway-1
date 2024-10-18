@@ -116,6 +116,28 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return response;
         }
 
+        public async Task<RegistrationResponse> EditCustomer(CustomerEditRequest customer)
+        {
+            RegistrationResponse response = new RegistrationResponse();
+            try
+            {
+                string result = await _icustomerHelper.EditCustomer(customer);
+                if (!result.StartsWith("ERROR"))
+                {
+                    response.Status = 200;
+                    response.CustomerId = result;
+                    response.Message = Constant.UserUpdationSuccessMsg;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Status = 500;
+                response.Message = ex.Message;
+
+            }
+            return response;
+        }
+
         public async Task<UploadResponse> UploadImage(IFormFile image)
         {
             UploadResponse response = new UploadResponse();
