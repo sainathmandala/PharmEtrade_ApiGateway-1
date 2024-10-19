@@ -108,16 +108,16 @@ namespace BAL.BusinessLogic.Helper
                     await sqlcon.OpenAsync();
                     cmd = new MySqlCommand("sp_AddCustomer", sqlcon);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_FirstName", customer.FirstName);
-                    cmd.Parameters.AddWithValue("p_LastName", customer.LastName);
-                    cmd.Parameters.AddWithValue("p_Email", customer.Email);
-                    cmd.Parameters.AddWithValue("p_Password", customer.Password);
-                    cmd.Parameters.AddWithValue("p_Mobile", customer.Mobile);
-                    cmd.Parameters.AddWithValue("p_CustomerTypeId", customer.CustomerTypeId);
-                    cmd.Parameters.AddWithValue("p_AccountTypeId", customer.AccountTypeId);
-                    cmd.Parameters.AddWithValue("p_IsUPNMember", customer.IsUPNMember);
-                    cmd.Parameters.AddWithValue("p_LoginOTP", null);
-                    cmd.Parameters.AddWithValue("p_OTPExpiryDate", null);
+                    cmd.Parameters.AddWithValue("@p_FirstName", customer.FirstName);
+                    cmd.Parameters.AddWithValue("@p_LastName", customer.LastName);
+                    cmd.Parameters.AddWithValue("@p_Email", customer.Email);
+                    cmd.Parameters.AddWithValue("@p_Password", customer.Password);
+                    cmd.Parameters.AddWithValue("@p_Mobile", customer.Mobile);
+                    cmd.Parameters.AddWithValue("@p_CustomerTypeId", customer.CustomerTypeId);
+                    cmd.Parameters.AddWithValue("@p_AccountTypeId", customer.AccountTypeId);
+                    cmd.Parameters.AddWithValue("@p_IsUPNMember", customer.IsUPNMember);
+                    cmd.Parameters.AddWithValue("@p_LoginOTP", null);
+                    cmd.Parameters.AddWithValue("@p_OTPExpiryDate", null);
 
                     MySqlDataReader reader = cmd.ExecuteReader();
                     if (reader.HasRows)
@@ -144,20 +144,23 @@ namespace BAL.BusinessLogic.Helper
 
         public async Task<string> EditCustomer(CustomerEditRequest customer)
         {
-            using (MySqlCommand cmd = new MySqlCommand(StoredProcedures.CUSTOMER_EDIT_PROFILE))
-            {   
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+            {
+                MySqlCommand cmd = new MySqlCommand();
                 try
-                {                    
+                {
+                    await sqlcon.OpenAsync();
+                    cmd = new MySqlCommand(StoredProcedures.CUSTOMER_EDIT_PROFILE, sqlcon);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_CustomerId", customer.CustomerId);
-                    cmd.Parameters.AddWithValue("p_FirstName", customer.FirstName);
-                    cmd.Parameters.AddWithValue("p_LastName", customer.LastName);
-                    cmd.Parameters.AddWithValue("p_Email", customer.Email);
-                    cmd.Parameters.AddWithValue("p_Password", customer.Password);
-                    cmd.Parameters.AddWithValue("p_Mobile", customer.Mobile);
-                    cmd.Parameters.AddWithValue("p_CustomerTypeId", customer.CustomerTypeId);
-                    cmd.Parameters.AddWithValue("p_AccountTypeId", customer.AccountTypeId);
-                    cmd.Parameters.AddWithValue("p_IsUPNMember", customer.IsUPNMember);
+                    cmd.Parameters.AddWithValue("@p_CustomerId", customer.CustomerId);
+                    cmd.Parameters.AddWithValue("@p_FirstName", customer.FirstName);
+                    cmd.Parameters.AddWithValue("@p_LastName", customer.LastName);
+                    cmd.Parameters.AddWithValue("@p_Email", customer.Email);
+                    cmd.Parameters.AddWithValue("@p_Password", customer.Password);
+                    cmd.Parameters.AddWithValue("@p_Mobile", customer.Mobile);
+                    cmd.Parameters.AddWithValue("@p_CustomerTypeId", customer.CustomerTypeId);
+                    cmd.Parameters.AddWithValue("@p_AccountTypeId", customer.AccountTypeId);
+                    cmd.Parameters.AddWithValue("@p_IsUPNMember", customer.IsUPNMember);
 
                     MySqlDataReader reader = cmd.ExecuteReader();
                     if (reader.HasRows)
