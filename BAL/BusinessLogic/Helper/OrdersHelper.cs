@@ -830,8 +830,9 @@ namespace BAL.BusinessLogic.Helper
                 cmdShipments.Parameters.AddWithValue("@p_MeterNumber", shipmentsDetails.MeterNumber);
                 cmdShipments.Parameters.AddWithValue("@p_IsActive", shipmentsDetails.IsActive);
                 cmdShipments.Parameters.AddWithValue("@p_CreatedDate", shipmentsDetails.CreatedDate);
+                cmdShipments.Parameters.AddWithValue("@p_Key", shipmentsDetails.Key);
 
-              
+
 
                 DataTable tblShipments = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdShipments));
 
@@ -1125,6 +1126,7 @@ namespace BAL.BusinessLogic.Helper
                 shipment.MeterNumber = aItem["MeterNumber"].ToString() ?? "";
                 shipment.IsActive = Convert.ToDecimal(Convert.IsDBNull(aItem["IsActive"]) ? 0 : aItem["IsActive"]) == 1;
                 shipment.CreatedDate = Convert.ToDateTime(Convert.IsDBNull(aItem["CreatedDate"]) ? (DateTime?)null : aItem["CreatedDate"]);
+                shipment.Key = aItem["Key"].ToString() ?? "";
                 lstShipments.Add(shipment);
             }
             return lstShipments;

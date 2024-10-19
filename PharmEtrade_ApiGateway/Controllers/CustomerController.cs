@@ -199,7 +199,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             if (string.IsNullOrEmpty(customerId))
                 return BadRequest("Customer Id is required.");
-            Response<Address> response = await _icustomerRepo.DeleteAddress(customerId);
+            Response<string> response = await _icustomerRepo.Activate(customerId,comments);
             return Ok(response);
         }
 
@@ -208,7 +208,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             if (string.IsNullOrEmpty(customerId))
                 return BadRequest("Customer Id is required.");
-            Response<Address> response = await _icustomerRepo.DeleteAddress(customerId);
+            Response<string> response = await _icustomerRepo.Deactivate(customerId,comments);
             return Ok(response);
         }
 
