@@ -122,5 +122,14 @@ namespace BAL.Common
         public const string DASHBOARD_GET_BY_SELLER = "sp_GetSellerDashboard";
         public const string DASHBOARD_GET_BY_BUYER = "sp_GetBuyerDashboard";
         public const string DASHBOARD_GET_BY_ADMIN = "sp_GetAdminDashboard";
+
+
+        //TaxInformation
+        public const string ADD_TAXINFORMATIONDETAILS = "sp_InsertTaxInformation";
+        public const string UPDATE_TAXINFORMATION_DETAILS = "sp_UpdateTaxInformation";
+        public const string TAXINFORMATION_GET_BY_STATENAME = "sp_GetAllTaxInformationByStateName";
+        public const string TAXINFORMATION_GET_BY_CATEGORYSPECIFICATIONID = "sp_GetAllTaxInformationByCategorySpecificationID";
+        public const string TAXINFORMATION_GET_ALL = "sp_GetAllTaxInformation";
+
     }
 }

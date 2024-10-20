@@ -553,7 +553,7 @@ namespace BAL.BusinessLogic.Helper
                 address.Country = aItem["Country"].ToString() ?? "";
                 address.Landmark = aItem["Landmark"].ToString() ?? "";
                 address.DeliveryInstructions = aItem["DeliveryInstructions"].ToString() ?? "";
-                address.AddressTypeId = Convert.ToInt32(Convert.IsDBNull(aItem["AddressTypeId"]) ? 0 : aItem["AddressTypeId"]);
+            
                 address.IsDefault = Convert.ToInt32(Convert.IsDBNull(aItem["IsDefault"]) ? 0 : aItem["IsDefault"]) == 0 ? false : true;
                 lstAddress.Add(address);
             }
