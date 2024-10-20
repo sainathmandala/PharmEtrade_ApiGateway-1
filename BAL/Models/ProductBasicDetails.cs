@@ -21,7 +21,7 @@ namespace BAL.Models
         public string? UriKey { get; set; }
         public decimal SalePrice { get; set; }
         public decimal UnitPrice { get; set; }
-
+        public DateTime? ExpiryDate { get; set; }
 
 
     }

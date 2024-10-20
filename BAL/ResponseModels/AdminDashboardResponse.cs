@@ -1,6 +1,8 @@
-﻿using BAL.Models.Products;
+﻿using Amazon.S3.Model;
+using BAL.Models.Products;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,9 +35,11 @@ namespace BAL.ResponseModels
         public int TotalInActiveCustomers { get; set; }
         public List<CustomersCount> CustomersCounts { get; set; } = new List<CustomersCount>();
         public int TotalOrders { get; set; }
+        public int TotalCancelledOrders { get; set; }
         public List<OrdersCount> OrdersCounts { get; set; } = new List<OrdersCount>();
         public int TotalProducts { get; set; }
         public int TotalActiveProducts { get; set; }
         public int TotalInActiveProducts { get; set; }
+        public decimal TotalSaleValue { get; set; }
     }
 }

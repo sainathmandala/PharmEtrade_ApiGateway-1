@@ -304,6 +304,7 @@ namespace BAL.BusinessLogic.Helper
                             customer.ModifiedDate = row["ModifiedDate"] != DBNull.Value ? Convert.ToDateTime(row["ModifiedDate"]) : (DateTime?)null;
                             customer.ActivationDate = row["ActivationDate"] != DBNull.Value ? Convert.ToDateTime(row["ActivationDate"]) : (DateTime?)null;
                             customer.ShopName = row["ShopName"] != DBNull.Value ? row["ShopName"].ToString() : null;
+                            customer.IsActive = Convert.ToInt32(Convert.IsDBNull(row["IsActive"]) ? 0 : row["IsActive"]);
 
                             // Map data to BusinessInfoResponse
                             businessInfoResponse.CustomerBusinessInfoId = row["CustomerBusinessInfoId"] != DBNull.Value ? Convert.ToInt32(row["CustomerBusinessInfoId"]) : default;
@@ -398,6 +399,7 @@ namespace BAL.BusinessLogic.Helper
                             customer.ModifiedDate = row["ModifiedDate"] != DBNull.Value ? Convert.ToDateTime(row["ModifiedDate"]) : (DateTime?)null;
                             customer.ActivationDate = row["ActivationDate"] != DBNull.Value ? Convert.ToDateTime(row["ActivationDate"]) : (DateTime?)null;
                             customer.ShopName = row["ShopName"] != DBNull.Value ? row["ShopName"].ToString() : null;
+                            customer.IsActive = Convert.ToInt32(Convert.IsDBNull(row["IsActive"]) ? 0 : row["IsActive"]);
                             lstCustomers.Add(customer);
                         }
 
@@ -460,6 +462,7 @@ namespace BAL.BusinessLogic.Helper
                             customer.ModifiedDate = row["ModifiedDate"] != DBNull.Value ? Convert.ToDateTime(row["ModifiedDate"]) : (DateTime?)null;
                             customer.ActivationDate = row["ActivationDate"] != DBNull.Value ? Convert.ToDateTime(row["ActivationDate"]) : (DateTime?)null;
                             customer.ShopName = row["ShopName"] != DBNull.Value ? row["ShopName"].ToString() : null;
+                            customer.IsActive = Convert.ToInt32(Convert.IsDBNull(row["IsActive"]) ? 0 : row["IsActive"]);
                             lstCustomers.Add(customer);
                         }
 

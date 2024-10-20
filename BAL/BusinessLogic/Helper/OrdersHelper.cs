@@ -740,7 +740,7 @@ namespace BAL.BusinessLogic.Helper
                     cmd.Parameters.AddWithValue("@p_Amount", paymentRequest.Amount);
                     cmd.Parameters.AddWithValue("@p_PaymentId", paymentRequest.PaymentId);
                     cmd.Parameters.AddWithValue("@p_PaymentDate", paymentRequest.PaymentDate);
-
+                    cmd.Parameters.AddWithValue("@p_InvoiceNumber", "INV-" + new Random().Next(11111111,99999999).ToString());
 
                     try
                     {
@@ -888,7 +888,7 @@ namespace BAL.BusinessLogic.Helper
             response.TrackingNumber = tblData.Rows[0]["TrackingNumber"].ToString() ?? "";
             response.ShippingMethod = tblData.Rows[0]["ShippingMethod"].ToString() ?? "";
             response.OrderDate = tblData.Rows[0]["OrderDate"] != DBNull.Value ? Convert.ToDateTime(tblData.Rows[0]["OrderDate"]) : DateTime.MinValue;
-            response.TotalAmount = 0.0M;
+            response.TotalAmount = 0.0M;            
             response.Products = new List<OrderProductResponse>();
             foreach (DataRow row in tblData.Rows)
             {

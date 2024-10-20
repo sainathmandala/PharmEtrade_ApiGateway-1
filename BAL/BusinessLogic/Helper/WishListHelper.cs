@@ -105,6 +105,7 @@ namespace BAL.BusinessLogic.Helper
                 item.Product.Manufacturer = wishlistItem["Manufacturer"].ToString() ?? "";
                 item.Product.ImageUrl = wishlistItem["ImageUrl"].ToString() ?? "";
                 item.Product.Caption = wishlistItem["Caption"].ToString() ?? "";
+                item.Product.ExpiryDate = Convert.ToDateTime(wishlistItem["ExpiryDate"] != DBNull.Value ? wishlistItem["ExpiryDate"] : (DateTime?)null);
 
                 lstwishlist.Add(item);
             }

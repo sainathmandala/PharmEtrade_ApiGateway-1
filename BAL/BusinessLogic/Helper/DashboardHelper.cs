@@ -38,6 +38,7 @@ namespace BAL.BusinessLogic.Helper
                         response.Message = tblAdminDashboard.Rows[0]["Message"].ToString() ?? "";
                         //response.TotalCustomers = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalCustomers"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalCustomers"]);
                         response.TotalOrders = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalOrders"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalOrders"]);
+                        response.TotalCancelledOrders = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalCancelledOrders"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalCancelledOrders"]);
                         response.TotalProducts = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalProducts"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalProducts"]);
                         response.TotalActiveProducts = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalActiveProducts"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalActiveProducts"]);
                         response.TotalInActiveProducts = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalInActiveProducts"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalInActiveProducts"]);
@@ -56,6 +57,7 @@ namespace BAL.BusinessLogic.Helper
                         response.TotalCustomers = response.CustomersCounts.Sum(c => c.Count);
                         response.TotalActiveCustomers = response.CustomersCounts.Sum(c => c.ActiveCount);
                         response.TotalInActiveCustomers = response.CustomersCounts.Sum(c => c.InActiveCount);
+                        response.TotalSaleValue = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalSaleValue"] == DBNull.Value ? 0.0 : tblAdminDashboard.Rows[0]["TotalSaleValue"]); 
                     }
                     else
                     {
@@ -135,6 +137,8 @@ namespace BAL.BusinessLogic.Helper
                         response.ActiveProducts = Convert.ToInt32(tblSellerDashboard.Rows[0]["ActiveProducts"] == DBNull.Value ? 0 : tblSellerDashboard.Rows[0]["ActiveProducts"]);
                         response.OutgoingOrdersCount = Convert.ToInt32(tblSellerDashboard.Rows[0]["OutgoingOrdersCount"] == DBNull.Value ? 0 : tblSellerDashboard.Rows[0]["OutgoingOrdersCount"]);
                         response.TotalPurchaseValue = Convert.ToDecimal(tblSellerDashboard.Rows[0]["TotalPurchaseValue"] == DBNull.Value ? 0.0 : tblSellerDashboard.Rows[0]["TotalPurchaseValue"]);
+                        response.OrdersCancelled = Convert.ToInt32(tblSellerDashboard.Rows[0]["TotalCancelledOrders"] == DBNull.Value ? 0 : tblSellerDashboard.Rows[0]["TotalCancelledOrders"]);
+                        response.InActiveProducts = Convert.ToInt32(tblSellerDashboard.Rows[0]["InActiveProducts"] == DBNull.Value ? 0 : tblSellerDashboard.Rows[0]["InActiveProducts"]);
                     }
                     else
                     {
