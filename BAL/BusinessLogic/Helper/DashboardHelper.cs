@@ -36,17 +36,26 @@ namespace BAL.BusinessLogic.Helper
                     {
                         response.StatusCode = "SUCCESS".Equals(tblAdminDashboard.Rows[0]["Message"].ToString() ?? "") ? 200 : 500;
                         response.Message = tblAdminDashboard.Rows[0]["Message"].ToString() ?? "";
-                        response.TotalCustomers = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalCustomers"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalCustomers"]);
+                        //response.TotalCustomers = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalCustomers"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalCustomers"]);
                         response.TotalOrders = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalOrders"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalOrders"]);
                         response.TotalProducts = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalProducts"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalProducts"]);
                         response.TotalActiveProducts = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalActiveProducts"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalActiveProducts"]);
+                        response.TotalInActiveProducts = Convert.ToInt32(tblAdminDashboard.Rows[0]["TotalInActiveProducts"] == DBNull.Value ? 0 : tblAdminDashboard.Rows[0]["TotalInActiveProducts"]);
                         var CustomerCountsPerType = tblAdminDashboard.Rows[0]["CustomerCountsPerType"].ToString() ?? "";
-                        response.CountsPerTypes = new Dictionary<string, string>();
+                        // response.CountsPerTypes = new Dictionary<string, string>();
                         foreach (var item in CustomerCountsPerType.Split("|"))
                         {
                             if(string.IsNullOrEmpty(item)) continue;
-                            response.CountsPerTypes.Add(item.Split(":")[0], item.Split(":")[1]);
+                            response.CustomersCounts.Add(new CustomersCount() {
+                                CustomerTypeId = Convert.ToInt32(item.Split(":")[0]),                                
+                                Count = Convert.ToInt32(item.Split(":")[1]),
+                                ActiveCount = Convert.ToInt32(item.Split(":")[2]),
+                                InActiveCount = Convert.ToInt32(item.Split(":")[3])
+                            });
                         }
+                        response.TotalCustomers = response.CustomersCounts.Sum(c => c.Count);
+                        response.TotalActiveCustomers = response.CustomersCounts.Sum(c => c.ActiveCount);
+                        response.TotalInActiveCustomers = response.CustomersCounts.Sum(c => c.InActiveCount);
                     }
                     else
                     {
