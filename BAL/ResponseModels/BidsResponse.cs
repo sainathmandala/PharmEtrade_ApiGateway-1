@@ -17,7 +17,8 @@ namespace BAL.ResponseModels
         public int StatusId { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedOn { get; set; }
-
+        public string? CustomerName { get; set; }
+        public string? ProductName { get; set; }
 
     }
 }

@@ -193,31 +193,53 @@ namespace BAL.BusinessLogic.Helper
 
         private string GetInvoiceOrderDetailsHTML(OrderResponse response)
         {
-            string _orderDetailsHTML = @"<table align='center' width='100%' border='0' cellspacing='5'><tr style='background-color:lightblue;'>
-                                                    <td> S.No </td>
-                                                    <td> Product </td>
-                                                    <td> Product Name </td>
-                                                    <td> Price </td>
-                                                    <td> Quantity </td>
-                                                    <td> Total Price </td>
+            string _orderDetailsHTML = @"<table align='center' width='100%' border='0' cellspacing='5'>
+                                                    <tr><td></td><td></td><td></td><td></td><td></td></tr>
+                                                    <tr style='background-color:lightblue;'>
+                                                        <td colspan='3'> Items </td>
+                                                        <td> Qty </td>                                                    
+                                                        <td> Price </td>
                                                     </tr>";
             int sNumber = 1;
+            decimal totalShippingCost = 0.0M;
             foreach (var details in response.Products)
             {
                 _orderDetailsHTML += "<tr>";
-                _orderDetailsHTML += string.Format("<td> {0} </td>", sNumber);
-                _orderDetailsHTML += string.Format("<td> <img src='{0}' width='75px' height='50px' /> </td>", details.ImageUrl);
-                _orderDetailsHTML += string.Format("<td> {0} </td>", details.ProductName);
-                _orderDetailsHTML += string.Format("<td> ${0} </td>", details.PricePerProduct);
+                // _orderDetailsHTML += string.Format("<td> {0} </td>", sNumber);
+                // _orderDetailsHTML += string.Format("<td> <img src='{0}' width='75px' height='50px' /> </td>", details.ImageUrl);
+                _orderDetailsHTML += string.Format("<td colspan='3'> <b>{0} <br />Pack Quantity:</b>{1}<br /> <b>NDC:</b>{2}<br /><b>SKU:</b>{3} </td>", 
+                    details.ProductName,
+                    details.PackQuantity,
+                    details.NDCorUPC,
+                    details.SKU);
+                // _orderDetailsHTML += string.Format("<td> ${0} </td>", details.PricePerProduct);
                 _orderDetailsHTML += string.Format("<td> {0} </td>", details.Quantity);
                 _orderDetailsHTML += string.Format("<td align='right'> ${0} </td>", Math.Round(details.PricePerProduct * details.Quantity,2));
                 _orderDetailsHTML += "</tr>";
                 sNumber++;
+                totalShippingCost += details.ShippingCost;
             }
-            _orderDetailsHTML += "<tr><td colspan='4'></td>";
-            _orderDetailsHTML += string.Format("<td> Total </td>", sNumber);
+            _orderDetailsHTML += "<tr><td colspan='3'></td>";
+            _orderDetailsHTML += string.Format("<td> Subtotal </td>");
             _orderDetailsHTML += string.Format("<td align='right'> ${0} </td>", response.TotalAmount);
-            _orderDetailsHTML += "</tr></table>";
+            _orderDetailsHTML += "</tr>";
+            _orderDetailsHTML += "<tr><td colspan='3'></td>";
+            _orderDetailsHTML += string.Format("<td> Shipping & Handling </td>");
+            _orderDetailsHTML += string.Format("<td align='right'> ${0} </td>", totalShippingCost);
+            _orderDetailsHTML += "</tr>";
+            _orderDetailsHTML += "<tr><td colspan='3'></td>";
+            _orderDetailsHTML += string.Format("<td> <b> Grand Total (Excl.Tax) </b> </td>", sNumber);
+            _orderDetailsHTML += string.Format("<td align='right'> <b> ${0}  </b></td>", (response.TotalAmount + totalShippingCost));
+            _orderDetailsHTML += "</tr>";
+            _orderDetailsHTML += "<tr><td colspan='3'></td>";
+            _orderDetailsHTML += string.Format("<td> Tax </td>", sNumber);
+            _orderDetailsHTML += string.Format("<td align='right'> ${0} </td>", 0);
+            _orderDetailsHTML += "<tr><td colspan='3'></td>";
+            _orderDetailsHTML += string.Format("<td> <b> Grand Total (Incl.Tax) </b> </td>", sNumber);
+            _orderDetailsHTML += string.Format("<td align='right'> <b> ${0}  </b></td>", (response.TotalAmount + totalShippingCost));
+            _orderDetailsHTML += "</tr>";
+            _orderDetailsHTML += "</tr>";
+            _orderDetailsHTML += "</table>";
 
             return _orderDetailsHTML;
         }
@@ -887,6 +909,7 @@ namespace BAL.BusinessLogic.Helper
             response.OrderStatus = tblData.Rows[0]["OrderStatus"].ToString() ?? "";
             response.TrackingNumber = tblData.Rows[0]["TrackingNumber"].ToString() ?? "";
             response.ShippingMethod = tblData.Rows[0]["ShippingMethod"].ToString() ?? "";
+            response.ShippingMethodName = tblData.Rows[0]["ShippingMethodName"].ToString() ?? "";
             response.OrderDate = tblData.Rows[0]["OrderDate"] != DBNull.Value ? Convert.ToDateTime(tblData.Rows[0]["OrderDate"]) : DateTime.MinValue;
             response.TotalAmount = 0.0M;            
             response.Products = new List<OrderProductResponse>();
@@ -900,7 +923,11 @@ namespace BAL.BusinessLogic.Helper
                 pResponse.ImageUrl = row["ImageUrl"].ToString() ?? "";
                 pResponse.Quantity = Convert.ToInt32(Convert.IsDBNull(row["Quantity"]) ? 0 : row["Quantity"]);
                 pResponse.PricePerProduct = Convert.ToDecimal(Convert.IsDBNull(row["PricePerProduct"]) ? 0.0 : row["PricePerProduct"]);
+                pResponse.ShippingCost = Convert.ToDecimal(Convert.IsDBNull(row["ShippingCost"]) ? 0.0 : row["ShippingCost"]);
                 response.TotalAmount += (pResponse.PricePerProduct * pResponse.Quantity);
+                pResponse.NDCorUPC = row["NDCorUPC"].ToString() ?? "";
+                pResponse.SKU = row["SKU"].ToString() ?? "";
+                pResponse.PackQuantity = row["PackQuantity"].ToString() ?? "";
                 response.Products.Add(pResponse);
             }
             return response;
@@ -927,8 +954,12 @@ namespace BAL.BusinessLogic.Helper
                             response.Status = 200;
                             response.Message = "Success";
 
-                            string _mailBody = EmailTemplates.CUSTOMER_INVOICE;
+                            string _mailBody = EmailTemplates.BUYER_INVOICE_TEMPLATE;
                             _mailBody = _mailBody.Replace("{{CUST_NAME}}", response.CustomerName);
+                            _mailBody = _mailBody.Replace("{{ORDER_NUMBER}}", response.OrderId);
+                            _mailBody = _mailBody.Replace("{{ORDER_DATE}}", response.OrderDate.ToString("MMMM dd, yyyy, HH:mm:ss tt"));
+                            _mailBody = _mailBody.Replace("{{PAYMENT_METHOD}}", "Credit Card");
+                            _mailBody = _mailBody.Replace("{{SHIPPING_METHOD}}", response.ShippingMethodName);
                             _mailBody = _mailBody.Replace("{{CUST_ADDRESS1}}", response.CustomerId);
                             _mailBody = _mailBody.Replace("{{CUST_ADDRESS2}}", response.CustomerEmail);
                             _mailBody = _mailBody.Replace("{{CUST_COUNTRY}}", response.CustomerId);
@@ -997,15 +1028,20 @@ namespace BAL.BusinessLogic.Helper
                             response.Status = 200;
                             response.Message = "Success";
 
-                            string _mailBody = EmailTemplates.CUSTOMER_INVOICE;
+                            string _mailBody = EmailTemplates.BUYER_INVOICE_TEMPLATE;
                             _mailBody = _mailBody.Replace("{{CUST_NAME}}", response.CustomerName);
+                            _mailBody = _mailBody.Replace("{{ORDER_NUMBER}}", response.OrderId);
+                            _mailBody = _mailBody.Replace("{{ORDER_DATE}}", response.OrderDate.ToString("MMMM dd, yyyy, HH:mm:ss tt"));
+                            _mailBody = _mailBody.Replace("{{PAYMENT_METHOD}}", "Credit Card");
+                            _mailBody = _mailBody.Replace("{{SHIPPING_METHOD}}", response.ShippingMethodName);
                             _mailBody = _mailBody.Replace("{{CUST_ADDRESS1}}", response.CustomerId);
                             _mailBody = _mailBody.Replace("{{CUST_ADDRESS2}}", response.CustomerEmail);
                             _mailBody = _mailBody.Replace("{{CUST_COUNTRY}}", response.CustomerId);
                             _mailBody = _mailBody.Replace("{{CUST_PINCODE}}", response.CustomerEmail);
                             _mailBody = _mailBody.Replace("{{INVOICE_NUMBER}}", Guid.NewGuid().ToString());
-                            _mailBody = _mailBody.Replace("{{INVOICE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));                            
+                            _mailBody = _mailBody.Replace("{{INVOICE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
                             _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
+                            //_mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
                             _mailBody = _mailBody.Replace("{{PRODUCTS_DETAILS}}", GetInvoiceOrderDetailsHTML(response));
                             invoiceHtml = _mailBody;
                         }
@@ -1065,8 +1101,12 @@ namespace BAL.BusinessLogic.Helper
                             response.Status = 200;
                             response.Message = "Success";
 
-                            string _mailBody = EmailTemplates.CUSTOMER_INVOICE;
+                            string _mailBody = EmailTemplates.BUYER_INVOICE_TEMPLATE;
                             _mailBody = _mailBody.Replace("{{CUST_NAME}}", response.CustomerName);
+                            _mailBody = _mailBody.Replace("{{ORDER_NUMBER}}", response.OrderId);
+                            _mailBody = _mailBody.Replace("{{ORDER_DATE}}", response.OrderDate.ToString("MMMM dd, yyyy, HH:mm:ss tt"));
+                            _mailBody = _mailBody.Replace("{{PAYMENT_METHOD}}", "Credit Card");
+                            _mailBody = _mailBody.Replace("{{SHIPPING_METHOD}}", response.ShippingMethodName);
                             _mailBody = _mailBody.Replace("{{CUST_ADDRESS1}}", response.CustomerId);
                             _mailBody = _mailBody.Replace("{{CUST_ADDRESS2}}", response.CustomerEmail);
                             _mailBody = _mailBody.Replace("{{CUST_COUNTRY}}", response.CustomerId);
@@ -1074,6 +1114,7 @@ namespace BAL.BusinessLogic.Helper
                             _mailBody = _mailBody.Replace("{{INVOICE_NUMBER}}", Guid.NewGuid().ToString());
                             _mailBody = _mailBody.Replace("{{INVOICE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
                             _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
+                            //_mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
                             _mailBody = _mailBody.Replace("{{PRODUCTS_DETAILS}}", GetInvoiceOrderDetailsHTML(response));
                             //var invoiceDocument = new PdfDocument();
                             //var sourceDoc = GetPdfFrom(_mailBody);

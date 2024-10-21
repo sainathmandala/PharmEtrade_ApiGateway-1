@@ -42,7 +42,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
 
         public async Task<Response<BidsResponse>> GetBidsBySeller(string BidId)
         {
-            return await _BidHelper.GetBidsByBuyer(BidId);
+            return await _BidHelper.GetBidsBySeller(BidId);
         }
 
 

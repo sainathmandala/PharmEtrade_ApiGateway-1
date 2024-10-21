@@ -9,6 +9,11 @@
         public string ProductName { get; set; }
         public string SellerName { get; set; }
         public string? ImageUrl { get; set; }
+        public decimal ShippingCost { get; set; }
+        public string NDCorUPC { get; set; }
+        public string SKU { get; set; }
+        public string PackQuantity { get; set; }
+
     }
     public class OrderResponse
     {
@@ -20,6 +25,7 @@
         public int Status { get; set; }
         public DateTime OrderDate { get; set; }
         public string ShippingMethod { get; set; }
+        public string ShippingMethodName { get; set; }
         public string OrderStatus { get; set; }
         public string? TrackingNumber { get; set; }
         public decimal TotalAmount { get; set; }

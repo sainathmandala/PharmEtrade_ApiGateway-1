@@ -153,5 +153,89 @@ namespace BAL.Common
                                                     </table>
                                                     </body>
                                                     </html>";
+        public const string BUYER_INVOICE_TEMPLATE = @"<html>
+                                                        <body style='font-family:Calibri'>
+                                                        <table width='70%' align='center'>
+                                                        <tr>
+                                                        <td colspan='2'>
+                                                        <br /> <br />
+                                                        <img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='200px' height='45px' />
+                                                        <br /> <br />
+                                                        </td>
+                                                        </tr>
+                                                        <tr>
+                                                        <td  colspan='2'>
+                                                        {{CUST_NAME}}, <br /> <br />
+
+                                                        Thank you for your order from PharmEtrade. Once your package ships we will send you a tracking number. You can check the status of your order by logging into your account.
+
+                                                        If you have questions about your order, you can email us at help@pharmetrade.com.
+                                                        </td>
+                                                        </tr>
+                                                        <tr>
+                                                        <td>
+                                                        <br /> <br />
+                                                        <h2>Your Order #{{ORDER_NUMBER}} </h2>
+                                                        <h4>Placed on {{ORDER_DATE}} </h4>
+                                                        </td>
+                                                        </tr>
+                                                        <tr>
+                                                        <td>
+                                                        <b> 
+                                                            <h3>Billing Info</h3> <br />
+                                                        </b> 
+                                                            <span>{{CUST_NAME}}</span> <br />
+                                                            <span>{{CUST_ADDRESS1}}</span> <br />
+                                                            <span>{{CUST_ADDRESS2}}</span> <br />
+                                                            <span>{{CUST_COUNTRY}}</span> <br />
+                                                            <span>{{CUST_PINCODE}}</span> <br />
+                                                        </td>
+                                                        <td>
+                                                        <b> 
+                                                            <h3>Shipping Info</h3><br />
+                                                        </b>
+                                                             <span>{{CUST_NAME}}</span> <br />
+                                                            <span>{{CUST_ADDRESS1}}</span> <br />
+                                                            <span>{{CUST_ADDRESS2}}</span> <br />
+                                                            <span>{{CUST_COUNTRY}}</span> <br />
+                                                            <span>{{CUST_PINCODE}}</span> <br />
+                                                        </td>
+                                                        </tr>
+                                                        <tr>
+                                                        <td>
+                                                        <br />
+                                                        <b> 
+                                                            <h2>Payment Method</h2>
+                                                        </b> 
+                                                            <span>{{PAYMENT_METHOD}}</span> <br />
+                                                        </td>
+                                                        <td>
+                                                        <b> 
+                                                            <h2>Shipping Method</h2>
+                                                        </b>
+                                                            <span>{{SHIPPING_METHOD}}</span> <br />
+                                                        </td>
+                                                        </tr>
+                                                        <tr>
+                                                        <td colspan='2'>
+                                                        <br />
+                                                        Invoice disclaimer:
+                                                        If there is a problem with your order, you have 14 days from the date of shipment to contact the seller. Some products have different policies or requirements associated with them. All returns and credits are subject to seller's approval.
+                                                        </td>
+                                                        </tr>
+                                                        <tr>
+                                                        <td colspan='2'>
+                                                        {{PRODUCTS_DETAILS}}
+                                                        </td>
+                                                        </tr>
+                                                        <tr>
+                                                        <td colspan='2'>
+                                                        <br /><br /><br /><br />
+                                                        Thank you, PharmEtrade!
+                                                        </td>
+                                                        </tr>
+                                                        </table>
+                                                        </body>
+                                                        </html>";
     }
 }

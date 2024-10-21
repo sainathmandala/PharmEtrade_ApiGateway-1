@@ -297,6 +297,8 @@ namespace BAL.BusinessLogic.Helper
                 item.StatusId = Convert.ToInt32(bid["StatusId"] != DBNull.Value ? bid["StatusId"] : 0);
                 item.IsActive = Convert.ToInt32(Convert.IsDBNull(bid["IsActive"]) ? 0 : bid["IsActive"]) == 1 ? true : false;
                 item.CreatedOn = Convert.ToDateTime(tblbid.Rows[0]["CreatedOn"] ?? DateTime.MinValue);
+                item.CustomerName = bid["CustomerName"].ToString() ?? "";
+                item.ProductName = bid["ProductName"].ToString() ?? "";
                 lstbids.Add(item);
             }
             return lstbids;
