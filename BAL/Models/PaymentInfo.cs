@@ -23,7 +23,7 @@ namespace BAL.Models
         public int StatusId { get; set; }
         public string PaymentStatus { get; set; }
         public DateTime PaymentDate { get; set; }
-
-
+        public string? InvoiceNumber { get; set; }
+        public string? PaymentMethod { get; set; }
     }
 }

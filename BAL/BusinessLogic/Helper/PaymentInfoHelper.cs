@@ -203,6 +203,8 @@ namespace BAL.BusinessLogic.Helper
             {
                 PaymentInfo  item = new PaymentInfo();
                 item.PaymentInfoId = paymentinfo["PaymentInfoId"].ToString() ?? "";
+                item.InvoiceNumber = paymentinfo["InvoiceNumber"].ToString() ?? "";
+                item.PaymentMethod = paymentinfo["PaymentMethod"].ToString() ?? "";
                 item.OrderId = paymentinfo["OrderId"].ToString() ?? "";
                 item.PaymentMethodId = Convert.ToInt32(Convert.IsDBNull(paymentinfo["PaymentMethodId"]) ? 0 : paymentinfo["PaymentMethodId"]);
                 item.CardNumber = paymentinfo["CardNumber"].ToString() ?? "";
