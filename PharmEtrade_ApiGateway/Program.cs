@@ -130,6 +130,8 @@ builder.Services.AddSingleton<IAdminHelper, AdminHelper>();
 builder.Services.AddSingleton<ITaxRepo, TaxRepository>();
 builder.Services.AddSingleton<ITaxHelper, TaxHelper>();
 builder.Services.AddSingleton<IJwtHelper, JwtHelper>();
+builder.Services.AddSingleton<IFedExRepository, FedExRepository>();
+builder.Services.AddSingleton<IFedExHelper, FedExHelper>();
 
 
 builder.Services.AddCors(options =>
