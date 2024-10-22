@@ -52,18 +52,24 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                 if (dtResult != null && dtResult.Rows.Count > 0)
                 {
                     DataRow row = dtResult.Rows[0];
-                    response.LoginStatus = row["LoginStatus"].ToString();
-                    response.UserId = row["UserId"].ToString();
-                    response.Firstname = row["Firstname"].ToString();
-                    response.Lastname = row["Lastname"].ToString();
-                    response.UserEmail = row["UserEmail"].ToString();
-                    response.UserType = row["userType"].ToString();
+                    response.LoginStatus = row["LoginStatus"].ToString() ?? "";
+                    response.UserId = row["UserId"].ToString() ?? "";
+                    response.Firstname = row["Firstname"].ToString() ?? "";
+                    response.Lastname = row["Lastname"].ToString() ?? "";
+                    response.UserEmail = row["UserEmail"].ToString() ?? "";
+                    response.UserType = row["userType"].ToString() ?? "";
+                    response.IsActive = Convert.ToInt32(Convert.IsDBNull(row["IsActive"]) ? 0 : row["IsActive"]) == 1;
 
-                    if (response.LoginStatus == "Success")
+                    if (response.LoginStatus == "Success" && response.IsActive)
                     {
                         response.Token = _jwtTokenService.GenerateToken(response.UserEmail, response.UserType);
                         response.statusCode = 200;
                         //response.message = LoginSuccessMsg;
+                    }
+                    else if(response.LoginStatus == "Success" && response.IsActive)
+                    {
+                        response.statusCode = 400;
+                        response.Message = "User is not Active. Please contact Administrator";
                     }
                     else
                     {

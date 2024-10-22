@@ -17,5 +17,6 @@ namespace BAL.ViewModels
         public string UserEmail { get; set; }      
         public string UserType { get; set; }        
         public string Token { get; set; }
+        public bool IsActive { get; set; }
     }
 }

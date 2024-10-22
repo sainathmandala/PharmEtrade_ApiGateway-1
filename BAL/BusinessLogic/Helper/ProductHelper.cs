@@ -1017,7 +1017,7 @@ namespace BAL.BusinessLogic.Helper
                     objProductrating.CustomerId = tblProductrating.Rows[0]["CustomerID"].ToString() ?? "";
                     objProductrating.Rating = Convert.ToInt32(tblProductrating.Rows[0]["Rating"] ?? 0);
                     objProductrating.Feedback = tblProductrating.Rows[0]["Feedback"].ToString() ?? "";
-                    objProductrating.Date = Convert.ToDateTime(tblProductrating.Rows[0]["Date"] ?? DateTime.MinValue);
+                    objProductrating.Date = Convert.ToDateTime(tblProductrating.Rows[0]["Date"] ?? (DateTime?)null);
                     objProductrating.IsActive = Convert.ToInt32(tblProductrating.Rows[0]["IsActive"] ?? 0) == 1 ? true : false;
                 }
 
@@ -1063,7 +1063,7 @@ namespace BAL.BusinessLogic.Helper
                     objProductrating.CustomerId = tblProductrating.Rows[0]["CustomerID"].ToString() ?? "";
                     objProductrating.Rating = Convert.ToInt32(tblProductrating.Rows[0]["Rating"]?? 0);
                     objProductrating.Feedback = tblProductrating.Rows[0]["Feedback"].ToString() ?? "";
-                    objProductrating.Date = Convert.ToDateTime(tblProductrating.Rows[0]["Date"] ?? DateTime.MinValue);
+                    objProductrating.Date = Convert.ToDateTime(tblProductrating.Rows[0]["Date"] ?? (DateTime?)null);
                     objProductrating.IsActive = Convert.ToInt32(tblProductrating.Rows[0]["IsActive"] ?? 0) == 1 ? true : false;
 
 
@@ -1278,10 +1278,10 @@ namespace BAL.BusinessLogic.Helper
                 item.BrandName = product["BrandName"].ToString() ?? "";
                 item.Manufacturer = product["Manufacturer"].ToString() ?? "";
                 item.Strength = product["Strength"].ToString() ?? "";
-                item.AvailableFromDate = Convert.ToDateTime(Convert.IsDBNull(product["AvailableFromDate"]) ? DateTime.MinValue : product["AvailableFromDate"]);
+                item.AvailableFromDate = Convert.ToDateTime(Convert.IsDBNull(product["AvailableFromDate"]) ? (DateTime?)null : product["AvailableFromDate"]);
                 item.FormattedAvailableFromDate = item.AvailableFromDate.Value.ToString("MM/yyyy");
                 item.LotNumber = product["LotNumber"].ToString() ?? "";
-                item.ExpiryDate = Convert.ToDateTime(Convert.IsDBNull(product["ExpiryDate"]) ? DateTime.MinValue : product["ExpiryDate"]);
+                item.ExpiryDate = Convert.ToDateTime(Convert.IsDBNull(product["ExpiryDate"]) ? (DateTime?)null : product["ExpiryDate"]);
                 item.FormattedExpiryDate = item.ExpiryDate.Value.ToString("MM/yyyy");
                 item.IsFullPack = Convert.ToInt32(Convert.IsDBNull(product["IsFullPack"]) ? 0 : product["IsFullPack"]) == 1;
                 item.SKU = product["SKU"].ToString() ?? "";
@@ -1384,7 +1384,7 @@ namespace BAL.BusinessLogic.Helper
                 item.RatingId = product["CustomerID"].ToString() ?? "";
                 item.Feedback = product["Feedback"].ToString() ?? "";
                 item.Rating = Convert.ToInt32(tblProduct.Rows[0]["Rating"] ?? 0);
-                item.Date = Convert.ToDateTime(Convert.IsDBNull(product["Date"]) ? DateTime.MinValue : product["Date"]);
+                item.Date = Convert.ToDateTime(Convert.IsDBNull(product["Date"]) ? (DateTime?)null : product["Date"]);
                 item.IsActive = Convert.ToInt32(Convert.IsDBNull(product["IsActive"]) ? 0 : product["IsActive"]) == 1 ? true : false;
 
                 lstProduct.Add(item);

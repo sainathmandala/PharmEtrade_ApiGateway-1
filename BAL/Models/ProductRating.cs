@@ -13,7 +13,7 @@ namespace BAL.Models
         public string CustomerId { get; set; }  
         public int Rating { get; set; }  
         public string Feedback { get; set; }  
-        public DateTime Date { get; set; }  
+        public DateTime? Date { get; set; }  
         public bool IsActive { get; set; }  
     }
 }

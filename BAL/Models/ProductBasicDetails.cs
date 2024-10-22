@@ -22,7 +22,7 @@ namespace BAL.Models
         public decimal SalePrice { get; set; }
         public decimal UnitPrice { get; set; }
         public DateTime? ExpiryDate { get; set; }
-
-
+        public int MaximumOrderQuantity { get; set; }
+        public int MinimumOrderQuantity { get; set; }
     }
 }

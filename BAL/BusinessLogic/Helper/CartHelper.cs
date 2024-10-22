@@ -115,6 +115,8 @@ namespace BAL.BusinessLogic.Helper
                 item.Product.ImageUrl = cartItem["ImageUrl"].ToString() ?? "";
                 item.Product.Caption = cartItem["Caption"].ToString() ?? "";
                 item.Product.UnitPrice = Convert.ToDecimal(cartItem["UnitPrice"] != DBNull.Value ? cartItem["UnitPrice"] : 0.0);
+                item.Product.MaximumOrderQuantity = Convert.ToInt32(cartItem["MaximumQuantity"] != DBNull.Value ? cartItem["MaximumQuantity"] : 0);
+                item.Product.MinimumOrderQuantity = Convert.ToInt32(cartItem["MinimumQuantity"] != DBNull.Value ? cartItem["MinimumQuantity"] : 0);
 
                 lstCart.Add(item);
             }
