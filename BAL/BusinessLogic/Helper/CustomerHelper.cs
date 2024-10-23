@@ -787,5 +787,47 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
+
+        public async Task<Response<CustomerAuditHistory>> ActivateDeactivateHistoryByCustomerId(string customerId)
+        {
+            Response<CustomerAuditHistory> response = new Response<CustomerAuditHistory>();
+            try
+            {
+                MySqlCommand cmdBeneficiary = new MySqlCommand(StoredProcedures.CUSTOMER_GETALLACTIVATEDEACTIVATEHISTORY);
+                cmdBeneficiary.CommandType = CommandType.StoredProcedure;
+
+                cmdBeneficiary.Parameters.AddWithValue("@p_CustomerId", customerId);
+
+                DataTable tblBeneficairies = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdBeneficiary));
+
+                response.StatusCode = 200;
+                response.Message = "Activate/Deactivate History fetched Successfully.";
+                response.Result = MapDataTableToCustomerAuditHistory(tblBeneficairies);
+            }
+            catch (Exception ex)
+            {
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(_exPathToSave, "InsertProduct :  errormessage:" + ex.Message));
+                // Handle the exception as needed
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+        private List<CustomerAuditHistory> MapDataTableToCustomerAuditHistory(DataTable tblBeneficiary)
+        {
+            List<CustomerAuditHistory> lstBeneficiary = new List<CustomerAuditHistory>();
+            foreach (DataRow aItem in tblBeneficiary.Rows)
+            {
+                CustomerAuditHistory custaudithistory = new CustomerAuditHistory();
+                custaudithistory.CustomerAuditHistoryId = aItem["CustomerAuditHistoryId"].ToString() ?? "";
+                custaudithistory.CustomerId = aItem["CustomerId"].ToString() ?? "";
+                custaudithistory.Comments = aItem["Comments"].ToString() ?? "";
+                custaudithistory.Action = aItem["Action"].ToString() ?? "";
+                custaudithistory.AuditDate =Convert.ToDateTime(aItem["AuditDate"].ToString() ?? "");
+
+                lstBeneficiary.Add(custaudithistory);
+            }
+            return lstBeneficiary;
+        }
     }
 }
