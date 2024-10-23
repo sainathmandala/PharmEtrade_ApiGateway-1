@@ -240,5 +240,9 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _icustomerHelper.GetBeneficiaryByCustomerId(customerId);
         }
+        public async Task<Response<CustomerAuditHistory>> ActivateDeactivateHistoryByCustomerId(string customerId)
+        {
+            return await _icustomerHelper.ActivateDeactivateHistoryByCustomerId(customerId);
+        }
     }
 }
