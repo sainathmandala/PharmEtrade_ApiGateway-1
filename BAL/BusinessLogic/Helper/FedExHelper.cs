@@ -1,8 +1,10 @@
 ﻿using BAL.BusinessLogic.Interface;
 using BAL.Models.FedEx;
 using BAL.Models.FedEx.RateRequest;
+using BAL.Models.FedEx.RateResponse;
 using Microsoft.Extensions.Configuration;
 using MySqlX.XDevAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +22,7 @@ namespace BAL.BusinessLogic.Helper
         private readonly string grantType = "";
         private readonly string clientId = "";
         private readonly string clientSecret = "";
-        
+
 
         // Create separate fields for rates as FedEx uses different credentials for Rates
         private readonly string ratesGrantType = "";
@@ -41,14 +43,19 @@ namespace BAL.BusinessLogic.Helper
         }
         public async Task<TokenResponse> GenerateToken()
         {
-            var requestUrl = fedExBaseUrl + "oauth/token";
-
             var content = new FormUrlEncodedContent(new[]
             {
                  new KeyValuePair<string, string>("grant_type", grantType),
                  new KeyValuePair<string, string>("client_id", clientId),
                  new KeyValuePair<string, string>("client_secret", clientSecret)
             });
+
+            return await GetToken(content);
+        }
+
+        public async Task<TokenResponse> GetToken(FormUrlEncodedContent content)
+        {
+            var requestUrl = fedExBaseUrl + "oauth/token";
 
             using (var client = new HttpClient())
             {
@@ -90,39 +97,49 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
-        public Task<HttpResponseMessage> GetRates(RateRequest request)
+        public async Task<RateResponse> GetRates(RateRequest request)
         {
-            throw new NotImplementedException();
-            //var request = new HttpRequestMessage(HttpMethod.Post, "https://apis-sandbox.fedex.com/rate/v1/rates/quotes");
+            var rateRequest = new HttpRequestMessage(HttpMethod.Post, fedExBaseUrl + "rate/v1/rates/quotes");
+            RateResponse response = new RateResponse();
 
-            ///* Call these token because for track client api,password different */
-            //var tokenResponse = await TokenCreationForRates();
-            //if (tokenResponse == null || string.IsNullOrEmpty(tokenResponse.AccessToken))
-            //{
-            //    return BadRequest(new { Success = false, Message = "Token creation failed. Please try again." });
-            //}
+            /* Call these token because for track client api,password different */
+            var content = new FormUrlEncodedContent(new[]
+            {
+                 new KeyValuePair<string, string>("grant_type", ratesGrantType),
+                 new KeyValuePair<string, string>("client_id", ratesClientId),
+                 new KeyValuePair<string, string>("client_secret", ratesClientSecret)
+            });
 
+            var tokenResponse = await GetToken(content);
 
-            //request.Headers.Add("Authorization", $"Bearer {tokenResponse.AccessToken}");
+            if (tokenResponse == null || string.IsNullOrEmpty(tokenResponse.AccessToken))
+            {
+                // response.Status = 401;
+                // response.StatusMessage = "Token creation failed. Please try again.";
+                return null;
+            }
 
+            rateRequest.Headers.Add("Authorization", $"Bearer {tokenResponse.AccessToken}");
 
-            //var serializedObj = requestBody.GetRawText();
-            //request.Content = new StringContent(serializedObj, Encoding.UTF8, "application/json");
+            var serializedObj = JsonConvert.SerializeObject(request);            
+            rateRequest.Content = new StringContent(serializedObj, Encoding.UTF8, "application/json");
 
-            //HttpResponseMessage response;
+            var client = new HttpClient();
+            HttpResponseMessage responseContent;
+            try
+            {
 
-            //try
-            //{
+                responseContent = await client.SendAsync(rateRequest);
+                responseContent.EnsureSuccessStatusCode();
+                var rateContent = await responseContent.Content.ReadAsStringAsync();
+                response = JsonConvert.DeserializeObject<RateResponse>(rateContent);
+                return response;
+            }
+            catch (HttpRequestException ex)
+            {
 
-            //    response = await client.SendAsync(request);
-            //    response.EnsureSuccessStatusCode();
-            //}
-            //catch (HttpRequestException ex)
-            //{
-
-            //    return BadRequest(new { Message = $"Request error: {ex.Message}" });
-            //}
-
+                return null; //BadRequest(new { Message = $"Request error: {ex.Message}" });
+            }
 
             //var responseContent = await response.Content.ReadAsStringAsync();
 
@@ -155,7 +172,15 @@ namespace BAL.BusinessLogic.Helper
             var client = new HttpClient();
 
             var request = new HttpRequestMessage(HttpMethod.Post, fedExBaseUrl + "track/v1/trackingnumbers");
-            var tokenResponse = await GenerateToken();
+
+            var content = new FormUrlEncodedContent(new[]
+            {
+                 new KeyValuePair<string, string>("grant_type", grantType),
+                 new KeyValuePair<string, string>("client_id", clientId),
+                 new KeyValuePair<string, string>("client_secret", clientSecret)
+            });
+
+            var tokenResponse = await GetToken(content);
 
             if (tokenResponse == null || string.IsNullOrEmpty(tokenResponse.AccessToken))
             {
@@ -183,7 +208,7 @@ namespace BAL.BusinessLogic.Helper
             }
 
             var responseContent = await response.Content.ReadAsStringAsync();
-            var responseJson = JsonSerializer.Deserialize<Tracking_OutputModel>(responseContent);
+            var responseJson = System.Text.Json.JsonSerializer.Deserialize<Tracking_OutputModel>(responseContent);
 
             if (responseJson == null)
             {

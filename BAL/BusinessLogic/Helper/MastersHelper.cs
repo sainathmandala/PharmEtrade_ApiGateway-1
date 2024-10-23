@@ -50,6 +50,30 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
+        public async Task<Response<OrderStatus>> GetOrderStatuses()
+        {
+            var response = new Response<OrderStatus>();
+
+            try
+            {
+                MySqlCommand command = new MySqlCommand(StoredProcedures.MASTERS_GET_ORDER_STATUSES);
+                command.CommandType = CommandType.StoredProcedure;
+
+                DataTable tblCommandResult = await Task.Run(() => _sqlDataHelper.ExecuteDataTableAsync(command));
+                response.StatusCode = 200;
+                response.Message = "Successfully Fetched Data.";
+                response.Result = MapDataTableToOrderStatusList(tblCommandResult);
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+                response.Result = null;
+            }
+
+            return response;
+        }
+
         public async Task<Response<ProductCategory>> GetProductCategories(int categoryId = 0)
         {
             var response = new Response<ProductCategory>();
@@ -234,6 +258,19 @@ namespace BAL.BusinessLogic.Helper
             }
             return lstProductCategory;
         }
+        private static List<OrderStatus> MapDataTableToOrderStatusList(DataTable tblOrderStatus)
+        {
+            List<OrderStatus> lstOrderStatus = new List<OrderStatus>();
+            foreach (DataRow oStatus in tblOrderStatus.Rows)
+            {
+                OrderStatus item = new OrderStatus();
+                item.StatusId = Convert.ToInt32(oStatus["StatusId"]);
+                item.StatusDescription = oStatus["StatusDescription"].ToString() ?? "";
+
+                lstOrderStatus.Add(item);
+            }
+            return lstOrderStatus;
+        }
         private static List<CategorySpecification> MapDataTableToCategorySpecificationList(DataTable tblcategoryspecification)
         {
             List<CategorySpecification> lstCategoryspecification = new List<CategorySpecification>();
@@ -247,10 +284,6 @@ namespace BAL.BusinessLogic.Helper
             }
             return lstCategoryspecification;
         }
-
-
-
-
         #endregion Mapping Methonds
     }
 }

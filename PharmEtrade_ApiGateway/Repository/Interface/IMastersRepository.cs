@@ -11,6 +11,7 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<Response<ProductCategory>> RemoveProductCategory(int categoryId);
 
         Task<Response<CategorySpecification>> GetCategorySpecifications(int categorySpecificationId = 0);
+        Task<Response<OrderStatus>> GetOrderStatuses();
         Task<Response<CategorySpecification>> AddCategorySpecification(CategorySpecification categorySpecification);
         Task<Response<CategorySpecification>> RemoveCategorySpecification(int categorySpecificationId);
 

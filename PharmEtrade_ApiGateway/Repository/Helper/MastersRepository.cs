@@ -33,6 +33,11 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return await _mastersHelper.GetNDCUPCDetails(NDC, UPC);
         }
 
+        public async Task<Response<OrderStatus>> GetOrderStatuses()
+        {
+            return await _mastersHelper.GetOrderStatuses();
+        }
+
         public async Task<Response<ProductCategory>> GetProductCategories(int categoryId = 0)
         {
             return await _mastersHelper.GetProductCategories(categoryId);

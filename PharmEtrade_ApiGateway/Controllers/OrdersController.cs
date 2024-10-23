@@ -34,6 +34,13 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
+        [HttpPost("UpdateOrderStatus")]
+        public async Task<IActionResult> UpdateOrderStatus(string orderId, int statusId)
+        {
+            OrderResponse response = await _ordersRepository.UpdateOrderStatus(orderId, statusId);
+            return Ok(response);
+        }
+
         [HttpGet("DownloadInvoice")]
         public async Task<IActionResult> DownInvoice(string orderId)
         {

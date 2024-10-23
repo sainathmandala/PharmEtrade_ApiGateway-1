@@ -198,22 +198,22 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return await _icustomerHelper.GetCustomers(customerId, email, mobile);
         }
 
-        public async Task<Response<Address>> GetByCustomerId(string customerId)
+        public async Task<Response<CustomerAddress>> GetByCustomerId(string customerId)
         {
             return await _icustomerHelper.GetByCustomerId(customerId);
         }
 
-        public async Task<Response<Address>> GetAddressById(string addressId)
+        public async Task<Response<CustomerAddress>> GetAddressById(string addressId)
         {
             return await _icustomerHelper.GetAddressById(addressId);
         }
 
-        public async Task<Response<Address>> AddUpdateAddress(Address customerAddress)
+        public async Task<Response<CustomerAddress>> AddUpdateAddress(CustomerAddress customerAddress)
         {
             return await _icustomerHelper.AddUpdateAddress(customerAddress);
         }
 
-        public async Task<Response<Address>> DeleteAddress(string addressId)
+        public async Task<Response<CustomerAddress>> DeleteAddress(string addressId)
         {
             return await _icustomerHelper.DeleteAddress(addressId);
         }
@@ -243,6 +243,10 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         public async Task<Response<CustomerAuditHistory>> ActivateDeactivateHistoryByCustomerId(string customerId)
         {
             return await _icustomerHelper.ActivateDeactivateHistoryByCustomerId(customerId);
+        }
+        public async Task<string> DeleteCustomer(string customerId)
+        {
+            return await _icustomerHelper.DeleteCustomer(customerId);
         }
     }
 }

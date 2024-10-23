@@ -9,6 +9,12 @@ namespace BAL.Models
     public class CategorySpecification
     {
         public int CategorySpecificationId { get; set; }
-        public string SpecificationName { get; set; }
+        public string? SpecificationName { get; set; }
+    }
+
+    public class OrderStatus
+    {
+        public int StatusId { get; set; }
+        public string? StatusDescription { get; set; }
     }
 }

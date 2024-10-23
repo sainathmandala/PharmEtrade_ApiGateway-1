@@ -136,5 +136,12 @@ namespace PharmEtrade_ApiGateway.Controllers
             var response = await mastersRepository.RemoveCategorySpecification(categorySpecificationId);
             return Ok(response);
         }
+
+        [HttpGet("OrderStatus/GetAll")]
+        public async Task<IActionResult> GetOrderStatuses()
+        {
+            var response = await mastersRepository.GetOrderStatuses();
+            return Ok(response);
+        }
     }
 }

@@ -14,6 +14,7 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         //Task<Response<SpecialOffersResponse>> GetSpecialOffers();
         Task<OrderResponse> AddUpdateOrder(OrderRequest orderRequest);
         Task<OrderResponse> UpdateDeliveryAddress(string customerId, string orderId, string addressId);
+        Task<OrderResponse> UpdateOrderStatus(string orderId, int statusId);
         Task<Response<Order>> GetOrdersByOrderId(string OrderId);
         Task<Response<Order>> GetOrdersByDate(OrderCriteria orderCriteria);
         Task<MemoryStream> DownloadInvoice(string orderId);

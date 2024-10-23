@@ -59,6 +59,7 @@ namespace BAL.Common
         public const string GET_ORDERS_BY_SELLER_CRITERIA = "sp_GetOrdersBySellerCriteria";
         public const string GET_ORDERS_BY_DATE = "sp_GetOrdersByDate";
         public const string ORDERS_UPDATE_DELIVERY_ADDRESS = "sp_UpdateDeliveryAddress";
+        public const string ORDERS_UPDATE_STATUS = "sp_UpdateOrderStatus";
 
         //Cart
         public const string DELETE_CART = "sp_DeleteCart";
@@ -70,6 +71,7 @@ namespace BAL.Common
         public const string CUSTOMER_ACTIVATE_DEACTIVATE = "sp_CustomerActivateDeActivate";
         public const string CUSTOMER_GETALLACTIVATEDEACTIVATEHISTORY = "sp_CustomerActivateDeActivateHistory";
         public const string CUSTOMER_EDIT_PROFILE = "sp_EditCustomer";
+        public const string CUSTOMER_DELETE = "sp_DeleteCustomer";
 
         public const string CUSTOMER_GET_ALL_ADDRESSES = "sp_GetAddressByCustomerId";
         public const string CUSTOMER_GET_ADDRESS = "sp_GetAddress";
@@ -95,6 +97,7 @@ namespace BAL.Common
 
         // MASTERS
         public const string MASTERS_GET_NDCUPC_DETAILS = "sp_GetNDCUPCDetails";
+        public const string MASTERS_GET_ORDER_STATUSES = "sp_GetOrderStatus";
 
         public const string MASTERS_GET_PRODUCT_CATEGORIES = "sp_GetProductCategories";
         public const string MASTERS_ADD_UPDATE_PRODUCT_CATEGORY = "sp_AddUpdateProductCategory";

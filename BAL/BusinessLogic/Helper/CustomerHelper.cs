@@ -174,12 +174,42 @@ namespace BAL.BusinessLogic.Helper
                         return reader["Status"].ToString() ?? "";
                     }
                     return "";
-
-
                 }
                 catch (Exception ex)
                 {
                     //Task WriteTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "AddUpdate Customer :  errormessage:" + ex.Message.ToString()));
+                    return "ERROR : " + ex.Message;
+                }
+            }
+        }
+
+        public async Task<string> DeleteCustomer(string customerId)
+        {
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                try
+                {
+                    await sqlcon.OpenAsync();
+                    cmd = new MySqlCommand(StoredProcedures.CUSTOMER_DELETE, sqlcon);
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@p_CustomerId", customerId);                    
+
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        //var registraionMailBody = EmailTemplates.CUSTOMER_EDIT_TEMPLATE;
+                        //registraionMailBody = registraionMailBody.Replace("{{CustomerId}}", customer.Email);
+                        //registraionMailBody = registraionMailBody.Replace("{{CUST_EMAIL}}", customer.Email);
+                        //registraionMailBody = registraionMailBody.Replace("{{CUST_FULL_NAME}}", customer.FirstName + ' ' + customer.LastName);
+                        //await _emailHelper.SendEmail(customer.Email, "", "Your profile Has been updated successfully", registraionMailBody);
+                        return reader["Message"].ToString() ?? "";
+                    }
+                    return "";
+                }
+                catch (Exception ex)
+                {
                     return "ERROR : " + ex.Message;
                 }
             }
@@ -487,9 +517,9 @@ namespace BAL.BusinessLogic.Helper
             }
         }
 
-        public async Task<Response<Address>> GetByCustomerId(string customerId)
+        public async Task<Response<CustomerAddress>> GetByCustomerId(string customerId)
         {
-            Response<Address> response = new Response<Address>();
+            Response<CustomerAddress> response = new Response<CustomerAddress>();
             try
             {
                 MySqlCommand cmdAddress = new MySqlCommand(StoredProcedures.CUSTOMER_GET_ALL_ADDRESSES);
@@ -513,9 +543,9 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-        public async Task<Response<Address>> GetAddressById(string addressId)
+        public async Task<Response<CustomerAddress>> GetAddressById(string addressId)
         {
-            Response<Address> response = new Response<Address>();
+            Response<CustomerAddress> response = new Response<CustomerAddress>();
             try
             {
                 MySqlCommand cmdAddress = new MySqlCommand(StoredProcedures.CUSTOMER_GET_ADDRESS);
@@ -539,12 +569,12 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-        private List<Address> MapDataTableToAddressList(DataTable tblAddress)
+        private List<CustomerAddress> MapDataTableToAddressList(DataTable tblAddress)
         {
-            List<Address> lstAddress = new List<Address>();
+            List<CustomerAddress> lstAddress = new List<CustomerAddress>();
             foreach (DataRow aItem in tblAddress.Rows)
             {
-                Address address = new Address();
+                CustomerAddress address = new CustomerAddress();
                 address.AddressId = aItem["AddressId"].ToString() ?? "";
                 address.CustomerId = aItem["CustomerId"].ToString() ?? "";
                 address.FirstName = aItem["FirstName"].ToString() ?? "";
@@ -566,9 +596,9 @@ namespace BAL.BusinessLogic.Helper
             return lstAddress;
         }
 
-        public async Task<Response<Address>> AddUpdateAddress(Address customerAddress)
+        public async Task<Response<CustomerAddress>> AddUpdateAddress(CustomerAddress customerAddress)
         {
-            Response<Address> response = new Response<Address>();
+            Response<CustomerAddress> response = new Response<CustomerAddress>();
             try
             {
                 MySqlCommand cmdAddress = new MySqlCommand(StoredProcedures.CUSTOMER_ADD_UPDATE_ADDRESS);
@@ -607,9 +637,9 @@ namespace BAL.BusinessLogic.Helper
             return response;
         }
 
-        public async Task<Response<Address>> DeleteAddress(string addressId)
+        public async Task<Response<CustomerAddress>> DeleteAddress(string addressId)
         {
-            Response<Address> response = new Response<Address>();
+            Response<CustomerAddress> response = new Response<CustomerAddress>();
             try
             {
                 MySqlCommand cmdAddress = new MySqlCommand(StoredProcedures.CUSTOMER_DELETE_ADDRESS);
@@ -645,17 +675,23 @@ namespace BAL.BusinessLogic.Helper
                 command.Parameters.AddWithValue("@p_Comments", comments);
                 command.Parameters.AddWithValue("@p_IsActive", 1);
 
-                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
+                MySqlDataReader reader = await _isqlDataHelper.ExecuteReaderAsync(command);
+
+                if(reader.HasRows)
                 {
-                    Direction = ParameterDirection.Output
-                };
-                command.Parameters.Add(outMessageParam);
+                    reader.Read();
+                    response.StatusCode = 200;
+                    response.Message = "SUCCESS : Command Execution";
+                    response.Result = new List<string>() { reader["Message"].ToString() ?? "" };
 
-                await _isqlDataHelper.ExcuteNonQueryasync(command);
-
-                response.StatusCode = 200;
-                response.Message = "SUCCESS : Command Execution";
-                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
+                    //Send Email to customer
+                    var registraionMailBody = EmailTemplates.CUSTOMER_ACTIVATE_DEACTIVATE_TEMPLATE;
+                    registraionMailBody = registraionMailBody.Replace("{{CUST_STATUS}}", reader["Action"].ToString() ?? "");
+                    registraionMailBody = registraionMailBody.Replace("{{CustomerId}}", reader["Email"].ToString() ?? "");
+                    registraionMailBody = registraionMailBody.Replace("{{CUST_EMAIL}}", reader["Email"].ToString() ?? "");
+                    registraionMailBody = registraionMailBody.Replace("{{CUST_FULL_NAME}}", reader["CustomerFullName"].ToString() ?? "");
+                    await _emailHelper.SendEmail(reader["Email"].ToString() ?? "", "", "Your account has been " + reader["Action"].ToString() ?? "", registraionMailBody);
+                }
             }
             catch (Exception ex)
             {
@@ -678,17 +714,23 @@ namespace BAL.BusinessLogic.Helper
                 command.Parameters.AddWithValue("@p_Comments", comments);
                 command.Parameters.AddWithValue("@p_IsActive", 0);
 
-                MySqlParameter outMessageParam = new MySqlParameter("@p_OutMessage", MySqlDbType.String)
+                MySqlDataReader reader = await _isqlDataHelper.ExecuteReaderAsync(command);
+
+                if (reader.HasRows)
                 {
-                    Direction = ParameterDirection.Output
-                };
-                command.Parameters.Add(outMessageParam);
+                    reader.Read();
+                    response.StatusCode = 200;
+                    response.Message = "SUCCESS : Command Execution";
+                    response.Result = new List<string>() { reader["Message"].ToString() ?? "" };
 
-                await _isqlDataHelper.ExcuteNonQueryasync(command);
-
-                response.StatusCode = 200;
-                response.Message = "SUCCESS : Command Execution";
-                response.Result = new List<string>() { outMessageParam.Value.ToString() ?? "" };
+                    //Send Email to customer
+                    var registraionMailBody = EmailTemplates.CUSTOMER_ACTIVATE_DEACTIVATE_TEMPLATE;
+                    registraionMailBody = registraionMailBody.Replace("{{CUST_STATUS}}", reader["Action"].ToString() ?? "");
+                    registraionMailBody = registraionMailBody.Replace("{{CustomerId}}", reader["Email"].ToString() ?? "");
+                    registraionMailBody = registraionMailBody.Replace("{{CUST_EMAIL}}", reader["Email"].ToString() ?? "");
+                    registraionMailBody = registraionMailBody.Replace("{{CUST_FULL_NAME}}", reader["CustomerFullName"].ToString() ?? "");
+                    await _emailHelper.SendEmail(reader["Email"].ToString() ?? "", "", "Your account has been " + reader["Action"].ToString() ?? "", registraionMailBody);
+                }
             }
             catch (Exception ex)
             {

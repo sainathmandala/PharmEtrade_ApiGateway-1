@@ -24,5 +24,6 @@ namespace BAL.Models
         public DateTime? ExpiryDate { get; set; }
         public int MaximumOrderQuantity { get; set; }
         public int MinimumOrderQuantity { get; set; }
+        public int AmountInStock { get; set; }
     }
 }

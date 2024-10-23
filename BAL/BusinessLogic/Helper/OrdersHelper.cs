@@ -1198,6 +1198,31 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
+
+        public async Task<OrderResponse> UpdateOrderStatus(string orderId, int statusId)
+        {
+            OrderResponse response = new OrderResponse();
+            try
+            {
+                MySqlCommand command = new MySqlCommand(StoredProcedures.ORDERS_UPDATE_STATUS);
+                command.CommandType = CommandType.StoredProcedure;
+                
+                command.Parameters.AddWithValue("@p_OrderId", orderId);
+                command.Parameters.AddWithValue("@p_StatusId", statusId);
+
+                MySqlDataReader reader = await Task.Run(() => _isqlDataHelper.ExecuteReaderAsync(command));
+
+                response.Status = 200;
+                response.Message = "Order Status Updated";
+
+            }
+            catch (Exception ex)
+            {
+                response.Status = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
         #endregion Mapping Methods
     }
 }

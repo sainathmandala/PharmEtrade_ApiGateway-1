@@ -73,11 +73,17 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
-        [Route("Edit")]
+        [HttpPost("Edit")]
         public async Task<IActionResult> EditCustomer(CustomerEditRequest customer)
         {
             RegistrationResponse response = await _icustomerRepo.EditCustomer(customer);
+            return Ok(response);
+        }
+
+        [HttpPost("Delete")]
+        public async Task<IActionResult> DeleteCustomer(string customerId)
+        {
+            string response = await _icustomerRepo.DeleteCustomer(customerId);
             return Ok(response);
         }
 
@@ -152,7 +158,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             if (string.IsNullOrEmpty(customerId))
                 return BadRequest("Customer Id is required.");
-            Response<Address> response = await _icustomerRepo.GetByCustomerId(customerId);
+            Response<CustomerAddress> response = await _icustomerRepo.GetByCustomerId(customerId);
             return Ok(response);
         }
 
@@ -161,27 +167,27 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             if (string.IsNullOrEmpty(addressId))
                 return BadRequest("Address Id is required.");
-            Response<Address> response = await _icustomerRepo.GetAddressById(addressId);
+            Response<CustomerAddress> response = await _icustomerRepo.GetAddressById(addressId);
             return Ok(response);
         }
 
         [HttpPost("Address/Add")]
-        public async Task<IActionResult> AddAddress(Address customerAddress)
+        public async Task<IActionResult> AddAddress(CustomerAddress customerAddress)
         {
             if (string.IsNullOrEmpty(customerAddress.CustomerId))
                 return BadRequest("Customer Id is required.");
-            Response<Address> response = await _icustomerRepo.AddUpdateAddress(customerAddress);
+            Response<CustomerAddress> response = await _icustomerRepo.AddUpdateAddress(customerAddress);
             return Ok(response);
         }
 
         [HttpPost("Address/Edit")]
-        public async Task<IActionResult> EditAddress(Address customerAddress)
+        public async Task<IActionResult> EditAddress(CustomerAddress customerAddress)
         {
             if (string.IsNullOrEmpty(customerAddress.CustomerId))
                 return BadRequest("Customer Id is required.");
             if (string.IsNullOrEmpty(customerAddress.AddressId))
                 return BadRequest("Address Id is required.");
-            Response<Address> response = await _icustomerRepo.AddUpdateAddress(customerAddress);
+            Response<CustomerAddress> response = await _icustomerRepo.AddUpdateAddress(customerAddress);
             return Ok(response);
         }
 
@@ -190,7 +196,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             if (string.IsNullOrEmpty(addressId))
                 return BadRequest("Address Id is required.");
-            Response<Address> response = await _icustomerRepo.DeleteAddress(addressId);
+            Response<CustomerAddress> response = await _icustomerRepo.DeleteAddress(addressId);
             return Ok(response);
         }
 

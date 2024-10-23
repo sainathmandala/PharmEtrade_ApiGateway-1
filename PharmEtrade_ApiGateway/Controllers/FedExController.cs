@@ -12,12 +12,6 @@ namespace PharmEtrade_ApiGateway.Controllers
         public FedExController(IFedExRepository fedExRepository) { 
             _fedexRepository = fedExRepository;
         }
-        //[HttpPost("Rates")]
-        //public async Task<ActionResult> GetRates(RateRequest request)
-        //{
-        //    var response = await _fedexRepository.GetRates(request);
-        //    return Ok(response);
-        //}
 
         [HttpGet("track")]
         public async Task<ActionResult> GetTrackingInfo(string trackingNumber)
@@ -27,6 +21,13 @@ namespace PharmEtrade_ApiGateway.Controllers
                 return BadRequest(response.Status.Split("::")[1]);
             if (response.Status.StartsWith("401"))
                 return Unauthorized(response.Status.Split("::")[1]);            
+            return Ok(response);
+        }
+
+        [HttpPost("Rates")]
+        public async Task<ActionResult> GetRates(RateRequest request)
+        {
+            var response = await _fedexRepository.GetRates(request);
             return Ok(response);
         }
     }

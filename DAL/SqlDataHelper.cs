@@ -102,8 +102,8 @@ namespace DAL
             {
                 await sqlcon.OpenAsync();                
                 reader = cmd.ExecuteReader();
-                await sqlcon.CloseAsync();
-                cmd.Dispose();                
+                // await sqlcon.CloseAsync();
+                // cmd.Dispose();                
                 return reader;
             }
             catch (Exception ex)

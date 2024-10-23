@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BAL.Models
 {
-    public class Address
+    public class CustomerAddress
     {
        public string? AddressId {get;set;}
         public string CustomerId { get;set;}
