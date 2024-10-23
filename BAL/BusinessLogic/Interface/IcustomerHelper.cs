@@ -32,5 +32,6 @@ namespace BAL.BusinessLogic.Interface
         Task<Response<string>> Deactivate(string customerId, string? comments);
         Task<Response<BeneficiaryDetails>> AddUpdateBeneficiaryDetail(BeneficiaryDetails beneficiaryDetails);
         Task<Response<BeneficiaryDetails>> GetBeneficiaryByCustomerId(string customerId);
+        Task<Response<CustomerAuditHistory>> ActivateDeactivateHistoryByCustomerId(string customerId);
     }
 }

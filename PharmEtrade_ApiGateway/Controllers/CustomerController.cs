@@ -229,5 +229,13 @@ namespace PharmEtrade_ApiGateway.Controllers
             Response<BeneficiaryDetails> response = await _icustomerRepo.GetBeneficiaryByCustomerId(customerId);
             return Ok(response);
         }
+        [HttpGet("ActivateDeactivateHistoryByCustomerId")]
+        public async Task<IActionResult> ActivateDeactivateHistoryByCustomerId(string customerId)
+        {
+            if (string.IsNullOrEmpty(customerId))
+                return BadRequest("Customer Id is required.");
+            Response<CustomerAuditHistory> response = await _icustomerRepo.ActivateDeactivateHistoryByCustomerId(customerId);
+            return Ok(response);
+        }
     }
 }
