@@ -1172,6 +1172,32 @@ namespace BAL.BusinessLogic.Helper
             }
             return lstShipments;
         }
+
+        public async Task<OrderResponse> UpdateDeliveryAddress(string customerId, string orderId, string addressId)
+        {
+            OrderResponse response = new OrderResponse();
+            try
+            {
+                MySqlCommand command = new MySqlCommand(StoredProcedures.ORDERS_UPDATE_DELIVERY_ADDRESS);
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.AddWithValue("@p_CustomerId", customerId);
+                command.Parameters.AddWithValue("@p_OrderId", orderId);
+                command.Parameters.AddWithValue("@p_AddressId", addressId);
+
+                MySqlDataReader reader = await Task.Run(() => _isqlDataHelper.ExecuteReaderAsync(command));
+
+                response.Status = 200;
+                response.Message = "Delivery Address Updated";
+                
+            }
+            catch (Exception ex)
+            {                
+                response.Status = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
         #endregion Mapping Methods
     }
 }

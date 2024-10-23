@@ -25,5 +25,7 @@ namespace BAL.Models
         public DateTime PaymentDate { get; set; }
         public string? InvoiceNumber { get; set; }
         public string? PaymentMethod { get; set; }
+        public string? FromUser { get; set; }
+        public DateTime? InvoiceDate { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BAL.BusinessLogic.Interface;
 using BAL.Models.FedEx;
+using BAL.Models.FedEx.RateRequest;
 using Microsoft.Extensions.Configuration;
 using MySqlX.XDevAPI;
 using System;
@@ -13,17 +14,30 @@ namespace BAL.BusinessLogic.Helper
 {
     public class FedExHelper : IFedExHelper
     {
+        private readonly string fedExBaseUrl = "";
+
+        // Create separate fields for rates as FedEx uses different credentials for other than rates
         private readonly string grantType = "";
         private readonly string clientId = "";
         private readonly string clientSecret = "";
-        private readonly string fedExBaseUrl = "";
+        
+
+        // Create separate fields for rates as FedEx uses different credentials for Rates
+        private readonly string ratesGrantType = "";
+        private readonly string ratesClientId = "";
+        private readonly string ratesClientSecret = "";
 
         public FedExHelper(IConfiguration configuration)
         {
+            fedExBaseUrl = configuration?.GetSection("FedExSettings")["FedExBaseUrl"] ?? "";
             grantType = configuration?.GetSection("FedExSettings")["grant_type"] ?? "";
             clientId = configuration?.GetSection("FedExSettings")["client_id"] ?? "";
             clientSecret = configuration?.GetSection("FedExSettings")["client_secret"] ?? "";
-            fedExBaseUrl = configuration?.GetSection("FedExSettings")["FedExBaseUrl"] ?? "";
+
+            ratesGrantType = configuration?.GetSection("FedExSettings")["rates_grant_type"] ?? "";
+            ratesClientId = configuration?.GetSection("FedExSettings")["rates_client_id"] ?? "";
+            ratesClientSecret = configuration?.GetSection("FedExSettings")["rates_client_secret"] ?? "";
+
         }
         public async Task<TokenResponse> GenerateToken()
         {
@@ -74,6 +88,64 @@ namespace BAL.BusinessLogic.Helper
                     return new TokenResponse();
                 }
             }
+        }
+
+        public Task<HttpResponseMessage> GetRates(RateRequest request)
+        {
+            throw new NotImplementedException();
+            //var request = new HttpRequestMessage(HttpMethod.Post, "https://apis-sandbox.fedex.com/rate/v1/rates/quotes");
+
+            ///* Call these token because for track client api,password different */
+            //var tokenResponse = await TokenCreationForRates();
+            //if (tokenResponse == null || string.IsNullOrEmpty(tokenResponse.AccessToken))
+            //{
+            //    return BadRequest(new { Success = false, Message = "Token creation failed. Please try again." });
+            //}
+
+
+            //request.Headers.Add("Authorization", $"Bearer {tokenResponse.AccessToken}");
+
+
+            //var serializedObj = requestBody.GetRawText();
+            //request.Content = new StringContent(serializedObj, Encoding.UTF8, "application/json");
+
+            //HttpResponseMessage response;
+
+            //try
+            //{
+
+            //    response = await client.SendAsync(request);
+            //    response.EnsureSuccessStatusCode();
+            //}
+            //catch (HttpRequestException ex)
+            //{
+
+            //    return BadRequest(new { Message = $"Request error: {ex.Message}" });
+            //}
+
+
+            //var responseContent = await response.Content.ReadAsStringAsync();
+
+            //JsonElement responseJson;
+            //try
+            //{
+
+            //    responseJson = JsonSerializer.Deserialize<JsonElement>(responseContent);
+            //}
+            //catch (JsonException)
+            //{
+
+            //    return BadRequest(new { Message = "Failed to parse the response from FedEx." });
+            //}
+
+
+            //if (!responseJson.TryGetProperty("output", out JsonElement output))
+            //{
+            //    return BadRequest(new { Message = "No 'output' found in the FedEx response." });
+            //}
+
+
+            //return Ok(new { Success = true, Content = responseJson });
         }
 
         public async Task<TrackingResponseModel> GetTrackingInfo(string trackingNumber)

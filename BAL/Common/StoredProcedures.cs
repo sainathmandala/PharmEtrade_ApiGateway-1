@@ -58,6 +58,7 @@ namespace BAL.Common
         public const string GET_ORDERS_BY_BUYER_CRITERIA = "sp_GetOrdersByBuyerCriteria";
         public const string GET_ORDERS_BY_SELLER_CRITERIA = "sp_GetOrdersBySellerCriteria";
         public const string GET_ORDERS_BY_DATE = "sp_GetOrdersByDate";
+        public const string ORDERS_UPDATE_DELIVERY_ADDRESS = "sp_UpdateDeliveryAddress";
 
         //Cart
         public const string DELETE_CART = "sp_DeleteCart";

@@ -89,7 +89,9 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return await _orders.GetShipmentsByCustomerId(customerId);
         }
 
-
-
+        public async Task<OrderResponse> UpdateDeliveryAddress(string customerId, string orderId, string addressId)
+        {
+            return await _orders.UpdateDeliveryAddress(customerId, orderId, addressId);
+        }
     }
 }

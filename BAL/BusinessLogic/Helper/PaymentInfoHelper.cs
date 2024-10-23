@@ -218,6 +218,8 @@ namespace BAL.BusinessLogic.Helper
                 item.StatusId = Convert.ToInt32(Convert.IsDBNull(paymentinfo["StatusId"]) ? 0 : paymentinfo["StatusId"]);
                 item.PaymentDate = Convert.ToDateTime(Convert.IsDBNull(paymentinfo["PaymentDate"]) ? DateTime.MinValue : paymentinfo["PaymentDate"]);
                 item.PaymentStatus = paymentinfo["PaymentStatus"].ToString() ?? "";
+                item.InvoiceDate = Convert.ToDateTime(Convert.IsDBNull(paymentinfo["OrderDate"]) ? DateTime.MinValue : paymentinfo["OrderDate"]);
+                item.FromUser = paymentinfo["FirstName"].ToString() ?? "" + " " + paymentinfo["LastName"].ToString() ?? "";
 
                 listpaymentinfo.Add(item);
             }

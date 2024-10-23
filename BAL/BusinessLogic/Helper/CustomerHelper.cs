@@ -170,7 +170,7 @@ namespace BAL.BusinessLogic.Helper
                         registraionMailBody = registraionMailBody.Replace("{{CustomerId}}", customer.Email);
                         registraionMailBody = registraionMailBody.Replace("{{CUST_EMAIL}}", customer.Email);
                         registraionMailBody = registraionMailBody.Replace("{{CUST_FULL_NAME}}", customer.FirstName + ' ' + customer.LastName);
-                        await _emailHelper.SendEmail(customer.Email, "", "Your registration is successfull.", registraionMailBody);
+                        await _emailHelper.SendEmail(customer.Email, "", "Your profile Has been updated successfully", registraionMailBody);
                         return reader["Status"].ToString() ?? "";
                     }
                     return "";

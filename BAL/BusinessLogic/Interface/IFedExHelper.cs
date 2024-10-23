@@ -1,9 +1,5 @@
 ﻿using BAL.Models.FedEx;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BAL.Models.FedEx.RateRequest;
 
 namespace BAL.BusinessLogic.Interface
 {
@@ -11,5 +7,6 @@ namespace BAL.BusinessLogic.Interface
     {
         Task<TokenResponse> GenerateToken();
         Task<TrackingResponseModel> GetTrackingInfo(string trackingNumber);
+        Task<HttpResponseMessage> GetRates(RateRequest request);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BAL.Models.FedEx;
+using BAL.Models.FedEx.RateRequest;
 
 namespace PharmEtrade_ApiGateway.Repository.Interface
 {
@@ -6,5 +7,6 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
     {
         Task<TokenResponse> GenerateToken();
         Task<TrackingResponseModel> GetTrackingInfo(string trackingNumber);
+        Task<HttpResponseMessage> GetRates(RateRequest request);
     }
 }

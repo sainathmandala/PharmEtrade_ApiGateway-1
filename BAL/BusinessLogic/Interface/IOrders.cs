@@ -12,6 +12,7 @@ namespace BAL.BusinessLogic.Interface
     public interface IOrders
     {
         Task<OrderResponse> AddOrder(TempOrderRequest orderRequest);
+        Task<OrderResponse> UpdateDeliveryAddress(string customerId, string orderId, string addressId);
         Task<Response<Order>> GetOrdersByCustomerId(string customerId);
         Task<Response<Order>> GetCustomerOrdersByDate(BuyerOrderCriteria orderCriteria);
         Task<Response<Order>> GetOrdersBySellerId(string VendorId);

@@ -1,9 +1,6 @@
-﻿using BAL.Models.FedEx;
-using Microsoft.AspNetCore.Http;
+﻿using BAL.Models.FedEx.RateRequest;
 using Microsoft.AspNetCore.Mvc;
-using MySqlX.XDevAPI;
 using PharmEtrade_ApiGateway.Repository.Interface;
-using System.Text;
 
 namespace PharmEtrade_ApiGateway.Controllers
 {
@@ -15,6 +12,13 @@ namespace PharmEtrade_ApiGateway.Controllers
         public FedExController(IFedExRepository fedExRepository) { 
             _fedexRepository = fedExRepository;
         }
+        //[HttpPost("Rates")]
+        //public async Task<ActionResult> GetRates(RateRequest request)
+        //{
+        //    var response = await _fedexRepository.GetRates(request);
+        //    return Ok(response);
+        //}
+
         [HttpGet("track")]
         public async Task<ActionResult> GetTrackingInfo(string trackingNumber)
         {
