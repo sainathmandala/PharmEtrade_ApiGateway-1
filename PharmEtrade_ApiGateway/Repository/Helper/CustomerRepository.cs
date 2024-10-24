@@ -66,7 +66,7 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
                         response.statusCode = 200;
                         //response.message = LoginSuccessMsg;
                     }
-                    else if(response.LoginStatus == "Success" && response.IsActive)
+                    else if(response.LoginStatus == "Success" && !response.IsActive)
                     {
                         response.statusCode = 400;
                         response.Message = "User is not Active. Please contact Administrator";

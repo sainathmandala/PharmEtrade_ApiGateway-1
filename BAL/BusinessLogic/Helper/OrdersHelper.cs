@@ -139,9 +139,22 @@ namespace BAL.BusinessLogic.Helper
                             response.Status = 200;
                             response.Message = "Success";
 
-                            string _mailBody = EmailTemplates.ORDER_TEMPLATE;
-                            _mailBody = _mailBody.Replace("{{OrderId}}", response.OrderId);
-                            _mailBody = _mailBody.Replace("{{OrderDetailsHTML}}", GetOrderDetailsHTML(response));                            
+                            string _mailBody = EmailTemplates.BUYER_INVOICE_TEMPLATE;
+                            _mailBody = _mailBody.Replace("{{CUST_NAME}}", response.CustomerName);
+                            _mailBody = _mailBody.Replace("{{ORDER_NUMBER}}", response.OrderId);
+                            _mailBody = _mailBody.Replace("{{ORDER_DATE}}", response.OrderDate.ToString("MMMM dd, yyyy, HH:mm:ss tt"));
+                            _mailBody = _mailBody.Replace("{{PAYMENT_METHOD}}", "Credit Card");
+                            _mailBody = _mailBody.Replace("{{SHIPPING_METHOD}}", response.ShippingMethodName);
+                            _mailBody = _mailBody.Replace("{{CUST_ADDRESS1}}", response.CustomerId);
+                            _mailBody = _mailBody.Replace("{{CUST_ADDRESS2}}", response.CustomerEmail);
+                            _mailBody = _mailBody.Replace("{{CUST_COUNTRY}}", response.CustomerId);
+                            _mailBody = _mailBody.Replace("{{CUST_PINCODE}}", response.CustomerEmail);
+                            _mailBody = _mailBody.Replace("{{INVOICE_NUMBER}}", Guid.NewGuid().ToString());
+                            _mailBody = _mailBody.Replace("{{INVOICE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
+                            _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
+                            //_mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
+                            _mailBody = _mailBody.Replace("{{PRODUCTS_DETAILS}}", GetInvoiceOrderDetailsHTML(response));
+
                             await _emailHelper.SendEmail(response.CustomerEmail, "", "Your Order Has been Placed", _mailBody);
                         }
                         else

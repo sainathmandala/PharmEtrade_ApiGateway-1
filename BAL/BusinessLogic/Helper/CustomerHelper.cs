@@ -123,11 +123,11 @@ namespace BAL.BusinessLogic.Helper
                     if (reader.HasRows)
                     {
                         reader.Read();
-                        var registraionMailBody = EmailTemplates.CUSTOMER_TEMPLATE;
-                        registraionMailBody = registraionMailBody.Replace("{{CustomerId}}", customer.Email);
-                        registraionMailBody = registraionMailBody.Replace("{{CUST_EMAIL}}", customer.Email);
-                        registraionMailBody = registraionMailBody.Replace("{{CUST_FULL_NAME}}", customer.FirstName + ' ' + customer.LastName);
-                        await _emailHelper.SendEmail(customer.Email, "", "Your registration is successfull.", registraionMailBody);
+                        //var registraionMailBody = EmailTemplates.CUSTOMER_TEMPLATE;
+                        //registraionMailBody = registraionMailBody.Replace("{{CustomerId}}", customer.Email);
+                        //registraionMailBody = registraionMailBody.Replace("{{CUST_EMAIL}}", customer.Email);
+                        //registraionMailBody = registraionMailBody.Replace("{{CUST_FULL_NAME}}", customer.FirstName + ' ' + customer.LastName);
+                        //await _emailHelper.SendEmail(customer.Email, "", "Your registration is successfull.", registraionMailBody);
                         return reader["Status"].ToString() ?? "";                        
                     }
                     return "";
@@ -273,10 +273,20 @@ namespace BAL.BusinessLogic.Helper
                     cmd.Parameters.AddWithValue("p_NCPDP", businessInfo.NCPDP);
                     cmd.Parameters.AddWithValue("p_CompanyWebsite", businessInfo.CompanyWebsite);
 
-                    var result = await cmd.ExecuteScalarAsync();
-                    if (result != null && result.ToString() == "Business Info Updated successfully.")
+                    // var result = await cmd.ExecuteScalarAsync();
+                    MySqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.HasRows)
                     {
                         await transaction.CommitAsync();
+                        reader.Read();
+                        if (businessInfo.SendRegistrationMail)
+                        {
+                            var registraionMailBody = EmailTemplates.CUSTOMER_TEMPLATE;
+                            registraionMailBody = registraionMailBody.Replace("{{CustomerId}}", reader["Email"].ToString() ?? "");
+                            registraionMailBody = registraionMailBody.Replace("{{CUST_EMAIL}}", reader["Email"].ToString() ?? "");
+                            registraionMailBody = registraionMailBody.Replace("{{CUST_FULL_NAME}}", reader["FirstName"].ToString() ?? "" + ' ' + reader["LastName"].ToString() ?? "");
+                            await _emailHelper.SendEmail(reader["Email"].ToString() ?? "", "", "Your registration is successfull.", registraionMailBody);
+                        }
                         return "SUCCESS";
                     }
                     else
@@ -288,7 +298,7 @@ namespace BAL.BusinessLogic.Helper
             }
             catch (Exception ex)
             {
-                Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "SaveBusinessInfoData: errormessage:" + ex.Message.ToString()));
+                //Task writeTask = Task.Factory.StartNew(() => LogFileException.Write_Log_Exception(exPathToSave, "SaveBusinessInfoData: errormessage:" + ex.Message.ToString()));
 
                 return "ERROR : " + ex.Message;
             }

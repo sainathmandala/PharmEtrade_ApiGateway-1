@@ -30,5 +30,6 @@ namespace BAL.ViewModels
         public string? NPI { get; set; }
         public string? NCPDP { get; set; }
         public string? CompanyWebsite { get; set;}
+        public bool SendRegistrationMail { get; set; }
     }
 }

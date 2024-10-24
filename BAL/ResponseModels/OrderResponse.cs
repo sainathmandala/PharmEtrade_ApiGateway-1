@@ -1,4 +1,6 @@
-﻿namespace BAL.ResponseModels
+﻿using BAL.Models;
+
+namespace BAL.ResponseModels
 {
     public class OrderProductResponse
     {
@@ -30,5 +32,6 @@
         public string? TrackingNumber { get; set; }
         public decimal TotalAmount { get; set; }
         public List<OrderProductResponse> Products { get; set; }
+        public CustomerAddress CustomerAddress { get; set; }
     }
 }
