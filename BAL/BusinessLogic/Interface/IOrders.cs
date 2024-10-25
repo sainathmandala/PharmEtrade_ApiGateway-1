@@ -16,7 +16,7 @@ namespace BAL.BusinessLogic.Interface
         Task<OrderResponse> UpdateOrderStatus(string orderId, int statusId);
         Task<Response<Order>> GetOrdersByCustomerId(string customerId);
         Task<Response<Order>> GetCustomerOrdersByDate(BuyerOrderCriteria orderCriteria);
-        Task<Response<Order>> GetOrdersBySellerId(string VendorId);
+        Task<Response<SellerOrdersReponse>> GetOrdersBySellerId(string VendorId);
         Task<Response<Order>> GetSellerOrdersByDate(SellerOrderCriteria orderCriteria);
         Task<PaymentResponse> AddPayment(PaymentRequest paymentRequest);
         Task<OrderResponse> AddUpdateOrder(OrderRequest orderRequest);

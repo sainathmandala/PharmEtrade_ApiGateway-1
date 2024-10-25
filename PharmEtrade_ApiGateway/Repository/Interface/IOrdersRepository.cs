@@ -8,7 +8,7 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<OrderResponse> AddOrder(TempOrderRequest orderRequest);
         Task<Response<Order>> GetOrdersByCustomerId(string customerId);
         Task<Response<Order>> GetCustomerOrdersByDate(BuyerOrderCriteria orderCriteria);
-        Task<Response<Order>> GetOrdersBySellerId(string VendorId);
+        Task<Response<SellerOrdersReponse>> GetOrdersBySellerId(string VendorId);
         Task<Response<Order>> GetSellerOrdersByDate(SellerOrderCriteria orderCriteria);
         Task<PaymentResponse> AddPayment(PaymentRequest paymentRequest);
         //Task<Response<SpecialOffersResponse>> GetSpecialOffers();

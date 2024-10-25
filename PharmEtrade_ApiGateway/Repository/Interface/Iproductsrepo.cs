@@ -15,6 +15,8 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<BAL.ResponseModels.Response<ProductPrice>> AddUpdateProductPrice(ProductPrice productPrice);
         Task<BAL.ResponseModels.Response<ProductGallery>> AddUpdateProductGallery(ProductGallery productGallery);
         Task<UploadResponse> UploadImage(IFormFile image, string sellerId, string productId);
+   
+             Task<BAL.ResponseModels.Response<ProductResponse>> AddBulkProduct(IFormFile excelfile);
         Task<BAL.ResponseModels.Response<ProductResponse>> GetAllProducts(string productId = null, string customerId = null);
         Task<BAL.ResponseModels.Response<ProductResponse>> GetProductsBySpecification(int categorySpecificationId, bool withDiscount = false);
         Task<BAL.ResponseModels.Response<ProductResponse>> GetRecentSoldProducts(int numberOfProducts);
