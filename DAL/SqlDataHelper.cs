@@ -94,23 +94,25 @@ namespace DAL
         }
 
         public async Task<MySqlDataReader> ExecuteReaderAsync(MySqlCommand cmd)
-        {           
-            MySqlConnection sqlcon = new MySqlConnection(_connectionString);
-            cmd.Connection = sqlcon;
-            MySqlDataReader reader;
-            try
+        {
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
-                await sqlcon.OpenAsync();                
-                reader = cmd.ExecuteReader();
-                // await sqlcon.CloseAsync();
-                // cmd.Dispose();                
-                return reader;
-            }
-            catch (Exception ex)
-            {
-                sqlcon.Close();
-                cmd.Dispose();
-                return null;
+                cmd.Connection = sqlcon;
+                MySqlDataReader reader;
+                try
+                {
+                    await sqlcon.OpenAsync();
+                    reader = cmd.ExecuteReader();
+                    //await sqlcon.CloseAsync();
+                    //cmd.Dispose();
+                    return reader;
+                }
+                catch (Exception ex)
+                {
+                    sqlcon.Close();
+                    cmd.Dispose();
+                    return null;
+                }
             }
         }
     }
