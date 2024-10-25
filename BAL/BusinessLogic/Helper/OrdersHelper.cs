@@ -386,9 +386,9 @@ namespace BAL.BusinessLogic.Helper
             }
         }       
 
-        public async Task<Response<Order>> GetOrdersBySellerId(string VendorId)
+        public async Task<Response<SellerOrdersReponse>> GetOrdersBySellerId(string VendorId)
         {
-            var response = new Response<Order>();
+            var response = new Response<SellerOrdersReponse>();
             using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
                 using (MySqlCommand cmd = new MySqlCommand(StoredProcedures.GET_ORDERS_BY_SELLER, sqlcon))
@@ -409,12 +409,12 @@ namespace BAL.BusinessLogic.Helper
                     {
                         // Execute the stored procedure and fill the DataTable
                         DataTable tblOrders = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
-                        List<Order> ordersList = new List<Order>();
+                        List<SellerOrdersReponse> ordersList = new List<SellerOrdersReponse>();
                         if (tblOrders.Rows.Count > 0)
                         {
                             foreach (DataRow row in tblOrders.Rows)
                             {
-                                ordersList.Add(new Order
+                                ordersList.Add(new SellerOrdersReponse
                                 {
                                     OrderId = row["OrderId"].ToString() ?? "",
                                     CustomerId = row["CustomerId"].ToString(),
@@ -433,6 +433,15 @@ namespace BAL.BusinessLogic.Helper
                                     //OrderDate = Convert.ToDateTime(row["OrderDate"])
                                     OrderDate = row["OrderDate"] != DBNull.Value ? Convert.ToDateTime(row["OrderDate"]) : DateTime.MinValue,
                                     ImageUrl = row["MainImageUrl"].ToString() ?? "",
+                                    Address1 = row["Address1"].ToString() ?? "",
+                                    Address2 = row["Address2"].ToString() ?? "",
+                                    Landmark = row["Landmark"].ToString() ?? "",
+                                    City = row["City"].ToString() ?? "",
+                                    State = row["State"].ToString() ?? "",
+                                    Country = row["Country"].ToString() ?? "",
+                                    Email = row["Email"].ToString() ?? "",
+                                    Mobile = row["Mobile"].ToString() ?? "",
+                                    Pincode = row["CustomerPinCode"].ToString() ?? ""
                                     
 
                                 });
