@@ -81,6 +81,11 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return response;
         }
 
+        public async Task<BAL.ResponseModels.Response<ProductResponse>> AddBulkProduct(IFormFile excelfile)
+        {
+            return await _productHelper.AddBulkProduct(excelfile);
+        }
+
         public async Task<Response<ProductResponse>> GetAllProducts(string productId = null, string customerId = null)
         {
             return await _productHelper.GetAllProducts(productId, customerId);
