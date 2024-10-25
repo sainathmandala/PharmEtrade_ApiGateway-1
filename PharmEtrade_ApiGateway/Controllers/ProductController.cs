@@ -93,6 +93,14 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
+        [HttpPost("AddBulkProduct")]
+        public async Task<IActionResult> AddBulkProduct(IFormFile excelfile)
+        {
+            var response = await _productRepo.AddBulkProduct(excelfile);
+            return Ok(response);
+        }
+
+
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAllProducts(string? customerId)
         {

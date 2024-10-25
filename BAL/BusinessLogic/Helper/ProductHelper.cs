@@ -12,6 +12,7 @@ using BAL.RequestModels;
 using System.Configuration;
 using BAL;
 using BAL.Models.Products;
+using Google.Protobuf.WellKnownTypes;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -21,12 +22,14 @@ namespace BAL.BusinessLogic.Helper
         private readonly string _exPathToSave;
         private readonly IConfiguration _configuration;
         private readonly S3Helper _s3Helper;
+        private readonly string _connectionString;
         public ProductHelper(IConfiguration configuration, DAL.IsqlDataHelper isqlDataHelper)
         {
             _s3Helper = new S3Helper(configuration);
             _configuration = configuration;
             _isqlDataHelper = isqlDataHelper;
             _exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), "ProductExceptionLogs");
+            _connectionString = configuration.GetConnectionString("APIDBConnectionString") ?? "";
         }
 
         public async Task<string> InsertProductsFromExcel(Stream excelFileStream)
@@ -265,6 +268,271 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
+
+
+        public async Task<Response<ProductResponse>> AddBulkProduct(IFormFile excelFile)
+        {
+            Response<ProductResponse> response = new Response<ProductResponse>();
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await excelFile.CopyToAsync(stream);
+                    stream.Position = 0;
+
+                    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+                    using (var package = new ExcelPackage(stream)) 
+                    {
+                        ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; 
+                        int rowCount = worksheet.Dimension.Rows;
+                        int colCount = worksheet.Dimension.Columns;
+
+                     
+                        DataTable productDataTable = new DataTable();
+                        productDataTable.Columns.Add("NDCorUPC");
+                        productDataTable.Columns.Add("CategorySpecificationId");
+                        productDataTable.Columns.Add("ProductCategoryId");
+                        productDataTable.Columns.Add("ProductName");
+                        productDataTable.Columns.Add("Manufacturer");
+                        productDataTable.Columns.Add("Size");
+                        productDataTable.Columns.Add("Form");
+                        productDataTable.Columns.Add("UnitOfMeasure");
+                        productDataTable.Columns.Add("Strength");
+                        productDataTable.Columns.Add("BrandName");
+                        productDataTable.Columns.Add("LotNumber");
+                        productDataTable.Columns.Add("ExpiryDate");
+                        productDataTable.Columns.Add("SKU");
+                        productDataTable.Columns.Add("ProductDescription");
+                        productDataTable.Columns.Add("AboutTheProduct");
+                        productDataTable.Columns.Add("Height");
+                        productDataTable.Columns.Add("Width");
+                        productDataTable.Columns.Add("Length");
+                        productDataTable.Columns.Add("Weight");
+                        productDataTable.Columns.Add("UnitPrice");
+                        productDataTable.Columns.Add("Discount");
+                        productDataTable.Columns.Add("UPNMemberPrice");
+                        productDataTable.Columns.Add("SalePrice");
+                        productDataTable.Columns.Add("SalePriceValidFrom");
+                        productDataTable.Columns.Add("SalePriceValidTo");
+                        productDataTable.Columns.Add("AmountInStock");
+                        productDataTable.Columns.Add("Taxable");
+                        productDataTable.Columns.Add("MinOrderQuantity");
+                        productDataTable.Columns.Add("MaxOrderQuantity");
+                        productDataTable.Columns.Add("ImageUrl");
+                        productDataTable.Columns.Add("ProductGallery");
+                        productDataTable.Columns.Add("Caption");
+                        productDataTable.Columns.Add("VideoUrl");
+
+             
+                        for (int row = 2; row <= rowCount; row++) //  from row 2 
+                        {
+                            DataRow newRow = productDataTable.NewRow();
+                            newRow["NDCorUPC"] = worksheet.Cells[row, 1].Value?.ToString();
+                            newRow["CategorySpecificationId"] = worksheet.Cells[row, 2].Value?.ToString();
+                            newRow["ProductCategoryId"] = worksheet.Cells[row, 3].Value?.ToString();
+                            newRow["ProductName"] = worksheet.Cells[row, 4].Value?.ToString();
+                            newRow["Manufacturer"] = worksheet.Cells[row, 5].Value?.ToString();
+                            newRow["Size"] = worksheet.Cells[row, 6].Value?.ToString();
+                            newRow["Form"] = worksheet.Cells[row, 7].Value?.ToString();
+                            newRow["UnitOfMeasure"] = worksheet.Cells[row, 8].Value?.ToString();
+                            newRow["Strength"] = worksheet.Cells[row, 9].Value?.ToString();
+                            newRow["BrandName"] = worksheet.Cells[row, 10].Value?.ToString();
+                            newRow["LotNumber"] = worksheet.Cells[row, 11].Value?.ToString();
+                            var row12value = worksheet.Cells[row, 12].Value?.ToString();
+                            bool isexpirydatevalidate = ValidateDate(row12value, out DateTime dateoutexpirydate);
+                            if (!isexpirydatevalidate)
+                            {
+                                newRow["ExpiryDate"] = "";
+                            }
+                            else if (isexpirydatevalidate)
+                            {
+                                newRow["ExpiryDate"] = dateoutexpirydate.ToString();
+                            }
+                          
+                            newRow["SKU"] = worksheet.Cells[row, 13].Value?.ToString();
+                            newRow["ProductDescription"] = worksheet.Cells[row, 14].Value?.ToString();
+                            newRow["AboutTheProduct"] = worksheet.Cells[row, 15].Value?.ToString();
+                            newRow["Height"] = worksheet.Cells[row, 16].Value?.ToString();
+                            newRow["Width"] = worksheet.Cells[row, 17].Value?.ToString();
+                            newRow["Length"] = worksheet.Cells[row, 18].Value?.ToString();
+                            newRow["Weight"] = worksheet.Cells[row, 19].Value?.ToString();
+                            newRow["UnitPrice"] = worksheet.Cells[row, 20].Value?.ToString();
+                            newRow["Discount"] = worksheet.Cells[row, 21].Value?.ToString();
+                            newRow["UPNMemberPrice"] = worksheet.Cells[row, 22].Value?.ToString();
+                            newRow["SalePrice"] = worksheet.Cells[row, 23].Value?.ToString();
+
+                            var row24value = worksheet.Cells[row, 12].Value?.ToString();
+                            bool isSalePricevaliFromvalidate = ValidateDate(row24value, out DateTime dateoutSalePricevalidFrom);
+                            if (!isSalePricevaliFromvalidate)
+                            {
+                                newRow["SalePriceValidFrom"] = "";
+                            }
+                            else if (isSalePricevaliFromvalidate)
+                            {
+                                newRow["SalePriceValidFrom"] = dateoutSalePricevalidFrom.ToString();
+                            }
+
+                            //newRow["SalePriceValidFrom"] = worksheet.Cells[row, 24].Value?.ToString();
+
+                            var row25value = worksheet.Cells[row, 12].Value?.ToString();
+                            bool isSalePriceValidTovalidate = ValidateDate(row25value, out DateTime dateoutSalePriceValidTo);
+                            if (!isSalePriceValidTovalidate)
+                            {
+                                newRow["SalePriceValidTo"] = "";
+                            }
+                            else if (isSalePriceValidTovalidate)
+                            {
+                                newRow["SalePriceValidTo"] = dateoutSalePriceValidTo.ToString();
+                            }
+
+                            newRow["SalePriceValidTo"] = worksheet.Cells[row, 25].Value?.ToString();
+                            newRow["AmountInStock"] = worksheet.Cells[row, 26].Value?.ToString();
+                            newRow["Taxable"] = worksheet.Cells[row, 27].Value?.ToString();
+                            newRow["MinOrderQuantity"] = worksheet.Cells[row, 28].Value?.ToString();
+                            newRow["MaxOrderQuantity"] = worksheet.Cells[row, 29].Value?.ToString();
+                            newRow["ImageUrl"] = worksheet.Cells[row, 30].Value?.ToString();
+                            newRow["Caption"] = worksheet.Cells[row, 31].Value?.ToString();
+                            newRow["VideoUrl"] = worksheet.Cells[row, 33].Value?.ToString();
+                            productDataTable.Rows.Add(newRow);
+                        }
+
+                        
+                        await InsertProductsDataTableAsync(productDataTable);
+                    }
+                }
+
+                response.StatusCode = 200;
+                response.Message = "Bulk products added successfully.";
+
+            }
+            catch (Exception ex)
+            {
+                response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        private bool ValidateDate(string strdate, out DateTime dateout)
+        {
+            try
+            {
+                strdate = strdate.Split(' ')[0];
+                if (strdate.Length == 10)
+                    strdate = strdate.Replace("/", "-");
+                else if (strdate.Length == 9 && strdate.Split("/")[0].Length == 1)
+                    strdate = "0" + strdate.Split("/")[0] + "-" + strdate.Split("/")[1] + "-" + strdate.Split("/")[2];
+                else if (strdate.Length == 9 && strdate.Split("/")[1].Length == 1)
+                    strdate = strdate.Split("/")[0] + "-" + "0" + strdate.Split("/")[1] + "-" + strdate.Split("/")[2];
+                else if (strdate.Length == 8)
+                    strdate = "0" + strdate.Split("/")[0] + "-" + "0" + strdate.Split("/")[1] + "-" + strdate.Split("/")[2];
+
+                strdate = strdate.Replace("/", "-");
+
+                try
+                {
+                    if (strdate.Length == 5)
+                    {
+                        dateout = DateTime.FromOADate(Convert.ToDouble(strdate));
+
+                    }
+                    else
+                    {
+                        dateout = DateTime.ParseExact(strdate, "MM-dd-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                        //dateout = DateTime.ParseExact(strdate, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    dateout = DateTime.ParseExact(strdate, "dd-MM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                dateout = DateTime.Now;
+                return false;
+            }
+        }
+        private async Task InsertProductsDataTableAsync(DataTable productDataTable)
+        {
+            using (var connection = new MySqlConnection(_connectionString))
+            {
+                await connection.OpenAsync(); // Open the connection
+                using (var transaction = await connection.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        foreach (DataRow row in productDataTable.Rows)
+                        {
+
+                            using (MySqlCommand cmdProductBulkInsert = new MySqlCommand("sp_BulkAddProducts", connection, transaction))
+                            {
+                            //    using (var cmdProductBulkInsert = new MySqlCommand("sp_BulkAddProducts", connection, transaction))
+                            //{
+                                cmdProductBulkInsert.CommandType = CommandType.StoredProcedure;
+
+                             
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_NDCorUPC", row["NDCorUPC"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_CategorySpecificationId", row["CategorySpecificationId"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_ProductCategoryId", row["ProductCategoryId"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_ProductName", row["ProductName"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Manufacturer", row["Manufacturer"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Size", row["Size"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Form", row["Form"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_UnitOfMeasure", row["UnitOfMeasure"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Strength", row["Strength"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_BrandName", row["BrandName"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_LotNumber", row["LotNumber"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_ExpiryDate", row["ExpiryDate"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_SKU", row["SKU"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_ProductDescription", row["ProductDescription"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_AboutTheProduct", row["AboutTheProduct"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Height", row["Height"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Width", row["Width"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Length", row["Length"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Weight", row["Weight"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_UnitPrice", row["UnitPrice"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Discount", row["Discount"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_UPNMemberPrice", row["UPNMemberPrice"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_SalePrice", row["SalePrice"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_SalePriceValidFrom", row["SalePriceValidFrom"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_SalePriceValidTo", row["SalePriceValidTo"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_AmountInStock", row["AmountInStock"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Taxable", row["Taxable"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_MinOrderQuantity", row["MinOrderQuantity"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_MaxOrderQuantity", row["MaxOrderQuantity"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_ImageUrl", row["ImageUrl"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_ProductGallery", row["ProductGallery"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Caption", row["Caption"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_VideoUrl", row["VideoUrl"]);
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Thumbnail1", "");
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Thumbnail2", "");
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Thumbnail3", "");
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Thumbnail4", "");
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Thumbnail5", "");
+                                cmdProductBulkInsert.Parameters.AddWithValue("p_Thumbnail6", "");
+
+                                // Execute the command
+                                //await cmdProductBulkInsert.ExecuteNonQueryAsync();
+                              var ID = await _isqlDataHelper.ExcuteNonQueryasync(cmdProductBulkInsert);
+                            }
+                        }
+
+                        await transaction.CommitAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                      
+                        await transaction.RollbackAsync();
+                        throw new Exception("An error occurred while inserting bulk products: " + ex.Message, ex);
+                    }
+                }
+            }
+        }
+
 
         public async Task<Response<ProductResponse>> GetAllProducts(string productId = null, string customerId = null)
         {
