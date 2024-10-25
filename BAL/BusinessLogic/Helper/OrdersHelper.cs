@@ -141,15 +141,15 @@ namespace BAL.BusinessLogic.Helper
 
                             string _mailBody = EmailTemplates.BUYER_INVOICE_TEMPLATE;
                             _mailBody = _mailBody.Replace("{{CUST_NAME}}", response.CustomerName);
-                            _mailBody = _mailBody.Replace("{{ORDER_NUMBER}}", response.OrderId);
+                            _mailBody = _mailBody.Replace("{{ORDER_NUMBER}}", response.OrderNumber);
                             _mailBody = _mailBody.Replace("{{ORDER_DATE}}", response.OrderDate.ToString("MMMM dd, yyyy, HH:mm:ss tt"));
                             _mailBody = _mailBody.Replace("{{PAYMENT_METHOD}}", "Credit Card");
                             _mailBody = _mailBody.Replace("{{SHIPPING_METHOD}}", response.ShippingMethodName);
-                            _mailBody = _mailBody.Replace("{{CUST_ADDRESS1}}", response.CustomerId);
-                            _mailBody = _mailBody.Replace("{{CUST_ADDRESS2}}", response.CustomerEmail);
-                            _mailBody = _mailBody.Replace("{{CUST_COUNTRY}}", response.CustomerId);
-                            _mailBody = _mailBody.Replace("{{CUST_PINCODE}}", response.CustomerEmail);
-                            _mailBody = _mailBody.Replace("{{INVOICE_NUMBER}}", Guid.NewGuid().ToString());
+                            _mailBody = _mailBody.Replace("{{CUST_ADDRESS1}}", response.CustomerAddress.Address1);
+                            _mailBody = _mailBody.Replace("{{CUST_ADDRESS2}}", response.CustomerAddress.Address2);
+                            _mailBody = _mailBody.Replace("{{CUST_COUNTRY}}", response.CustomerAddress.Country);
+                            _mailBody = _mailBody.Replace("{{CUST_PINCODE}}", response.CustomerAddress.Pincode);
+                            _mailBody = _mailBody.Replace("{{INVOICE_NUMBER}}", response.InvoiceNumber);
                             _mailBody = _mailBody.Replace("{{INVOICE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
                             _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
                             //_mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
@@ -916,6 +916,8 @@ namespace BAL.BusinessLogic.Helper
         {
             var response = new OrderResponse();
             response.OrderId = tblData.Rows[0]["OrderId"].ToString() ?? "";
+            response.OrderNumber = tblData.Rows[0]["OrderNumber"].ToString() ?? "";
+            response.InvoiceNumber = tblData.Rows[0]["InvoiceNumber"].ToString() ?? "";
             response.CustomerId = tblData.Rows[0]["CustomerId"].ToString() ?? "";
             response.CustomerEmail = tblData.Rows[0]["CustomerEmail"].ToString() ?? "";
             response.CustomerName = tblData.Rows[0]["CustomerName"].ToString() ?? "";
@@ -943,6 +945,19 @@ namespace BAL.BusinessLogic.Helper
                 pResponse.PackQuantity = row["PackQuantity"].ToString() ?? "";
                 response.Products.Add(pResponse);
             }
+            response.CustomerAddress.FirstName = tblData.Rows[0]["FirstName"].ToString() ?? "";
+            response.CustomerAddress.LastName = tblData.Rows[0]["LastName"].ToString() ?? "";
+            response.CustomerAddress.MiddleName = tblData.Rows[0]["MiddleName"].ToString() ?? "";
+            response.CustomerAddress.Address1 = tblData.Rows[0]["Address1"].ToString() ?? "";
+            response.CustomerAddress.Address2 = tblData.Rows[0]["Address2"].ToString() ?? "";
+            response.CustomerAddress.City = tblData.Rows[0]["DeliveryCity"].ToString() ?? "";
+            response.CustomerAddress.State = tblData.Rows[0]["DeliveryState"].ToString() ?? "";
+            response.CustomerAddress.Country = tblData.Rows[0]["DeliveryCountry"].ToString() ?? "";
+            response.CustomerAddress.Pincode = tblData.Rows[0]["DeliveryPincode"].ToString() ?? "";
+            response.CustomerAddress.DeliveryInstructions = tblData.Rows[0]["DeliveryInstructions"].ToString() ?? "";
+            response.CustomerAddress.PhoneNumber = tblData.Rows[0]["DeliveryPhoneNumber"].ToString() ?? "";
+            response.CustomerAddress.Landmark = tblData.Rows[0]["DeliveryLandmark"].ToString() ?? "";
+
             return response;
         }
 
@@ -969,15 +984,15 @@ namespace BAL.BusinessLogic.Helper
 
                             string _mailBody = EmailTemplates.BUYER_INVOICE_TEMPLATE;
                             _mailBody = _mailBody.Replace("{{CUST_NAME}}", response.CustomerName);
-                            _mailBody = _mailBody.Replace("{{ORDER_NUMBER}}", response.OrderId);
+                            _mailBody = _mailBody.Replace("{{ORDER_NUMBER}}", response.OrderNumber);
                             _mailBody = _mailBody.Replace("{{ORDER_DATE}}", response.OrderDate.ToString("MMMM dd, yyyy, HH:mm:ss tt"));
                             _mailBody = _mailBody.Replace("{{PAYMENT_METHOD}}", "Credit Card");
                             _mailBody = _mailBody.Replace("{{SHIPPING_METHOD}}", response.ShippingMethodName);
-                            _mailBody = _mailBody.Replace("{{CUST_ADDRESS1}}", response.CustomerId);
-                            _mailBody = _mailBody.Replace("{{CUST_ADDRESS2}}", response.CustomerEmail);
-                            _mailBody = _mailBody.Replace("{{CUST_COUNTRY}}", response.CustomerId);
-                            _mailBody = _mailBody.Replace("{{CUST_PINCODE}}", response.CustomerEmail);
-                            _mailBody = _mailBody.Replace("{{INVOICE_NUMBER}}", Guid.NewGuid().ToString());
+                            _mailBody = _mailBody.Replace("{{CUST_ADDRESS1}}", response.CustomerAddress.Address1);
+                            _mailBody = _mailBody.Replace("{{CUST_ADDRESS2}}", response.CustomerAddress.Address2);
+                            _mailBody = _mailBody.Replace("{{CUST_COUNTRY}}", response.CustomerAddress.Country);
+                            _mailBody = _mailBody.Replace("{{CUST_PINCODE}}", response.CustomerAddress.Pincode);
+                            _mailBody = _mailBody.Replace("{{INVOICE_NUMBER}}", response.InvoiceNumber);
                             _mailBody = _mailBody.Replace("{{INVOICE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
                             _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
                             //_mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
@@ -1043,15 +1058,15 @@ namespace BAL.BusinessLogic.Helper
 
                             string _mailBody = EmailTemplates.BUYER_INVOICE_TEMPLATE;
                             _mailBody = _mailBody.Replace("{{CUST_NAME}}", response.CustomerName);
-                            _mailBody = _mailBody.Replace("{{ORDER_NUMBER}}", response.OrderId);
+                            _mailBody = _mailBody.Replace("{{ORDER_NUMBER}}", response.OrderNumber);
                             _mailBody = _mailBody.Replace("{{ORDER_DATE}}", response.OrderDate.ToString("MMMM dd, yyyy, HH:mm:ss tt"));
                             _mailBody = _mailBody.Replace("{{PAYMENT_METHOD}}", "Credit Card");
                             _mailBody = _mailBody.Replace("{{SHIPPING_METHOD}}", response.ShippingMethodName);
-                            _mailBody = _mailBody.Replace("{{CUST_ADDRESS1}}", response.CustomerId);
-                            _mailBody = _mailBody.Replace("{{CUST_ADDRESS2}}", response.CustomerEmail);
-                            _mailBody = _mailBody.Replace("{{CUST_COUNTRY}}", response.CustomerId);
-                            _mailBody = _mailBody.Replace("{{CUST_PINCODE}}", response.CustomerEmail);
-                            _mailBody = _mailBody.Replace("{{INVOICE_NUMBER}}", Guid.NewGuid().ToString());
+                            _mailBody = _mailBody.Replace("{{CUST_ADDRESS1}}", response.CustomerAddress.Address1);
+                            _mailBody = _mailBody.Replace("{{CUST_ADDRESS2}}", response.CustomerAddress.Address2);
+                            _mailBody = _mailBody.Replace("{{CUST_COUNTRY}}", response.CustomerAddress.Country);
+                            _mailBody = _mailBody.Replace("{{CUST_PINCODE}}", response.CustomerAddress.Pincode);
+                            _mailBody = _mailBody.Replace("{{INVOICE_NUMBER}}", response.InvoiceNumber);
                             _mailBody = _mailBody.Replace("{{INVOICE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
                             _mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));
                             //_mailBody = _mailBody.Replace("{{INVOICE_DUE_DATE}}", response.OrderDate.ToString("MM/dd/yyyy"));

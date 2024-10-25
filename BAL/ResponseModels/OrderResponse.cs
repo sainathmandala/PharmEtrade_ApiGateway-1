@@ -20,6 +20,7 @@ namespace BAL.ResponseModels
     public class OrderResponse
     {
         public string OrderId { get; set; }
+        public string? OrderNumber { get; set; }
         public string CustomerId { get; set; }
         public string CustomerName { get; set; }
         public string CustomerEmail { get; set; }
@@ -30,8 +31,9 @@ namespace BAL.ResponseModels
         public string ShippingMethodName { get; set; }
         public string OrderStatus { get; set; }
         public string? TrackingNumber { get; set; }
+        public string? InvoiceNumber { get; set; }
         public decimal TotalAmount { get; set; }
         public List<OrderProductResponse> Products { get; set; }
-        public CustomerAddress CustomerAddress { get; set; }
+        public CustomerAddress CustomerAddress { get; set; } = new CustomerAddress();
     }
 }
