@@ -29,5 +29,8 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<Response<BeneficiaryDetails>> AddUpdateBeneficiaryDetail(BeneficiaryDetails beneficiaryDetails);
         Task<Response<BeneficiaryDetails>> GetBeneficiaryByCustomerId(string customerId);
         Task<Response<CustomerAuditHistory>> ActivateDeactivateHistoryByCustomerId(string customerId);
+
+        Task<Response<string>> SendChangePasswordLink(string customerId);
+        Task<Response<Customer>> ChangePassword(string customerId, string newPassword);
     }
 }

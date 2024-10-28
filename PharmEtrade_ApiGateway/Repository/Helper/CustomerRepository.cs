@@ -248,5 +248,14 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _icustomerHelper.DeleteCustomer(customerId);
         }
+        public async Task<Response<string>> SendChangePasswordLink(string customerId)
+        {
+            return await _icustomerHelper.SendChangePasswordLink(customerId);
+        }
+
+        public async Task<Response<Customer>> ChangePassword(string customerId, string newPassword)
+        {
+            return await _icustomerHelper.ChangePassword(customerId, newPassword);
+        }
     }
 }

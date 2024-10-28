@@ -87,6 +87,21 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
+        [HttpPost("SendChangePasswordLink")]
+        public async Task<IActionResult> SendChangePasswordLink(string customerId)
+        {
+            var response = await _icustomerRepo.SendChangePasswordLink(customerId);
+            return Ok(response);
+        }
+
+        [Authorize]
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ChangePassword(string customerId, string newPassword)
+        {
+            var response = await _icustomerRepo.ChangePassword(customerId, newPassword);
+            return Ok(response);
+        }
+
         /// <summary>
         /// Uploads an Image to AWS S3 bucket and return the url
         /// </summary>
@@ -235,6 +250,7 @@ namespace PharmEtrade_ApiGateway.Controllers
             Response<BeneficiaryDetails> response = await _icustomerRepo.GetBeneficiaryByCustomerId(customerId);
             return Ok(response);
         }
+
         [HttpGet("ActivateDeactivateHistoryByCustomerId")]
         public async Task<IActionResult> ActivateDeactivateHistoryByCustomerId(string customerId)
         {

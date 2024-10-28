@@ -9,5 +9,6 @@ namespace BAL.BusinessLogic.Interface
         Task<TokenResponse> GenerateToken();
         Task<TrackingResponseModel> GetTrackingInfo(string trackingNumber);
         Task<RateResponse> GetRates(RateRequest request);
+        Task<List<Object>> GetServiceTypes(RateRequest request);
     }
 }

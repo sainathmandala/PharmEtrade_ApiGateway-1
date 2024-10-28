@@ -26,11 +26,13 @@ namespace BAL.BusinessLogic.Helper
         private readonly S3Helper _s3Helper;
         private readonly IEmailHelper _emailHelper;
         private readonly IJwtHelper _jwtHelper;
+        private readonly string _uiURL;
 
         public CustomerHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper, SmtpSettings smtpSettings , IJwtHelper jwtHelper, IEmailHelper emailHelper)
         {
             _isqlDataHelper = isqlDataHelper;
             _connectionString = configuration.GetConnectionString("APIDBConnectionString") ?? "";
+            _uiURL = configuration.GetSection("PharmEtradeSettings")["UIUrl"] ?? "";
             exPathToSave = Path.Combine(Directory.GetCurrentDirectory(), exFolder);
             _smtpSettings = smtpSettings;
             _s3Helper = new S3Helper(configuration);
@@ -463,6 +465,121 @@ namespace BAL.BusinessLogic.Helper
                 }
             }
         }
+
+        public async Task<Response<string>> SendChangePasswordLink(string customerId)
+        {
+            var response = new Response<string>();
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("sp_SetChangePasswordStatus", sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@p_CustomerId", customerId);
+
+                    try
+                    {
+                        // Execute the stored procedure and fill the DataTable
+                        DataTable tblCustomer = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
+
+                        if (tblCustomer.Rows.Count == 0)
+                        {
+                            throw new Exception("Customer not found.");
+                        }
+
+                        string customerEmail = tblCustomer.Rows[0]["Email"].ToString() ?? "";
+
+                        string chgPwdLink = _uiURL + "changepassword?token=" + _jwtHelper.GenerateToken(customerEmail, "PharmEtradeUser");
+
+                        response.StatusCode = 200;
+                        response.Message = "Successfully fetched data.";
+                        response.Result = new List<string>() { chgPwdLink };
+
+                        string changePasswordMailBody = EmailTemplates.CUSTOMER_CHANGEPASSWORD_TEMPLATE;
+                        changePasswordMailBody = changePasswordMailBody.Replace("{{CHANGE_PASSWORD_URL}}", chgPwdLink);
+                        await _emailHelper.SendEmail(customerEmail, "", "Change Password", changePasswordMailBody);
+                    }
+                    catch (MySqlException ex)
+                    {
+                        response.StatusCode = 500;
+                        response.Message = "ERROR : " + ex.Message;
+                        response.Result = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        response.StatusCode = 500;
+                        response.Message = "ERROR : " + ex.Message;
+                        response.Result = null;
+                    }
+                    return response;
+                }
+            }
+        }
+
+        public async Task<Response<ViewModels.Customer>> ChangePassword(string customerId, string newPassword)
+        {
+            var response = new Response<ViewModels.Customer>();
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand("sp_ChagePassword", sqlcon))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@p_CustomerId", customerId);
+                    cmd.Parameters.AddWithValue("@p_NewPassword", newPassword);
+
+                    try
+                    {
+                        // Execute the stored procedure and fill the DataTable
+                        DataTable tblCustomer = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmd));
+
+                        if (tblCustomer.Rows.Count == 0)
+                        {
+                            throw new Exception("Customer not found.");
+                        }
+
+                        var lstCustomers = new List<ViewModels.Customer>();
+                        foreach (DataRow row in tblCustomer.Rows)
+                        {
+                            var customer = new ViewModels.Customer();
+                            customer.CustomerId = row["CustomerId"] != DBNull.Value ? row["CustomerId"].ToString() : null;
+                            customer.FirstName = row["FirstName"] != DBNull.Value ? row["FirstName"].ToString() : null;
+                            customer.LastName = row["LastName"] != DBNull.Value ? row["LastName"].ToString() : null;
+                            customer.Email = row["Email"] != DBNull.Value ? row["Email"].ToString() : null;
+                            customer.Mobile = row["Mobile"] != DBNull.Value ? row["Mobile"].ToString() : null;
+                            customer.Password = row["Password"] != DBNull.Value ? row["Password"].ToString() : null;
+                            customer.CustomerTypeId = row["CustomerTypeId"] != DBNull.Value ? Convert.ToInt32(row["CustomerTypeId"]) : default;
+                            customer.AccountTypeId = row["AccountTypeId"] != DBNull.Value ? Convert.ToInt32(row["AccountTypeId"]) : default;
+                            customer.IsUPNMember = row["IsUPNMember"] != DBNull.Value ? Convert.ToInt32(row["IsUPNMember"]) : default;  // Use Convert.ToBoolean
+                            customer.LoginOTP = row["LoginOTP"] != DBNull.Value ? row["LoginOTP"].ToString() : null;
+                            customer.OTPExpiryDate = row["OTPExpiryDate"] != DBNull.Value ? Convert.ToDateTime(row["OTPExpiryDate"]) : (DateTime?)null;
+                            customer.CreatedDate = row["CreatedDate"] != DBNull.Value ? Convert.ToDateTime(row["CreatedDate"]) : (DateTime?)null;
+                            customer.ModifiedDate = row["ModifiedDate"] != DBNull.Value ? Convert.ToDateTime(row["ModifiedDate"]) : (DateTime?)null;
+                            customer.ActivationDate = row["ActivationDate"] != DBNull.Value ? Convert.ToDateTime(row["ActivationDate"]) : (DateTime?)null;
+                            customer.ShopName = row["ShopName"] != DBNull.Value ? row["ShopName"].ToString() : null;
+                            customer.IsActive = Convert.ToInt32(Convert.IsDBNull(row["IsActive"]) ? 0 : row["IsActive"]);
+                            lstCustomers.Add(customer);
+                        }
+
+                        response.StatusCode = 200;
+                        response.Message = "Successfully fetched data.";
+                        response.Result = lstCustomers;
+                    }
+                    catch (MySqlException ex)
+                    {
+                        response.StatusCode = 500;
+                        response.Message = "ERROR : " + ex.Message;
+                        response.Result = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        response.StatusCode = 500;
+                        response.Message = "ERROR : " + ex.Message;
+                        response.Result = null;
+                    }
+                    return response;
+                }
+            }
+        }
+
         public async Task<Response<Customer>> GetByFilterCriteria(CustomerFilterCriteria filterCriteria) {
             var response = new Response<ViewModels.Customer>();
             using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))

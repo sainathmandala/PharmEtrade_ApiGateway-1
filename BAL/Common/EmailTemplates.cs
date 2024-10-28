@@ -103,6 +103,15 @@ namespace BAL.Common
                                                       </table>
                                                       </body>
                                                       </html>";
+        public const string CUSTOMER_CHANGEPASSWORD_TEMPLATE = @"<html>
+                                                    <body>
+                                                    <h1 align='center'>Your request to change password</h1>
+                                                    <h3 align='center'>Please click the below link to change your password </h3>
+                                                    <p>
+                                                    <a href='{{CHANGE_PASSWORD_URL}}'> Change Password </a>
+                                                    </p>
+                                                    </body>
+                                                    </html>";
 
         public const string CUSTOMER_INVOICE = @"<html>
                                                     <body>

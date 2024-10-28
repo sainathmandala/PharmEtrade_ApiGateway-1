@@ -165,6 +165,71 @@ namespace BAL.BusinessLogic.Helper
             //return Ok(new { Success = true, Content = responseJson });
         }
 
+        public async Task<List<Object>> GetServiceTypes(RateRequest request)
+        {
+            var rateRequest = new HttpRequestMessage(HttpMethod.Post, fedExBaseUrl + "rate/v1/rates/quotes");
+            RateResponse response = new RateResponse();
+
+            /* Call these token because for track client api,password different */
+            var content = new FormUrlEncodedContent(new[]
+            {
+                 new KeyValuePair<string, string>("grant_type", ratesGrantType),
+                 new KeyValuePair<string, string>("client_id", ratesClientId),
+                 new KeyValuePair<string, string>("client_secret", ratesClientSecret)
+            });
+
+            var tokenResponse = await GetToken(content);
+
+            if (tokenResponse == null || string.IsNullOrEmpty(tokenResponse.AccessToken))
+            {                
+                return null;
+            }
+
+            rateRequest.Headers.Add("Authorization", $"Bearer {tokenResponse.AccessToken}");
+
+            var serializedObj = JsonConvert.SerializeObject(request);
+            rateRequest.Content = new StringContent(serializedObj, Encoding.UTF8, "application/json");
+
+            var client = new HttpClient();
+            HttpResponseMessage responseContent;
+            try
+            {
+
+                responseContent = await client.SendAsync(rateRequest);
+                responseContent.EnsureSuccessStatusCode();
+                var rateContent = await responseContent.Content.ReadAsStringAsync();
+                JsonElement responseJson = System.Text.Json.JsonSerializer.Deserialize<JsonElement>(rateContent);
+                var serviceDetails = new List<object>();
+                if (responseJson.TryGetProperty("output", out JsonElement output) &&
+                    output.TryGetProperty("rateReplyDetails", out JsonElement rateReplyDetails) &&
+                    rateReplyDetails.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var detail in rateReplyDetails.EnumerateArray())
+                    {
+                        if (detail.TryGetProperty("serviceType", out JsonElement serviceType) &&
+                            detail.TryGetProperty("serviceName", out JsonElement serviceName))
+                        {
+                            serviceDetails.Add(new
+                            {
+                                ServiceType = serviceType.GetString(),
+                                ServiceName = serviceName.GetString()
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    return null; // BadRequest(new { Message = "No 'rateReplyDetails' found in the FedEx response." });
+                }
+                return serviceDetails;
+            }
+            catch (HttpRequestException ex)
+            {
+
+                return null; //BadRequest(new { Message = $"Request error: {ex.Message}" });
+            }
+        }
+
         public async Task<TrackingResponseModel> GetTrackingInfo(string trackingNumber)
         {
             var trackingInforesponse = new TrackingResponseModel();
