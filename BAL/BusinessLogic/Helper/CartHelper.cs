@@ -118,6 +118,8 @@ namespace BAL.BusinessLogic.Helper
                 item.Product.MaximumOrderQuantity = Convert.ToInt32(cartItem["MaximumQuantity"] != DBNull.Value ? cartItem["MaximumQuantity"] : 0);
                 item.Product.MinimumOrderQuantity = Convert.ToInt32(cartItem["MinimumQuantity"] != DBNull.Value ? cartItem["MinimumQuantity"] : 0);
                 item.Product.AmountInStock = Convert.ToInt32(cartItem["AmountInStock"] != DBNull.Value ? cartItem["AmountInStock"] : 0);
+                item.Product.SellerId = cartItem["SellerId"].ToString() ?? "";
+                item.Product.SellerName = cartItem["SellerName"].ToString() ?? "";
 
                 lstCart.Add(item);
             }

@@ -31,6 +31,11 @@ namespace BAL.Common
 
         public const string CUSTOMER_TEMPLATE = @"<html>
                                                      <body>
+<table border='0' align='center' width='95%'>
+                                                    <tr>
+                                                    <td align='left' margin='10'> 
+<img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='150px' height='50px' /> <br />
+<hr /></td> </tr> </table>
                                                       <h1 align='center'>Thank you for registering with us</h1>
                                                       <h2 align='center'>Your Account is under Review.</h2>
                                                       <h3 align= 'center'>Your Registration ID :{{CustomerId}} </h3>
@@ -57,8 +62,13 @@ namespace BAL.Common
                                                       </html>";
         public const string CUSTOMER_EDIT_TEMPLATE = @"<html>
                                                      <body>
-                                                      <h1 align='center'>Profile updated Successfully</h1>
-                                                      <h2 align= 'center'>Registration ID :{{CustomerId}}
+                                                    <table border='0' align='center' width='95%'>
+                                                    <tr>
+                                                    <td align='left' margin='10'> 
+<img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='150px' height='50px' /> <br />
+<hr /></td> </tr> </table>
+                                                      <h1>Profile updated Successfully</h1>
+                                                      <h2>Registration ID :{{CustomerId}}
                                                       <br /><br />
                                                       <table border='0'>
                                                       <tr>
@@ -71,7 +81,7 @@ namespace BAL.Common
                                                       </tr>
                                                       <tr>
                                                       <td colspan='4'>
-                                                      <br /><br /><br /><br /><br /><br /><br /><br /><br />
+                                                      <br /><br /><br /><br /><br /><br /><br /><br /><br /> <hr />
                                                       <img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='200px' height='45px' /> <br />
                                                       <h3>Team - PharmETrade</h3>
                                                       </td>
@@ -81,8 +91,13 @@ namespace BAL.Common
                                                       </html>";
         public const string CUSTOMER_ACTIVATE_DEACTIVATE_TEMPLATE = @"<html>
                                                      <body>
-                                                      <h1 align='center'>Your account has been {{CUST_STATUS}}</h1>
-                                                      <h2 align= 'center'>Registration ID :{{CustomerId}}
+<table border='0' align='center' width='95%'>
+                                                    <tr>
+                                                    <td align='left' margin='10'> 
+<img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='150px' height='50px' /> <br />
+<hr /></td> </tr> </table>
+                                                      <h1>Your account has been {{CUST_STATUS}}</h1>
+                                                      <h2>Registration ID :{{CustomerId}}
                                                       <br /><br />
                                                       <table border='0'>
                                                       <tr>
@@ -104,12 +119,25 @@ namespace BAL.Common
                                                       </body>
                                                       </html>";
         public const string CUSTOMER_CHANGEPASSWORD_TEMPLATE = @"<html>
-                                                    <body>
-                                                    <h1 align='center'>Your request to change password</h1>
-                                                    <h3 align='center'>Please click the below link to change your password </h3>
+                                                    <body>                                                   
+                                                    <table border='0' align='center' width='95%'>
+                                                    <tr>
+                                                    <td align='left' margin='10'> 
+<img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='150px' height='50px' /> <br />
+<hr /></td> </tr> </table>
                                                     <p>
+
+Hi {{CUST_FULL_NAME}}, <br /> <br />
+
+There was a request to change your password! <br /> <br />
+
+If you did not make this request then please ignore this email. <br /> <br />
+
+Otherwise, please click this link to change your password: 
                                                     <a href='{{CHANGE_PASSWORD_URL}}'> Change Password </a>
                                                     </p>
+<br /> <br /> <br /> <br /> <hr />
+<h3>Team - PharmETrade</h3>
                                                     </body>
                                                     </html>";
 
@@ -185,10 +213,17 @@ namespace BAL.Common
                                                     </td>
                                                     </tr>
                                                     </table>
+<br /> <hr />
+<h3>Team - PharmETrade</h3>
                                                     </body>
                                                     </html>";
         public const string BUYER_INVOICE_TEMPLATE = @"<html>
                                                         <body style='font-family:Calibri'>
+<table border='0' align='center' width='95%'>
+                                                    <tr>
+                                                    <td align='left' margin='10'> 
+<img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='150px' height='50px' /> <br />
+<hr /></td> </tr> </table>
                                                         <table width='70%' align='center'>
                                                         <tr>
                                                         <td colspan='2'>
@@ -264,7 +299,8 @@ namespace BAL.Common
                                                         </tr>
                                                         <tr>
                                                         <td colspan='2'>
-                                                        <br /><br /><br /><br />
+                                                        <br /><br /><br /><br /> <hr />
+<h3>Team - PharmETrade</h3>
                                                         Thank you, PharmEtrade!
                                                         </td>
                                                         </tr>

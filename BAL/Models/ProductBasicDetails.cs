@@ -25,5 +25,7 @@ namespace BAL.Models
         public int MaximumOrderQuantity { get; set; }
         public int MinimumOrderQuantity { get; set; }
         public int AmountInStock { get; set; }
+        public string? SellerId { get; set; }
+        public string? SellerName { get; set; }
     }
 }

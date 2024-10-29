@@ -487,6 +487,7 @@ namespace BAL.BusinessLogic.Helper
                         }
 
                         string customerEmail = tblCustomer.Rows[0]["Email"].ToString() ?? "";
+                        string customerName = tblCustomer.Rows[0]["FirstName"].ToString() ?? "" + " " + tblCustomer.Rows[0]["FirstName"].ToString() ?? "";
 
                         string chgPwdLink = _uiURL + "changepassword?token=" + _jwtHelper.GenerateToken(customerEmail, "PharmEtradeUser");
 
@@ -495,6 +496,7 @@ namespace BAL.BusinessLogic.Helper
                         response.Result = new List<string>() { chgPwdLink };
 
                         string changePasswordMailBody = EmailTemplates.CUSTOMER_CHANGEPASSWORD_TEMPLATE;
+                        changePasswordMailBody = changePasswordMailBody.Replace("{{CUST_FULL_NAME}}", customerName);
                         changePasswordMailBody = changePasswordMailBody.Replace("{{CHANGE_PASSWORD_URL}}", chgPwdLink);
                         await _emailHelper.SendEmail(customerEmail, "", "Change Password", changePasswordMailBody);
                     }
@@ -793,77 +795,83 @@ namespace BAL.BusinessLogic.Helper
         public async Task<Response<string>> Activate(string customerId, string? comments)
         {
             Response<string> response = new Response<string>();
-            try
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
-                MySqlCommand command = new MySqlCommand(StoredProcedures.CUSTOMER_ACTIVATE_DEACTIVATE);
-                command.CommandType = CommandType.StoredProcedure;
-
-                command.Parameters.AddWithValue("@p_CustomerId", customerId);
-                command.Parameters.AddWithValue("@p_Comments", comments);
-                command.Parameters.AddWithValue("@p_IsActive", 1);
-
-                MySqlDataReader reader = await _isqlDataHelper.ExecuteReaderAsync(command);
-
-                if(reader.HasRows)
+                try
                 {
-                    reader.Read();
-                    response.StatusCode = 200;
-                    response.Message = "SUCCESS : Command Execution";
-                    response.Result = new List<string>() { reader["Message"].ToString() ?? "" };
+                    await sqlcon.OpenAsync();
+                    MySqlCommand command = new MySqlCommand(StoredProcedures.CUSTOMER_ACTIVATE_DEACTIVATE, sqlcon);
+                    command.CommandType = CommandType.StoredProcedure;
 
-                    //Send Email to customer
-                    var registraionMailBody = EmailTemplates.CUSTOMER_ACTIVATE_DEACTIVATE_TEMPLATE;
-                    registraionMailBody = registraionMailBody.Replace("{{CUST_STATUS}}", reader["Action"].ToString() ?? "");
-                    registraionMailBody = registraionMailBody.Replace("{{CustomerId}}", reader["Email"].ToString() ?? "");
-                    registraionMailBody = registraionMailBody.Replace("{{CUST_EMAIL}}", reader["Email"].ToString() ?? "");
-                    registraionMailBody = registraionMailBody.Replace("{{CUST_FULL_NAME}}", reader["CustomerFullName"].ToString() ?? "");
-                    await _emailHelper.SendEmail(reader["Email"].ToString() ?? "", "", "Your account has been " + reader["Action"].ToString() ?? "", registraionMailBody);
+                    command.Parameters.AddWithValue("@p_CustomerId", customerId);
+                    command.Parameters.AddWithValue("@p_Comments", comments);
+                    command.Parameters.AddWithValue("@p_IsActive", 1);
+
+                    MySqlDataReader reader = command.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        response.StatusCode = 200;
+                        response.Message = "SUCCESS : Command Execution";
+                        response.Result = new List<string>() { reader["Message"].ToString() ?? "" };
+
+                        //Send Email to customer
+                        var registraionMailBody = EmailTemplates.CUSTOMER_ACTIVATE_DEACTIVATE_TEMPLATE;
+                        registraionMailBody = registraionMailBody.Replace("{{CUST_STATUS}}", reader["Action"].ToString() ?? "");
+                        registraionMailBody = registraionMailBody.Replace("{{CustomerId}}", reader["Email"].ToString() ?? "");
+                        registraionMailBody = registraionMailBody.Replace("{{CUST_EMAIL}}", reader["Email"].ToString() ?? "");
+                        registraionMailBody = registraionMailBody.Replace("{{CUST_FULL_NAME}}", reader["CustomerFullName"].ToString() ?? "");
+                        await _emailHelper.SendEmail(reader["Email"].ToString() ?? "", "", "Your account has been " + reader["Action"].ToString() ?? "", registraionMailBody);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-
-                response.StatusCode = 500;
-                response.Message = ex.Message;
-            }
+                catch (Exception ex)
+                {
+                    response.StatusCode = 500;
+                    response.Message = ex.Message;
+                }
+            }                
             return response;
         }
 
         public async Task<Response<string>> Deactivate(string customerId, string? comments)
         {
             Response<string> response = new Response<string>();
-            try
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
-                MySqlCommand command = new MySqlCommand(StoredProcedures.CUSTOMER_ACTIVATE_DEACTIVATE);
-                command.CommandType = CommandType.StoredProcedure;
-
-                command.Parameters.AddWithValue("@p_CustomerId", customerId);
-                command.Parameters.AddWithValue("@p_Comments", comments);
-                command.Parameters.AddWithValue("@p_IsActive", 0);
-
-                MySqlDataReader reader = await _isqlDataHelper.ExecuteReaderAsync(command);
-
-                if (reader.HasRows)
+                try
                 {
-                    reader.Read();
-                    response.StatusCode = 200;
-                    response.Message = "SUCCESS : Command Execution";
-                    response.Result = new List<string>() { reader["Message"].ToString() ?? "" };
+                    await sqlcon.OpenAsync();
+                    MySqlCommand command = new MySqlCommand(StoredProcedures.CUSTOMER_ACTIVATE_DEACTIVATE, sqlcon);
+                    command.CommandType = CommandType.StoredProcedure;
 
-                    //Send Email to customer
-                    var registraionMailBody = EmailTemplates.CUSTOMER_ACTIVATE_DEACTIVATE_TEMPLATE;
-                    registraionMailBody = registraionMailBody.Replace("{{CUST_STATUS}}", reader["Action"].ToString() ?? "");
-                    registraionMailBody = registraionMailBody.Replace("{{CustomerId}}", reader["Email"].ToString() ?? "");
-                    registraionMailBody = registraionMailBody.Replace("{{CUST_EMAIL}}", reader["Email"].ToString() ?? "");
-                    registraionMailBody = registraionMailBody.Replace("{{CUST_FULL_NAME}}", reader["CustomerFullName"].ToString() ?? "");
-                    await _emailHelper.SendEmail(reader["Email"].ToString() ?? "", "", "Your account has been " + reader["Action"].ToString() ?? "", registraionMailBody);
+                    command.Parameters.AddWithValue("@p_CustomerId", customerId);
+                    command.Parameters.AddWithValue("@p_Comments", comments);
+                    command.Parameters.AddWithValue("@p_IsActive", 0);
+
+                    MySqlDataReader reader = command.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        reader.Read();
+                        response.StatusCode = 200;
+                        response.Message = "SUCCESS : Command Execution";
+                        response.Result = new List<string>() { reader["Message"].ToString() ?? "" };
+
+                        //Send Email to customer
+                        var registraionMailBody = EmailTemplates.CUSTOMER_ACTIVATE_DEACTIVATE_TEMPLATE;
+                        registraionMailBody = registraionMailBody.Replace("{{CUST_STATUS}}", reader["Action"].ToString() ?? "");
+                        registraionMailBody = registraionMailBody.Replace("{{CustomerId}}", reader["Email"].ToString() ?? "");
+                        registraionMailBody = registraionMailBody.Replace("{{CUST_EMAIL}}", reader["Email"].ToString() ?? "");
+                        registraionMailBody = registraionMailBody.Replace("{{CUST_FULL_NAME}}", reader["CustomerFullName"].ToString() ?? "");
+                        await _emailHelper.SendEmail(reader["Email"].ToString() ?? "", "", "Your account has been " + reader["Action"].ToString() ?? "", registraionMailBody);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-
-                response.StatusCode = 500;
-                response.Message = ex.Message;
+                catch (Exception ex)
+                {
+                    response.StatusCode = 500;
+                    response.Message = ex.Message;
+                }
             }
             return response;
         }

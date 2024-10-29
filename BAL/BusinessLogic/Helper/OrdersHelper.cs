@@ -5,26 +5,12 @@ using BAL.ResponseModels;
 using DAL;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BAL.Models;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using DAL.Models;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using System.Text.Json.Serialization;
 using Newtonsoft.Json;
-using PdfSharpCore;
-using System.Net.Http;
 using SelectPdf;
-using BAL.ViewModels;
-using Org.BouncyCastle.Crypto.Macs;
 //using PdfSharpCore;
 //using PdfSharpCore.Pdf;
-//using TheArtOfDev.HtmlRenderer.PdfSharp;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -39,7 +25,7 @@ namespace BAL.BusinessLogic.Helper
         {
             _configuration = configuration;
             _isqlDataHelper = isqlDataHelper;
-            _connectionString = configuration.GetConnectionString("APIDBConnectionString");
+            _connectionString = configuration.GetConnectionString("APIDBConnectionString") ?? "";
             _emailHelper = emailHelper;
         }
 
@@ -1213,25 +1199,29 @@ namespace BAL.BusinessLogic.Helper
         public async Task<OrderResponse> UpdateDeliveryAddress(string customerId, string orderId, string addressId)
         {
             OrderResponse response = new OrderResponse();
-            try
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
-                MySqlCommand command = new MySqlCommand(StoredProcedures.ORDERS_UPDATE_DELIVERY_ADDRESS);
-                command.CommandType = CommandType.StoredProcedure;
+                try
+                {
+                    await sqlcon.OpenAsync();
+                    MySqlCommand command = new MySqlCommand(StoredProcedures.ORDERS_UPDATE_DELIVERY_ADDRESS, sqlcon);
+                    command.CommandType = CommandType.StoredProcedure;
 
-                command.Parameters.AddWithValue("@p_CustomerId", customerId);
-                command.Parameters.AddWithValue("@p_OrderId", orderId);
-                command.Parameters.AddWithValue("@p_AddressId", addressId);
+                    command.Parameters.AddWithValue("@p_CustomerId", customerId);
+                    command.Parameters.AddWithValue("@p_OrderId", orderId);
+                    command.Parameters.AddWithValue("@p_AddressId", addressId);
 
-                MySqlDataReader reader = await Task.Run(() => _isqlDataHelper.ExecuteReaderAsync(command));
+                    MySqlDataReader reader = command.ExecuteReader();
 
-                response.Status = 200;
-                response.Message = "Delivery Address Updated";
-                
-            }
-            catch (Exception ex)
-            {                
-                response.Status = 500;
-                response.Message = ex.Message;
+                    response.Status = 200;
+                    response.Message = "Delivery Address Updated";
+
+                }
+                catch (Exception ex)
+                {
+                    response.Status = 500;
+                    response.Message = ex.Message;
+                }
             }
             return response;
         }
@@ -1239,24 +1229,28 @@ namespace BAL.BusinessLogic.Helper
         public async Task<OrderResponse> UpdateOrderStatus(string orderId, int statusId)
         {
             OrderResponse response = new OrderResponse();
-            try
+            using (MySqlConnection sqlcon = new MySqlConnection(_connectionString))
             {
-                MySqlCommand command = new MySqlCommand(StoredProcedures.ORDERS_UPDATE_STATUS);
-                command.CommandType = CommandType.StoredProcedure;
-                
-                command.Parameters.AddWithValue("@p_OrderId", orderId);
-                command.Parameters.AddWithValue("@p_StatusId", statusId);
+                try
+                {
+                    await sqlcon.OpenAsync();
+                    MySqlCommand command = new MySqlCommand(StoredProcedures.ORDERS_UPDATE_STATUS, sqlcon);
+                    command.CommandType = CommandType.StoredProcedure;
 
-                MySqlDataReader reader = await Task.Run(() => _isqlDataHelper.ExecuteReaderAsync(command));
+                    command.Parameters.AddWithValue("@p_OrderId", orderId);
+                    command.Parameters.AddWithValue("@p_StatusId", statusId);
 
-                response.Status = 200;
-                response.Message = "Order Status Updated";
+                    MySqlDataReader reader = command.ExecuteReader();
 
-            }
-            catch (Exception ex)
-            {
-                response.Status = 500;
-                response.Message = ex.Message;
+                    response.Status = 200;
+                    response.Message = "Order Status Updated";
+
+                }
+                catch (Exception ex)
+                {
+                    response.Status = 500;
+                    response.Message = ex.Message;
+                }
             }
             return response;
         }
