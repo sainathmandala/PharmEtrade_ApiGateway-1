@@ -75,5 +75,6 @@ namespace BAL.ResponseModels
         public int MaxOrderQuantity { get; set; }
         public int MinOrderQuantity { get; set; }
         public bool IsReturnable { get; set; }
+        public decimal ProductRating { get; set; }
     }
 }

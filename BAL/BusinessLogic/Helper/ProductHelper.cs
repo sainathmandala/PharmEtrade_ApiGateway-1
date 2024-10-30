@@ -1590,6 +1590,8 @@ namespace BAL.BusinessLogic.Helper
                 item.MaxOrderQuantity = Convert.ToInt32(Convert.IsDBNull(product["MaxOrderQuantity"]) ? 0 : product["MaxOrderQuantity"]);
                 item.MinOrderQuantity = Convert.ToInt32(Convert.IsDBNull(product["MinOrderQuantity"]) ? 0 : product["MinOrderQuantity"]);
 
+                item.ProductRating = Convert.ToDecimal(Convert.IsDBNull(product["ProductRating"]) ? 0.0 : product["ProductRating"]);
+
                 item.ProductCategory.ProductCategoryId = Convert.ToInt32(product["ProductCategoryId"] != DBNull.Value ? product["ProductCategoryId"] : 0);
                 item.ProductCategory.CategoryName = product["CategoryName"].ToString() ?? "";
 
@@ -1648,8 +1650,8 @@ namespace BAL.BusinessLogic.Helper
             {
                 ProductRating item = new ProductRating();
                 item.RatingId = product["RatingID"].ToString() ?? "";
-                item.RatingId = product["ProductID"].ToString() ?? "";
-                item.RatingId = product["CustomerID"].ToString() ?? "";
+                item.ProductId = product["ProductID"].ToString() ?? "";
+                item.CustomerId = product["CustomerID"].ToString() ?? "";
                 item.Feedback = product["Feedback"].ToString() ?? "";
                 item.Rating = Convert.ToInt32(tblProduct.Rows[0]["Rating"] ?? 0);
                 item.Date = Convert.ToDateTime(Convert.IsDBNull(product["Date"]) ? (DateTime?)null : product["Date"]);

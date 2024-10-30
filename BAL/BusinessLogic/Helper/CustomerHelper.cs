@@ -278,8 +278,7 @@ namespace BAL.BusinessLogic.Helper
                     // var result = await cmd.ExecuteScalarAsync();
                     MySqlDataReader reader = cmd.ExecuteReader();
                     if (reader.HasRows)
-                    {
-                        await transaction.CommitAsync();
+                    {                        
                         reader.Read();
                         if (businessInfo.SendRegistrationMail)
                         {
@@ -292,8 +291,7 @@ namespace BAL.BusinessLogic.Helper
                         return "SUCCESS";
                     }
                     else
-                    {
-                        await transaction.RollbackAsync();
+                    {                        
                         return "ERROR";
                     }
                 }

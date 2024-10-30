@@ -31,15 +31,15 @@ namespace BAL.Common
 
         public const string CUSTOMER_TEMPLATE = @"<html>
                                                      <body>
-<table border='0' align='center' width='95%'>
+<table border='0' align='center' width='100%'>
                                                     <tr>
                                                     <td align='left' margin='10'> 
 <img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='150px' height='50px' /> <br />
-<hr /></td> </tr> </table>
-                                                      <h1 align='center'>Thank you for registering with us</h1>
-                                                      <h2 align='center'>Your Account is under Review.</h2>
-                                                      <h3 align= 'center'>Your Registration ID :{{CustomerId}} </h3>
-                                                      <h3 align= 'center'>You will get notified once your account is active. </h3>
+<hr /></td> </tr> <tr> <td>
+                                                      <h1>Thank you for registering with us</h1>
+                                                      <h2>Your Account is under Review.</h2>
+                                                      <h3>Your Registration ID :{{CustomerId}} </h3>
+                                                      <h3>You will get notified once your account is active. </h3>
                                                       <br /><br />
                                                       <table border='0'>
                                                       <tr>
@@ -53,20 +53,20 @@ namespace BAL.Common
                                                       <tr>
                                                       <td colspan='4'>
                                                       <br /><br /><br /><br /><br /><br /><br /><br /><br />
-                                                      <img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='200px' height='45px' /> <br />
-                                                      <h3>Team - PharmETrade</h3>
+                                                        <p>Team - PharmETrade</p>
                                                       </td>
                                                       </tr>
                                                       </table>
+</td> </tr> </table>
                                                       </body>
                                                       </html>";
         public const string CUSTOMER_EDIT_TEMPLATE = @"<html>
                                                      <body>
-                                                    <table border='0' align='center' width='95%'>
+                                                    <table border='0' align='center' width='100%'>
                                                     <tr>
                                                     <td align='left' margin='10'> 
 <img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='150px' height='50px' /> <br />
-<hr /></td> </tr> </table>
+<hr /></td> </tr> <tr> <td>
                                                       <h1>Profile updated Successfully</h1>
                                                       <h2>Registration ID :{{CustomerId}}
                                                       <br /><br />
@@ -82,20 +82,21 @@ namespace BAL.Common
                                                       <tr>
                                                       <td colspan='4'>
                                                       <br /><br /><br /><br /><br /><br /><br /><br /><br /> <hr />
-                                                      <img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='200px' height='45px' /> <br />
-                                                      <h3>Team - PharmETrade</h3>
+                                                      
+                                                      <p>Team - PharmETrade</p>
                                                       </td>
                                                       </tr>
                                                       </table>
+</td> </tr> </table>
                                                       </body>
                                                       </html>";
         public const string CUSTOMER_ACTIVATE_DEACTIVATE_TEMPLATE = @"<html>
                                                      <body>
-<table border='0' align='center' width='95%'>
+<table border='0' align='center' width='100%'>
                                                     <tr>
                                                     <td align='left' margin='10'> 
 <img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='150px' height='50px' /> <br />
-<hr /></td> </tr> </table>
+<hr /></td> </tr> <tr> <td>
                                                       <h1>Your account has been {{CUST_STATUS}}</h1>
                                                       <h2>Registration ID :{{CustomerId}}
                                                       <br /><br />
@@ -111,16 +112,17 @@ namespace BAL.Common
                                                       <tr>
                                                       <td colspan='4'>
                                                       <br /><br /><br /><br /><br /><br /><br /><br /><br />
-                                                      <img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='200px' height='45px' /> <br />
-                                                      <h3>Team - PharmETrade</h3>
+                                                      
+                                                      <p>Team - PharmETrade</p>
                                                       </td>
                                                       </tr>
                                                       </table>
+</td> </tr> </table>
                                                       </body>
                                                       </html>";
         public const string CUSTOMER_CHANGEPASSWORD_TEMPLATE = @"<html>
                                                     <body>                                                   
-                                                    <table border='0' align='center' width='95%'>
+                                                    <table border='0' align='center' width='100%'>
                                                     <tr>
                                                     <td align='left' margin='10'> 
 <img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='150px' height='50px' /> <br />
@@ -146,7 +148,7 @@ Otherwise, please click this link to change your password:
                                                     <table border='1' align='center' width='90%'>
                                                     <tr>
                                                     <td>
-                                                    <table border='0' align='center' width='95%'>
+                                                    <table border='0' align='center' width='100%'>
                                                     <tr>
                                                     <td align='left' margin='10'> 
 <img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='150px' height='50px' /> <br />
@@ -203,7 +205,7 @@ Otherwise, please click this link to change your password:
                                                     <tr>
                                                     <td align='center' colspan='2'>
                                                     <p>
-<img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='100px' height='25px' /> <br />
+                                                    <img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='100px' height='25px' /> <br />
                                                     Powered by PharmETrade <br />
                                                     This invoice is a system generated and doesn't require any signature
                                                     </p>
@@ -213,17 +215,12 @@ Otherwise, please click this link to change your password:
                                                     </td>
                                                     </tr>
                                                     </table>
-<br /> <hr />
-<h3>Team - PharmETrade</h3>
+                                                    <br /> <hr />
+                                                    <h3>Team - PharmETrade</h3>
                                                     </body>
                                                     </html>";
         public const string BUYER_INVOICE_TEMPLATE = @"<html>
                                                         <body style='font-family:Calibri'>
-<table border='0' align='center' width='95%'>
-                                                    <tr>
-                                                    <td align='left' margin='10'> 
-<img src='http://ec2-34-224-189-196.compute-1.amazonaws.com:5173/assets/logo2-BRJOyuYn.png' width='150px' height='50px' /> <br />
-<hr /></td> </tr> </table>
                                                         <table width='70%' align='center'>
                                                         <tr>
                                                         <td colspan='2'>
@@ -300,7 +297,6 @@ Otherwise, please click this link to change your password:
                                                         <tr>
                                                         <td colspan='2'>
                                                         <br /><br /><br /><br /> <hr />
-<h3>Team - PharmETrade</h3>
                                                         Thank you, PharmEtrade!
                                                         </td>
                                                         </tr>
