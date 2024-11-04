@@ -5,11 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 using PharmEtrade_ApiGateway.Repository.Interface;
 using BAL.Models;
 using System.IO;
+using Microsoft.AspNetCore.Authorization;
+using BAL.Models.FedEx;
+using BAL.Models.SquareupPayments;
 
 namespace PharmEtrade_ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrdersController : ControllerBase
     {
         private IOrdersRepository _ordersRepository;
@@ -182,6 +186,18 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
 
+        [HttpPost("ProcessPayment")]
+        public async Task<IActionResult> ProcessPaymentRequest(SquareupPaymentRequest request)
+        {
+            if (request == null || string.IsNullOrEmpty(request.SourceId))
+            {
+                return BadRequest("Invalid payment request.");
+            }
+
+            var response = await _ordersRepository.ProcessPaymentRequest(request);            
+            return Ok(response);
+        }
+
         [HttpPost("AddShipment")]
         public async Task<IActionResult> AddShipment(Shipments shipments)
         {
@@ -190,7 +206,6 @@ namespace PharmEtrade_ApiGateway.Controllers
             Response<Shipments> response = await _ordersRepository.AddUpdateShipmentDetail(shipments);
             return Ok(response);
         }
-
 
         [HttpGet("Shipments/GetByCustomerId")]
         public async Task<IActionResult> GetShipmentsByCustomerId(string customerId)

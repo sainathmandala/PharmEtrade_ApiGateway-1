@@ -27,5 +27,7 @@ namespace BAL.Models
         public int AmountInStock { get; set; }
         public string? SellerId { get; set; }
         public string? SellerName { get; set; }
+        public bool? IsShippingCostApplicable { get; set; }
+        public decimal? ShippingCost { get; set; }
     }
 }

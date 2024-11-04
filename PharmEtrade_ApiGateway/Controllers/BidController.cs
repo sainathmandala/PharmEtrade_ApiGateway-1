@@ -5,12 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using PharmEtrade_ApiGateway.Repository.Interface;
 using PharmEtrade_ApiGateway.Repository.Helper;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace PharmEtrade_ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BidController : ControllerBase
     {
         private readonly IBidRepository _ibidrepository;

@@ -3,6 +3,7 @@ using BAL.RequestModels;
 using BAL.ResponseModels;
 using BAL.ViewModel;
 using BAL.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PharmEtrade_ApiGateway.Repository.Helper;
@@ -12,6 +13,7 @@ namespace PharmEtrade_ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductController : ControllerBase
     {
         private readonly IProductsRepo _productRepo;
@@ -20,7 +22,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         {
             _productRepo = productRepo;
         }
-
+                
         [HttpPost("Add")]
         public async Task<IActionResult> AddProduct(Product product)
         {
@@ -102,12 +104,14 @@ namespace PharmEtrade_ApiGateway.Controllers
 
 
         [HttpGet("GetAll")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllProducts(string? customerId)
         {
             var response = await _productRepo.GetAllProducts(null, customerId);
             return Ok(response);
         }
         [HttpGet("GetById")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetProductsById(string productId)
         {
             if (string.IsNullOrEmpty(productId))
@@ -119,6 +123,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpGet("GetRxProducts")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetRxProducts()
         {
             var response = await _productRepo.GetProductsBySpecification(1);
@@ -126,6 +131,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpGet("GetOTCProducts")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetOTCProducts()
         {
             var response = await _productRepo.GetProductsBySpecification(2);
@@ -133,6 +139,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpGet("GetProductOffers")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetProductOffers(int specificationId)
         {
             var response = await _productRepo.GetProductsBySpecification(specificationId,true);
@@ -140,6 +147,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpGet("GetRecentSoldProducts")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetRecentSoldProducts(int? numberOfProducts)
         {
             if (numberOfProducts == null)
@@ -160,6 +168,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpPost("GetByCriteria")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetProductsByCriteria(ProductCriteria criteria)
         {
             var response = await _productRepo.GetProductsByCriteria(criteria);
@@ -167,6 +176,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         }      
 
         [HttpGet("SpecialOffers")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetSpecialOffers()
         {
             var response = await _productRepo.GetSpecialOffers();
@@ -174,6 +184,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpGet("SpecialOffersbyproductcategory")]
+        [AllowAnonymous]
         public async Task<IActionResult> SpecialOffersbyproductcategory()
         {
             var response = await _productRepo.GetSpecialOffersbyproductCategory();
@@ -188,6 +199,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpGet("GetRelatedProducts")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetRelatedProducts(string productId)
         {
             var response = await _productRepo.GetRelatedProducts(productId);
@@ -195,6 +207,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpGet("GetUpsellProducts")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetUpsellProducts(string productId)
         {
             var response = await _productRepo.GetUpsellProducts(productId);
@@ -202,6 +215,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpGet("GetCrossSellProducts")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetCrossSellProducts(string productId)
         {
             var response = await _productRepo.GetCrossSellProducts(productId);
@@ -262,12 +276,14 @@ namespace PharmEtrade_ApiGateway.Controllers
             return Ok(response);
         }
         [HttpGet("GetRatingWithProduct")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetRatingwithProduct(string productId)
         {
             var response = await _productRepo.GetRatingwithProduct(productId);
             return Ok(response);
         }
         [HttpGet("GetRatingById")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetRating(string RatingID)
         {
             var response = await _productRepo.GetRating(RatingID);

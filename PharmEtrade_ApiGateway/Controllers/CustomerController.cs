@@ -21,6 +21,7 @@ namespace PharmEtrade_ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CustomerController : ControllerBase
     {
         private readonly ICustomerRepo _icustomerRepo;
@@ -36,6 +37,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         
         [HttpPost]
         [Route("Login")]
+        [AllowAnonymous]
         public async Task<IActionResult> CustomerLogin(string UserName, string Password)
         {
             var response = await _icustomerRepo.CustomerLogin(UserName, Password);
@@ -49,6 +51,7 @@ namespace PharmEtrade_ApiGateway.Controllers
 
         [HttpPost]
         [Route("AdminLogin")]
+        [AllowAnonymous]
         public async Task<IActionResult> AdminLogin(string adminId, string Password)
         {
             var response = await _icustomerRepo.AdminLogin(adminId, Password);
@@ -67,6 +70,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("Register")]
+        [AllowAnonymous]
         public async Task<IActionResult> RegisterCustomer(CustomerAddRequest customer)
         {
             RegistrationResponse response = await _icustomerRepo.RegisterCustomer(customer);
@@ -88,6 +92,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpPost("SendChangePasswordLink")]
+        [AllowAnonymous]
         public async Task<IActionResult> SendChangePasswordLink(string customerId)
         {
             var response = await _icustomerRepo.SendChangePasswordLink(customerId);
@@ -96,6 +101,7 @@ namespace PharmEtrade_ApiGateway.Controllers
 
         [Authorize]
         [HttpPost("ChangePassword")]
+        [AllowAnonymous]
         public async Task<IActionResult> ChangePassword(string customerId, string newPassword)
         {
             var response = await _icustomerRepo.ChangePassword(customerId, newPassword);
@@ -140,6 +146,7 @@ namespace PharmEtrade_ApiGateway.Controllers
 
         [HttpGet]
         [Route("GetCustomers")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetCustomers(string? customerId, string? email, string? mobile)
         {
             try

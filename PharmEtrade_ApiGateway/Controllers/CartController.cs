@@ -1,5 +1,6 @@
 ﻿using BAL.Models;
 using BAL.RequestModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PharmEtrade_ApiGateway.Repository.Interface;
@@ -8,6 +9,7 @@ namespace PharmEtrade_ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CartController : ControllerBase
     {
         private ICartRepository _cartRepository;

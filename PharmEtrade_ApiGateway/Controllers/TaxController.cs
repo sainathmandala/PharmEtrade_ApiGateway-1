@@ -1,6 +1,7 @@
 ﻿using BAL.Models;
 using BAL.RequestModels.Customer;
 using BAL.ResponseModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PharmEtrade_ApiGateway.Extensions;
@@ -11,6 +12,7 @@ namespace PharmEtrade_ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TaxController : ControllerBase
     {
         private readonly ITaxRepo _itaxRepo;

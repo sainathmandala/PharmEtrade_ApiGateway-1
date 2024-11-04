@@ -4,11 +4,13 @@ using MySqlX.XDevAPI;
 using PharmEtrade_ApiGateway.Repository.Interface;
 using System.Text.Json;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PharmEtrade_ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class FedExController : ControllerBase
     {
         private readonly IFedExRepository _fedexRepository;

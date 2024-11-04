@@ -98,5 +98,10 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _orders.UpdateOrderStatus(orderId, statusId);
         }
+
+        public async Task<Response<BAL.Models.SquareupPayments.SquareupPaymentResponse>> ProcessPaymentRequest(BAL.Models.SquareupPayments.SquareupPaymentRequest request)
+        {
+            return await _orders.ProcessPaymentRequest(request);
+        }
     }
 }

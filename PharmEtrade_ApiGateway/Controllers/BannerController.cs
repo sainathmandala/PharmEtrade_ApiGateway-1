@@ -1,4 +1,5 @@
 ﻿using BAL.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PharmEtrade_ApiGateway.Repository.Interface;
@@ -7,6 +8,7 @@ namespace PharmEtrade_ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BannerController : ControllerBase
     {
         private IBannerRepository bannerRepository;
@@ -16,6 +18,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpGet("GetAll")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll() {
             var response = await bannerRepository.GetBanners();
             return Ok(response);

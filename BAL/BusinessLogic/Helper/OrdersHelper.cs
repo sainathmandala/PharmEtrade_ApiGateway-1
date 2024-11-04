@@ -20,13 +20,15 @@ namespace BAL.BusinessLogic.Helper
         private readonly string _connectionString;
         private readonly IConfiguration _configuration;
         private readonly IEmailHelper _emailHelper;
+        private readonly ISquareupHelper _squareupHelper;
 
-        public OrdersHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper, IEmailHelper emailHelper)
+        public OrdersHelper(IConfiguration configuration, IsqlDataHelper isqlDataHelper, IEmailHelper emailHelper, ISquareupHelper squareupHelper)
         {
             _configuration = configuration;
             _isqlDataHelper = isqlDataHelper;
             _connectionString = configuration.GetConnectionString("APIDBConnectionString") ?? "";
             _emailHelper = emailHelper;
+            _squareupHelper = squareupHelper;
         }
 
         public async Task<OrderResponse> AddOrder(TempOrderRequest orderRequest)
@@ -1254,6 +1256,12 @@ namespace BAL.BusinessLogic.Helper
             }
             return response;
         }
+
+        public async Task<Response<Models.SquareupPayments.SquareupPaymentResponse>> ProcessPaymentRequest(BAL.Models.SquareupPayments.SquareupPaymentRequest request)
+        {
+            return await _squareupHelper.ProcessPaymentRequest(request);
+        }
+
         #endregion Mapping Methods
     }
 }

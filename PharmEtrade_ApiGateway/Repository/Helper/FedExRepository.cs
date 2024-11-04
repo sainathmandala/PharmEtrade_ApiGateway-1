@@ -17,11 +17,6 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _fedExHelper.GenerateToken();
         }
-        //public async Task<RateResponse> GetServiceTypes(RateRequest request)
-        //{
-        //    return await _fedExHelper.GetRates(request);
-        //}
-
         public async Task<RateResponse> GetRates(RateRequest request)
         {
             return await _fedExHelper.GetRates(request);
@@ -30,7 +25,6 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
         {
             return await _fedExHelper.GetServiceTypes(request);
         }
-
         public async Task<TrackingResponseModel> GetTrackingInfo(string trackingNumber)
         {
             return await _fedExHelper.GetTrackingInfo(trackingNumber);

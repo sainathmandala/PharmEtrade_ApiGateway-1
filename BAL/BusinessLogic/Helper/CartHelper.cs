@@ -120,6 +120,8 @@ namespace BAL.BusinessLogic.Helper
                 item.Product.AmountInStock = Convert.ToInt32(cartItem["AmountInStock"] != DBNull.Value ? cartItem["AmountInStock"] : 0);
                 item.Product.SellerId = cartItem["SellerId"].ToString() ?? "";
                 item.Product.SellerName = cartItem["SellerName"].ToString() ?? "";
+                item.Product.IsShippingCostApplicable = Convert.ToInt32(cartItem["ShippingCostApplicable"] != DBNull.Value ? cartItem["ShippingCostApplicable"] : 0) == 1;
+                item.Product.ShippingCost = Convert.ToDecimal(cartItem["ShippingCost"] != DBNull.Value ? cartItem["ShippingCost"] : 0.0);
 
                 lstCart.Add(item);
             }
