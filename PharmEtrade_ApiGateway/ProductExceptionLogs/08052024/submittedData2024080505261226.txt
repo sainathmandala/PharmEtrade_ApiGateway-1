@@ -1,1 +1,0 @@
-050824172612PM:InsertProduct :  errormessage:Unknown column 'ImageUrl' in 'field list'

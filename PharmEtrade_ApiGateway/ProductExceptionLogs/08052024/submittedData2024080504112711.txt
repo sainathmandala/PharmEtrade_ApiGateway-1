@@ -1,1 +1,0 @@
-050824161134PM:InsertProduct :  errormessage:Procedure or function 'UpdateImageUrl' cannot be found in database ''. Verify that user 'admin'@'database-1.cvg06seeo4bl.us-east-1.rds.amazonaws.com' has enough privileges to execute.

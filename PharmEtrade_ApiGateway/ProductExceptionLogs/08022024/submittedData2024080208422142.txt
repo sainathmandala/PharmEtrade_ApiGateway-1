@@ -1,1 +1,0 @@
-020824204221PM:InsertWishlistProduct : errormessage:Table 'pharmetradedb.Wishlist' doesn't exist

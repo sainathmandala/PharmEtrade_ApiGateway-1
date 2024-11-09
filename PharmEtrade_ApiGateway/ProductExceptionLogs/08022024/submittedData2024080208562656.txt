@@ -1,1 +1,0 @@
-020824205626PM:InsertWishlistProduct : errormessage:Product is already added to the wishlist.

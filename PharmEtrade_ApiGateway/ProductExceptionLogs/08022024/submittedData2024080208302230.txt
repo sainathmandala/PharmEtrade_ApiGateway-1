@@ -1,1 +1,0 @@
-020824203022PM:InsertAddToCartProduct : errormessage:Table 'pharmetradedb.AddProduct' doesn't exist

@@ -1,2 +1,0 @@
-290724191712PM:InsertWishlistproduct : errormessage:The INSERT statement conflicted with the FOREIGN KEY constraint "FK__Wishlist__Imagei__4B7734FF". The conflict occurred in database "PharmEtradeDB", table "dbo.ProductGallery", column 'gallery_id'.
-The statement has been terminated.
