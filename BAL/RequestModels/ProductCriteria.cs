@@ -8,6 +8,7 @@ namespace BAL.RequestModels
 {
     public class ProductCriteria
     {
+        public string? CustomerId { get; set; }
         public string? Deals { get; set; }
         public string? Brands { get; set; }
         public string? Generics { get; set;}

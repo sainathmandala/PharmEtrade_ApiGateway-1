@@ -39,7 +39,7 @@ namespace PharmEtrade_ApiGateway.Repository.Interface
         Task<Response<string>> RemoveCrossSellProduct(string productId, string crossSellProductId);
         Task<BAL.ResponseModels.Response<ProductRating>> AddProductRating(ProductRating productRating);
         Task<BAL.ResponseModels.Response<ProductRating>> UpdateProductRating(ProductRating productrating);
-        Task<Response<ProductRating>> GetRatingwithProduct(string ProductID);
+        Task<Response<ProductRating>> GetRatingwithProduct(string ProductID, string? customerId);
         Task<Response<string>> RemoveProductRating(string RatingID);
         Task<Response<ProductRating>> GetRating(string RatingID);
         Task<Response<ProductsPerCategory>> GetProductsPerCategoryCounts(string sellerId = "");

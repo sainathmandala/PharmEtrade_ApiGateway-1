@@ -29,5 +29,7 @@ namespace BAL.Models
         public string? SellerName { get; set; }
         public bool? IsShippingCostApplicable { get; set; }
         public decimal? ShippingCost { get; set; }
+        public DateTime? SalePriceValidFrom { get; set; }
+        public DateTime? SalePriceValidTo { get; set; }
     }
 }

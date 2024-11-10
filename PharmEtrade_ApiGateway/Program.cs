@@ -133,6 +133,8 @@ builder.Services.AddSingleton<IJwtHelper, JwtHelper>();
 builder.Services.AddSingleton<IFedExRepository, FedExRepository>();
 builder.Services.AddSingleton<IFedExHelper, FedExHelper>();
 builder.Services.AddSingleton<ISquareupHelper, SquareupHelper>();
+builder.Services.AddSingleton<IReportsHelper, ReportsHelper>();
+builder.Services.AddSingleton<IReportsRepository, ReportsRepository>();
 
 
 builder.Services.AddCors(options =>
