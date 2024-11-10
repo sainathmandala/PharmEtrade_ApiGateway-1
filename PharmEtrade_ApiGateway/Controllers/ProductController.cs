@@ -277,9 +277,9 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
         [HttpGet("GetRatingWithProduct")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetRatingwithProduct(string productId)
+        public async Task<IActionResult> GetRatingwithProduct(string productId, string? customerId)
         {
-            var response = await _productRepo.GetRatingwithProduct(productId);
+            var response = await _productRepo.GetRatingwithProduct(productId, customerId);
             return Ok(response);
         }
         [HttpGet("GetRatingById")]

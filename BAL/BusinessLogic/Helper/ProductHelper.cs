@@ -720,6 +720,7 @@ namespace BAL.BusinessLogic.Helper
                 cmdProduct.Parameters.AddWithValue("@p_SalePriceValidFrom", criteria.SalePriceValidFrom);
                 cmdProduct.Parameters.AddWithValue("@p_SalePriceValidTo", criteria.SalePriceValidTo);
                 cmdProduct.Parameters.AddWithValue("@p_ProductName", criteria.ProductName);
+                cmdProduct.Parameters.AddWithValue("@p_CustomerId", criteria.CustomerId);
 
                 DataTable tblProduct = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdProduct));
                 response.StatusCode = 200;
@@ -1353,7 +1354,7 @@ namespace BAL.BusinessLogic.Helper
 
         }
 
-        public async Task<Response<ProductRating>> GetRatingwithProduct(string ProductID)
+        public async Task<Response<ProductRating>> GetRatingwithProduct(string ProductID, string? customerId)
         {
             Response<ProductRating> response = new Response<ProductRating>();
             try
@@ -1361,6 +1362,7 @@ namespace BAL.BusinessLogic.Helper
                 MySqlCommand cmdrating = new MySqlCommand(StoredProcedures.GET_PRODUCT_RATING);
                 cmdrating.CommandType = CommandType.StoredProcedure;
                 cmdrating.Parameters.AddWithValue("@p_ProductID", ProductID);
+                cmdrating.Parameters.AddWithValue("@p_CustomerId", customerId);
 
                 DataTable tblrating = await Task.Run(() => _isqlDataHelper.SqlDataAdapterasync(cmdrating));
                 response.StatusCode = 200;

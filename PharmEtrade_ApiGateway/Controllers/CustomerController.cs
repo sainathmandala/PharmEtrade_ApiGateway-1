@@ -78,6 +78,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         }
 
         [HttpPost("Edit")]
+        [AllowAnonymous]
         public async Task<IActionResult> EditCustomer(CustomerEditRequest customer)
         {
             RegistrationResponse response = await _icustomerRepo.EditCustomer(customer);
@@ -115,6 +116,7 @@ namespace PharmEtrade_ApiGateway.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("Upload")]
+        [AllowAnonymous]
         public async Task<IActionResult> UploadImage(IFormFile image)
         {
             UploadResponse response = await _icustomerRepo.UploadImage(image);
@@ -123,6 +125,7 @@ namespace PharmEtrade_ApiGateway.Controllers
 
         [HttpPost]
         [Route("BusinessInfo")]
+        [AllowAnonymous]
         public async Task<IActionResult> BusinessInfo(CustomerBusinessInfo businessInfo)
         {
             BusinessInfoResponse response = await _icustomerRepo.AddUpdateBusinessInfo(businessInfo);

@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using BAL.BusinessLogic.Interface;
+using Google.Protobuf;
+using System.Diagnostics;
 
 namespace BAL.BusinessLogic.Helper
 {
@@ -34,7 +36,7 @@ namespace BAL.BusinessLogic.Helper
             {                
                 MailMessage message = new MailMessage();
                 SmtpClient smtp = new SmtpClient();
-
+                
                 string emailAddress = _senderEmail;
                 string password = _Password;
                 message.From = new MailAddress(emailAddress);
@@ -51,13 +53,37 @@ namespace BAL.BusinessLogic.Helper
                 smtp.Credentials = new NetworkCredential(emailAddress, password); //new NetworkCredential("email address", "password");//
                 smtp.EnableSsl = true;
                 await Task.Run(() => smtp.Send(message));
+                
+                //await SendMailWithoutPassword();
             }
             catch (Exception)
             {
 
             }
         }
-
+        public async Task SendMailWithoutPassword()
+        {
+            MailMessage mail = new MailMessage();
+            SmtpClient SmtpServer = new SmtpClient();
+            mail.To.Add("surendrababuvemuri@gmail.com");
+            mail.From = new MailAddress("help@pharmetrade.com");
+            mail.Subject = "Test without password";
+            mail.IsBodyHtml = true;
+            mail.Body = "Bingo";
+            SmtpServer.Host = "smtpserver";
+            SmtpServer.Port = 25;
+            SmtpServer.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
+            try
+            {
+                await Task.Run(() => SmtpServer.Send(mail));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception Message: " + ex.Message);
+                if (ex.InnerException != null)
+                    Debug.WriteLine("Exception Inner:   " + ex.InnerException);
+            }
+        }
         public async Task SendEmail(string toMailAddress, string ccMailAddress, string mailSubject, string mailBody, MemoryStream attachementStream)
         {
             try

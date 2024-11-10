@@ -38,7 +38,7 @@ namespace BAL.BusinessLogic.Interface
         Task<Response<string>> RemoveCrossSellProduct(string productId, string crossSellProductId);
         Task<BAL.ResponseModels.Response<ProductRating>> AddProductRating(ProductRating productRating);
         Task<BAL.ResponseModels.Response<ProductRating>> UpdateProductRating(ProductRating productrating);
-        Task<Response<ProductRating>> GetRatingwithProduct(string ProductId);
+        Task<Response<ProductRating>> GetRatingwithProduct(string ProductId, string? customerId);
         Task<Response<string>> RemoveProductRating(string RatingId);
         Task<Response<ProductRating>> GetRatingbyId(string RatingId);
         Task<Response<ProductsPerCategory>> GetProductsPerCategoryCounts(string sellerId = "");

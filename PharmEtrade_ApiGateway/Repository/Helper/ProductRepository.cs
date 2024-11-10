@@ -133,9 +133,9 @@ namespace PharmEtrade_ApiGateway.Repository.Helper
             return await _productHelper.UpdateProductRating(productRating);
         }
 
-        public async Task<Response<ProductRating>> GetRatingwithProduct(string productId)
+        public async Task<Response<ProductRating>> GetRatingwithProduct(string productId, string? customerId)
         {
-            return await _productHelper.GetRatingwithProduct(productId);
+            return await _productHelper.GetRatingwithProduct(productId, customerId);
         }
         
         public async Task<Response<string>> RemoveProductRating(string RatingID)

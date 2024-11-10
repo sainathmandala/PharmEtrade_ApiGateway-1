@@ -122,6 +122,8 @@ namespace BAL.BusinessLogic.Helper
                 item.Product.SellerName = cartItem["SellerName"].ToString() ?? "";
                 item.Product.IsShippingCostApplicable = Convert.ToInt32(cartItem["ShippingCostApplicable"] != DBNull.Value ? cartItem["ShippingCostApplicable"] : 0) == 1;
                 item.Product.ShippingCost = Convert.ToDecimal(cartItem["ShippingCost"] != DBNull.Value ? cartItem["ShippingCost"] : 0.0);
+                item.Product.SalePriceValidFrom = cartItem["SalePriceValidFrom"] != DBNull.Value ? Convert.ToDateTime(cartItem["SalePriceValidFrom"]) : null;
+                item.Product.SalePriceValidTo = cartItem["SalePriceValidTo"] != DBNull.Value ? Convert.ToDateTime(cartItem["SalePriceValidTo"]) : null;
 
                 lstCart.Add(item);
             }
