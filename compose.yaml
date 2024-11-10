@@ -1,7 +1,5 @@
-version: '3.8'
-
 services:
-  pharmentrade_api_gateway:
+  server:
     build:
       context: .
       dockerfile: Dockerfile

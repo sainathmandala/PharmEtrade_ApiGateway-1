@@ -29,4 +29,4 @@ COPY --from=build /app .
 EXPOSE 5000
 
 # Set the entry point for the application
-ENTRYPOINT ["dotnet", "PharmEtrade_ApiGateway.dll"]
+ENTRYPOINT ["dotnet", "PharmEtrade_ApiGateway.dll", "--urls", "http://0.0.0.0:5000"]
